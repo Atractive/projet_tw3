@@ -10,7 +10,7 @@
 	
 
 	<link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
-		<style>.map{height:500px;width:900px;}</style>
+		<style>.map{height:500px;width:100%;}</style>
 		<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
 		
     <style>
@@ -29,6 +29,15 @@
         }
       }
 	  
+	  html,body{
+	  min-height:100%;
+	  min-width:100%;
+	  }
+	  
+	  .fill {
+		min-height: 100%;
+		min-width:100%;
+		}
 	  
     </style>	
 	<style data-styled-components=""></style>
@@ -53,155 +62,132 @@
 		  </div>
 		</div>
   </header>
-	
-	
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-	  <a class="navbar-brand" href="#">Navbar</a>
-	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	  </button>
-
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<ul class="navbar-nav mr-auto">
-		  <li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			  Action
-			</a>
-			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-			  <a class="dropdown-item" href="#">Select</a>
-				  <a class="dropdown-item" href="#">Insert</a>
-			  <div class="dropdown-divider"></div>
-			  <a class="dropdown-item" href="#">Update</a>
-				  <a class="dropdown-item" href="#">Delete</a>
-			</div>
-		  </li>
-		  <li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			  Colonne
-			</a>
-			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-			  <a class="dropdown-item" href="#">Titre</a>
-				  <a class="dropdown-item" href="#">Réalisateur</a>
-			  <div class="dropdown-divider"></div>
-			  <a class="dropdown-item" href="#">Date</a>
-				  <a class="dropdown-item" href="#">Type de tournage</a>
-			</div>
-		  </li>
-		</ul>
-		<form class="form-inline my-2 my-lg-0">
-		  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-		  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-		</form>
-	  </div>
-	</nav>
-	
-	<div class="container">
-	<div id="map" class="map"></div>
-			
-			<script type="text/javascript">
-			
-				//Création de la <MAP>
-				var map = new ol.Map({
-					target: 'map',
-					layers: [
-						new ol.layer.Tile({
-							source: new ol.source.OSM()
-						}),
-					],
-					view: new ol.View({
-						center: ol.proj.fromLonLat([2.3434,48.8566]),
-						zoom: 12.5
-					})
-				});
-				
-				//Création d'un <LAYER>
-				var layer = new ol.layer.Tile({
-					source: new ol.source.OSM()
-				});
-				
-				//Fonction <transform_geometry>
-				function transform_geometry(element) {
-					var current_projection = new ol.proj.Projection({code:"EPSG:4326"});
-					var new_projection = layer.getSource().getProjection();
-					element.getGeometry().transform(current_projection,new_projection);
-				}
-				
-				//Style des <POINTS>
-				var imageStyle = new ol.style.Style({
-					image: new ol.style.Circle({
-						radius: 5,
-						fill: new ol.style.Fill({
-							color: [200,0,0,0.2]
-						}),
-						stroke: new ol.style.Stroke({
-							color: [200,0,0,1],
-							width: 1
-						})
-					})
-				});
-				
-				//Création d'un <POINT>
-				var p1 = new ol.geom.Point([2.3433,48.8566],'XY')
-				var pf1 = new ol.Feature(p1);
-				pf1.setStyle(imageStyle);
-				var features = [pf1];
-				features.forEach(transform_geometry);
-				
-				//Création du <LAYER> pour les <POINTS>
-				var layerp = new ol.layer.Vector({
-					source: new ol.source.Vector({
-						features: features
-					})
-				});
-				map.addLayer(layerp);
-				
-				//Action <OnClick>
-				map.on('click', function(evt) {
-					var coordinate = ol.proj.toLonLat(evt.coordinate);
-					console.log('click on map - '+coordinate);
-				});
-				
-				//Chargement des données GeoJson
-				var AllDataPoint = new ol.layer.Vector({
-					title: 'TEST',
-					source: new ol.source.Vector({
-						projection : 'EPSG:4326',
-						format: new ol.format.GeoJSON(),
-						url: 'database.geojson',
-					}),
-					style: new ol.style.Style({
-						image: new ol.style.Circle({
-							radius: 3,
-							fill: new ol.style.Fill({color:'blue'})
-						})
-					})
-				});
-				map.addLayer(AllDataPoint);
-				
-			</script>
+		
+	<div class="container fill">
+	  <div class="row mx-lg-n10">
+		<div class="col-sm-2 py-3 px-lg-5  border bg-light">
+			<form>
+				  <div class="form-group">
+					<label for="exampleFormControlInput1">Email address</label>
+					<input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+				  </div>
+				  <div class="form-group">
+					<label for="exampleFormControlSelect1">Example select</label>
+					<select class="form-control" id="exampleFormControlSelect1">
+					  <option>1</option>
+					  <option>2</option>
+					  <option>3</option>
+					  <option>4</option>
+					  <option>5</option>
+					</select>
+				  </div>
+				  <div class="form-group">
+					<label for="exampleFormControlSelect2">Example multiple select</label>
+					<select multiple class="form-control" id="exampleFormControlSelect2">
+					  <option>1</option>
+					  <option>2</option>
+					  <option>3</option>
+					  <option>4</option>
+					  <option>5</option>
+					</select>
+				  </div>
+				  <div class="form-group">
+					<label for="exampleFormControlTextarea1">Example textarea</label>
+					<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+				  </div>
+			</form>
+		</div>
+		<div class="col-sm-10 py-3 px-lg-5 border bg-light">
+			<div class="container">
+				<div id="map" class="map"></div>
+						
+						<script type="text/javascript">
+						
+							//Création de la <MAP>
+							var map = new ol.Map({
+								target: 'map',
+								layers: [
+									new ol.layer.Tile({
+										source: new ol.source.OSM()
+									}),
+								],
+								view: new ol.View({
+									center: ol.proj.fromLonLat([2.3434,48.8566]),
+									zoom: 12.5
+								})
+							});
+							
+							//Création d'un <LAYER>
+							var layer = new ol.layer.Tile({
+								source: new ol.source.OSM()
+							});
+							
+							//Fonction <transform_geometry>
+							function transform_geometry(element) {
+								var current_projection = new ol.proj.Projection({code:"EPSG:4326"});
+								var new_projection = layer.getSource().getProjection();
+								element.getGeometry().transform(current_projection,new_projection);
+							}
+							
+							//Style des <POINTS>
+							var imageStyle = new ol.style.Style({
+								image: new ol.style.Circle({
+									radius: 5,
+									fill: new ol.style.Fill({
+										color: [200,0,0,0.2]
+									}),
+									stroke: new ol.style.Stroke({
+										color: [200,0,0,1],
+										width: 1
+									})
+								})
+							});
+							
+							//Création d'un <POINT>
+							var p1 = new ol.geom.Point([2.3433,48.8566],'XY')
+							var pf1 = new ol.Feature(p1);
+							pf1.setStyle(imageStyle);
+							var features = [pf1];
+							features.forEach(transform_geometry);
+							
+							//Création du <LAYER> pour les <POINTS>
+							var layerp = new ol.layer.Vector({
+								source: new ol.source.Vector({
+									features: features
+								})
+							});
+							map.addLayer(layerp);
+							
+							//Action <OnClick>
+							map.on('click', function(evt) {
+								var coordinate = ol.proj.toLonLat(evt.coordinate);
+								console.log('click on map - '+coordinate);
+							});
+							
+							//Chargement des données GeoJson
+							var AllDataPoint = new ol.layer.Vector({
+								title: 'TEST',
+								source: new ol.source.Vector({
+									projection : 'EPSG:4326',
+									format: new ol.format.GeoJSON(),
+									url: 'database.geojson',
+								}),
+								style: new ol.style.Style({
+									image: new ol.style.Circle({
+										radius: 3,
+										fill: new ol.style.Fill({color:'blue'})
+									})
+								})
+							});
+							map.addLayer(AllDataPoint);
+							
+						</script>
+				</div>
 	</div>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-      </div>
-      <div class="col-md-4">
-        <h2>Heading</h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-      </div>
-      <div class="col-md-4">
-        <h2>Heading</h2>
-        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-      </div>
-    </div>
+	  </div>
+	</div>
+	
 
-    <hr>
-
-  </div> <!-- /container -->
   
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
