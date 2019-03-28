@@ -20,6 +20,14 @@ app.get('/index', function (request, response) {
     response.sendFile(path.join(__dirname, './', 'index.html'));
 });
 
+app.get('/indexMatthias1', function (request, response) {
+    response.sendFile(path.join(__dirname, './', 'indexMatthias1.html'));
+});
+
+app.get('/indexMatthias2', function (request, response) {
+    response.sendFile(path.join(__dirname, './', 'indexMatthias2.html'));
+});
+
 http.createServer(app).listen(444, function () {
     console.log("Server is up and running...");
 });
