@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 const http = require('http');
 var path = require('path');
-let geojson = require('./data.json');
+let geojson = require('./data_full.json');
 
 
 app.use(express.static('./'));
