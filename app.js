@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 const http = require('http');
 var path = require('path');
-let geojson = require('./data.json');
+let geojson = require('./data_full.json');
 
 
 app.use(express.static('./'));
@@ -26,6 +26,9 @@ app.get('/indexMatthias1', function (request, response) {
 
 app.get('/indexMatthias2', function (request, response) {
     response.sendFile(path.join(__dirname, './', 'indexMatthias2.html'));
+
+app.get('/indexP', function (request, response) {
+    response.sendFile(path.join(__dirname, './', 'indexP.html'));
 });
 
 http.createServer(app).listen(444, function () {

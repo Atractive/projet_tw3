@@ -17,6 +17,7 @@
         integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
         crossorigin=""></script>
 
+
     <!-- <link rel="stylesheet" href="/node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css" /> -->
     <!-- <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
@@ -25,6 +26,12 @@
     <!-- <link rel="stylesheet" href="makercluster/dist/MarkerCluster.css" /> -->
     <!-- <link rel="stylesheet" href="makercluster/dist/MarkerCluster.Default.css" /> -->
     <!-- <script src="makercluster/dist/leaflet.markercluster-src.js"></script> -->
+
+
+    <link rel="stylesheet" href="screen.css" />
+    <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 
 
     <style>
@@ -48,17 +55,13 @@
     <div id='map'></div>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-
-
     <script>
 
         var map;
         var geojsonFeature;
         var points;
 
-
         map = L.map('map').setView([46.74739, 6], 7);
-
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 18,
@@ -68,8 +71,6 @@
             id: 'mapbox.light'
         }).addTo(map);
 
-        // var markers = L.markerClusterGroup();
-
         $.ajax({
             method: 'GET',
             url: "http://localhost:444/geojson",
@@ -77,21 +78,21 @@
             success: function (response) {
                 console.log(response);
                 geojsonFeature = response;
+                var markers = L.markerClusterGroup();
+
                 points = L.geoJSON(geojsonFeature, {
                     onEachFeature: function (feature, layer) {
                         layer.bindPopup('<h1>' + feature.properties.type_de_tournage + '</h1><p> ' + feature.properties.organisme_demandeur + '<p>');
                     }
-                }).addTo(map);
+                });
+                markers.addLayer(points);
+                map.addLayer(markers);
+                map.fitBounds(markers.getBounds());
             },
             error: function (jqXHR, text, error) {
                 console.log(jqXHR, text, error);
             }
         });
-
-
-        // markers.addLayer(points);
-        // map.addLayer(markers);
-        // map.fitBounds(markers.getBounds());
 
     </script>
 
