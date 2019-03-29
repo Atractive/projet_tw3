@@ -9,13 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-        integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-        crossorigin="" />
+		
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
         integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
         crossorigin=""></script>
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
 
 
     <!-- <link rel="stylesheet" href="/node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
@@ -31,10 +32,74 @@
     <link rel="stylesheet" href="screen.css" />
     <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+	
     <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
+    <link rel="stylesheet" href="leaflet-sidebar.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+		
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif;
+        }
+        .lorem {
+            font-style: italic;
+            color: #AAA;
+        }
+		body {
+  font-family: "Lato", sans-serif;
+  transition: background-color .5s;
+			}
 
-    <style>
+			.sidenav {
+			  height: 100%;
+			  width: 0;
+			  position: fixed;
+			  z-index: 1;
+			  top: 0;
+			  left: 0;
+			  background-color: #111;
+			  overflow-x: hidden;
+			  transition: 0.5s;
+			  padding-top: 60px;
+			}
+
+			.sidenav a {
+			  padding: 8px 8px 8px 32px;
+			  text-decoration: none;
+			  font-size: 25px;
+			  color: #818181;
+			  display: block;
+			  transition: 0.3s;
+			}
+
+			.sidenav a:hover {
+			  color: #f1f1f1;
+			}
+
+			.sidenav .closebtn {
+			  position: absolute;
+			  top: 0;
+			  right: 25px;
+			  font-size: 36px;
+			  margin-left: 50px;
+			}
+
+			#main {
+			  transition: margin-left .5s;
+			  padding: 16px;
+			}
+
+			@media screen and (max-height: 450px) {
+			  .sidenav {padding-top: 15px;}
+			  .sidenav a {font-size: 18px;}
+			}
         html,
         body {
             height: 100%;
@@ -51,28 +116,112 @@
 </head>
 
 <body>
+	<!-- <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script> -->
+    <script src="leaflet-sidebar.js"></script>
 	
-	<div class="card text-center">
-	  <div class="card-header">
-		<ul class="nav nav-tabs card-header-tabs">
-		  <li class="nav-item">
-			<a class="nav-link " href="indexMatthias1">La carte</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link active" href="indexMatthias2">Les stats</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-		  </li>
-		</ul>
-	  </div>
-	</div>
-	
-    <div id='map'></div>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<!-- <div id="mySidenav" class="sidenav"> -->
+		  <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+		  <!-- <a href="indexMatthias1">La carte</a> -->
+		  <!-- <a href="indexMatthias2">Les stats</a> -->
+		  <!-- <a href="#">Clients</a> -->
+		  <!-- <a href="#">Contact</a> -->
+		<!-- </div> -->
+		
+	<div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                <li><a href="#profile" role="tab"><i class="fa fa-user"></i></a></li>
+                <li class="disabled"><a href="#messages" role="tab"><i class="fa fa-envelope"></i></a></li>
+            </ul>
+
+            <ul role="tablist">
+                <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    Menu Site Web
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+				<li class="nav-item">
+					<a class="nav-link " href="indexMatthias1">La carte</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link active" href="indexMatthias2">Les stats</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+				  </li>
+
+               
+                </div>
+
+            <div class="sidebar-pane" id="profile">
+                <h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+
+            <div class="sidebar-pane" id="messages">
+                <h1 class="sidebar-header">Messages<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+
+            <div class="sidebar-pane" id="settings">
+                <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+        </div>
+    </div>
+
+    <div id="map" class="sidebar-map"></div>
+
+    <script src="leaflet-sidebar.js"></script>
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fas fa-ad"></i></a></li>
+                <li><a href="#profile" role="tab"><i class="fas fa-ad"></i></a></li>
+                <li class="disabled"><a href="#messages" role="tab"><i class="fas fa-ad"></i></a></li>
+            </ul>
+
+            <ul role="tablist">
+                <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+            </ul>
+        </div>
+       
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    sidebar-v2
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+
+                <p class="lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+
+                <p class="lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+
+                <p class="lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+
+                <p class="lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+            </div>
+
+            <div class="sidebar-pane" id="profile">
+                <h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+
+            <div class="sidebar-pane" id="messages">
+                <h1 class="sidebar-header">Messages<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+
+            <div class="sidebar-pane" id="settings">
+                <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+        </div>
+    </div>
 
     <script>
-
+		
         var map;
         var geojsonFeature;
         var points;
@@ -86,7 +235,10 @@
                 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: 'mapbox.light'
         }).addTo(map);
-
+	
+		
+        var sidebar = L.control.sidebar('sidebar').addTo(map);
+		
         $.ajax({
             method: 'GET',
             url: "http://localhost:444/geojson",
@@ -111,8 +263,6 @@
         });
 
     </script>
-
-
 
 </body>
 
