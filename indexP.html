@@ -33,28 +33,42 @@
 	</head>
 
 	<body>
-		
-		<div>
-			<form id="formLoaderFilter">
-				<div class="form-group">
-					<label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
-					<input type="text" class="form-control" id="formLoaderFilter__type_de_tournage">
-				</div>
-				<div class="form-group">
-					<label for="formLoaderFilter__titre">Titre</label>
-					<input type="text" class="form-control" id="formLoaderFilter__titre">
-				</div>
-				<div class="form-group">
-					<label for="formLoaderFilter__realisateur">Realisateur</label>
-					<input type="text" class="form-control" id="formLoaderFilter__realisateur">
-				</div>
-				<div class="form-group">
-					<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
-					<input type="text" class="form-control" id="formLoaderFilter__organisme_demandeur">
-				</div>
-				<button type="submit" class="btn btn-primary">Valider</button>
-			</form>
-		</div>
+
+		<form id="formLoaderFilter">
+			<div>
+				<label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
+				<input type="text" id="formLoaderFilter__type_de_tournage">
+			</div>
+			<div>
+				<label for="formLoaderFilter__titre">Titre</label>
+				<input type="text" id="formLoaderFilter__titre">
+			</div>
+			<div>
+				<label for="formLoaderFilter__realisateur">Realisateur</label>
+				<input type="text" id="formLoaderFilter__realisateur">
+			</div>
+			<div>
+				<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
+				<input type="text" id="formLoaderFilter__organisme_demandeur">
+			</div>
+			<div>
+				<label for="formLoaderFilter__adresse">Adresse</label>
+				<input type="text" id="formLoaderFilter__adresse">
+			</div>
+			<div>
+				<label for="formLoaderFilter__ardt">Arrondissement</label>
+				<input type="text" id="formLoaderFilter__ardt">
+			</div>
+			<div>
+				<label for="formLoaderFilter__date_debut">Date de debut de tournage</label>
+				<input type="text" id="formLoaderFilter__date_debut">
+			</div>
+			<div>
+				<label for="formLoaderFilter__date_fin">Date de fin de tournage</label>
+				<input type="text" id="formLoaderFilter__date_fin">
+			</div>
+			<button type="submit">Valider</button>
+		</form>
 		
 		<div id='map'></div>
 		
@@ -75,6 +89,25 @@
 					'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 				id: 'mapbox.streets'
 			}).addTo(map);
+			
+			var PointStyle1 = {
+				"color": "#ff0000",
+				"weight": 5,
+				"opacity": 0.65
+			};
+			
+			var PointStyle2 = {
+				"color": "#008000",
+				"weight": 5,
+				"opacity": 0.65
+			};
+			
+			var PointStyle3 = {
+				"color": "#0000ff",
+				"weight": 5,
+				"opacity": 0.65
+			};
+
 				
 			$('#formLoaderFilter').submit(function(evt) {
 			
@@ -88,8 +121,20 @@
 						var markers = L.markerClusterGroup();
 						points = L.geoJSON(response, {
 							onEachFeature: function (feature, layer) {
-								layer.bindPopup('<h1>' + feature.properties.type_de_tournage + '</h1><p> ' + feature.properties.organisme_demandeur + '<p>');
-							}, filter: function(feature, layer) {
+								layer.bindPopup(
+									+ '<div>'
+										+ '<p> Type de tournage : ' + feature.properties.type_de_tournage + '</p>'
+										+ '<p> Titre : ' + feature.properties.titre + '</p>'
+										+ '<p> Realisateur : ' + feature.properties.realisateur + '</p>'
+										+ '<p> Organisme demandeur : ' + feature.properties.organisme_demandeur + '</p>'
+										+ '<p> Adresse : ' + feature.properties.adresse + '</p>'
+										+ '<p> Arrondissement : ' + feature.properties.ardt + '</p>'
+										+ '<p> Date de debut de tournage : ' + feature.properties.date_debut + '</p>'
+										+ '<p> Date de fin de tournage : ' + feature.properties.date_fin +'</p>'
+										+ '<button onClick="modif('+feature+')">Modifier</button>'
+									+ '</div>'
+								);
+							}, filter: function (feature, layer) {
 								var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
 								if (val_tdt == '') {var bool_tdp = true;} else {bool_tdp = (feature.properties.type_de_tournage == val_tdt);}
 								var val_t = document.getElementById('formLoaderFilter__titre').value;
@@ -98,7 +143,21 @@
 								if (val_r == '') {var bool_r = true;} else {bool_r = (feature.properties.realisateur == val_r);}
 								var val_od = document.getElementById('formLoaderFilter__organisme_demandeur').value;
 								if (val_od == '') {var bool_od = true;} else {bool_od = (feature.properties.organisme_demandeur == val_od);}
-								return (bool_tdp && bool_t && bool_r && bool_od);
+								var val_ad = document.getElementById('formLoaderFilter__adresse').value;
+								if (val_ad == '') {var bool_ad = true;} else {bool_ad = (feature.properties.ardt == val_ad);}
+								var val_ar = document.getElementById('formLoaderFilter__ardt').value;
+								if (val_ar == '') {var bool_ar = true;} else {bool_ar = (feature.properties.ardt == val_ar);}
+								var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
+								if (val_dd == '') {var bool_dd = true;} else {bool_dd = (feature.properties.date_debut == val_dd);}
+								var val_df = document.getElementById('formLoaderFilter__date_fin').value;
+								if (val_df == '') {var bool_df = true;} else {bool_df = (feature.properties.date_fin == val_df);}
+								return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
+							}, style: function(feature) {
+								switch (feature.properties.type_de_tournage) {
+									case 'TELEFILM': return PointStyle1;
+									case 'LONG METRAGE': return PointStyle2;
+									case 'SERIE TELEVISEE': return PointStyle3;
+								}
 							}
 						});
 						mapMarkers.push(markers);
@@ -112,6 +171,10 @@
 				});
 	
 			});
+			
+			function modif(f) {
+				console.log(f);
+			}
 	
 		</script>
 
