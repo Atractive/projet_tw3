@@ -3,6 +3,7 @@ var app = express();
 const http = require('http');
 var path = require('path');
 let geojson = require('./data_full.json');
+// let geojson = require('./data.json');
 
 
 app.use(express.static('./'));
@@ -12,33 +13,14 @@ app.get('/geojson', function (request, response) {
     response.send(geojson);
 });
 
-app.get('/clusterexample', function (request, response) {
-    response.sendFile(path.join(__dirname, './', 'clusterexample.html'));
+app.get('/', function (request, response) {
+    response.sendFile(path.join(__dirname, './', 'map.html'));
 });
 
-app.get('/index', function (request, response) {
-    response.sendFile(path.join(__dirname, './', 'index.html'));
-});
-
-app.get('/indexMatthias1', function (request, response) {
-    response.sendFile(path.join(__dirname, './', 'indexMatthias1.html'));
-});
-
-app.get('/indexMatthias2', function (request, response) {
-    response.sendFile(path.join(__dirname, './', 'indexMatthias2.html'));
-});
-
-app.get('/indexP', function (request, response) {
-    response.sendFile(path.join(__dirname, './', 'indexP.html'));
-
+app.get('/stats', function (request, response) {
+    response.sendFile(path.join(__dirname, './', 'stats.html'));
 });
 
 http.createServer(app).listen(444, function () {
     console.log("Server is up and running...");
 });
-
-
-
-// app.get('/', function (request, response) {
-//     response.sendfile('./index.html');
-// });

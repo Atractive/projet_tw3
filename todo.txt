@@ -1,0 +1,1 @@
+Ajouter les coordonnées de la souris (par rapport à la long / lat de la carte)

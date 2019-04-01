@@ -13,7 +13,7 @@
             "properties": {
                 "type_de_tournage": "TELEFILM",
                 "organisme_demandeur": "BIG BAND STORY",
-                "adresse": "RUE\u00a0 ROCHER/DE MADRID ET PORTALIS",
+                "adresse": "RUE ROCHER/DE MADRID ET PORTALIS",
                 "date_fin": "2016-03-31",
                 "realisateur": "ARNAULD MERCADIER",
                 "xy": [
@@ -37,7 +37,7 @@
             "properties": {
                 "type_de_tournage": "TELEFILM",
                 "organisme_demandeur": "BIG BAND STORY",
-                "adresse": "PLACE\u00a0 HENRI BERGSON",
+                "adresse": "PLACE HENRI BERGSON",
                 "date_fin": "2016-03-31",
                 "realisateur": "ARNAULD MERCADIER",
                 "xy": [
@@ -61,7 +61,7 @@
             "properties": {
                 "type_de_tournage": "TELEFILM",
                 "organisme_demandeur": "BIG BAND STORY",
-                "adresse": "PLACE\u00a0 SAINT AUGUSTIN",
+                "adresse": "PLACE SAINT AUGUSTIN",
                 "date_fin": "2016-03-31",
                 "realisateur": "ARNAULD MERCADIER",
                 "xy": [
@@ -85,7 +85,7 @@
             "properties": {
                 "type_de_tournage": "TELEFILM",
                 "organisme_demandeur": "BIG BAND STORY",
-                "adresse": "12\u00a0 PLACE\u00a0 SAINT AUGUSTIN",
+                "adresse": "12 PLACE SAINT AUGUSTIN",
                 "date_fin": "2016-03-31",
                 "realisateur": "ARNAULD MERCADIER",
                 "xy": [
