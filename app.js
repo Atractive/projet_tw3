@@ -16,12 +16,6 @@ var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThresh
 
 app.use(express.static('./'));
 
-app.get('/geojson', function (request, response) {
-    db.find({}, function (err, docs) {
-        response.send(geojson);
-    });
-});
-
 
 app.get('/geojson', function (request, response) {
     db.find({}, function (err, docs) {
