@@ -160,9 +160,14 @@
                     <h3>Sélectionner les attributs du ou des tournages souhaités</h3>
 					<form id="formLoaderFilter">
 						<div class="form-group">
-							<label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
-							<input class="form-control" type="text" id="formLoaderFilter__type_de_tournage">
-						</div>
+                            <label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
+                            <select class="form-control" id="formLoaderFilter__type_de_tournage">
+								<option>NON RENSEIGNE</option>
+                                <option>TELEFILM</option>
+                                <option>LONG METRAGE</option>
+                                <option>SERIE TELEVISEE</option>
+                            </select>
+                        </div>
 						<div class="form-group">
 							<label for="formLoaderFilter__titre">Titre</label>
 							<input class="form-control" type="text" id="formLoaderFilter__titre">
@@ -185,39 +190,14 @@
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__date_debut">Date de debut de tournage</label>
-							<input class="form-control" type="text" id="formLoaderFilter__date_debut">
+							<input class="form-control" type="date" value="2016-01-01" min="2016-01-01" max="2016-12-01" id="formLoaderFilter__date_debut">
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__date_fin">Date de fin de tournage</label>
-							<input class="form-control" type="text" id="formLoaderFilter__date_fin">
+							<input class="form-control" type="date" value="2016-01-01" min="2016-01-01" max="2016-12-01" id="formLoaderFilter__date_fin">
 						</div>
 						<button class="btn btn-primary" type="submit">Valider</button>
 					</form>
-                    <!-- <form>
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="pwd">Password:</label>
-                            <input type="password" class="form-control" id="pwd" placeholder="Enter password"
-                                name="pwd">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Example select</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-                        <div class="checkbox">
-                            <label><input type="checkbox" name="remember"> Remember me</label>
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form> -->
                 </div>
             </div>
             <div class="sidebar-pane" id="profile">
@@ -251,6 +231,8 @@
 		var geojsonFeature;
 		var points;
 		var mapMarkers = [];
+		
+		var alr;
 
 		map = L.map('map').setView([48.866667, 2.333333], 12);
 
@@ -289,13 +271,14 @@
 				url: 'http://localhost:444/geojson',
 				dataType: 'json',
 				success: function (response) {
+					
 					var markers = L.markerClusterGroup();
 					points = L.geoJSON(response, {
 						onEachFeature: function (feature, layer) {
 							layer.bindPopup('<div class="form-group"><label for="exampleFormControlSelect1">Catégorie du tournage</label><select class="form-control" id="exampleFormControlSelect1"><option>TELEFILM</option><option>SERIE TELEVISEE</option><option>LONG METRAGE</option></select></div>' + '<div class="form-group"><label for="org">Organisme demandeur: </label><input type="text" value="' + feature.properties.organisme_demandeur + '" class="form-control" id="org"></div>' + '<div class="form-group"><label for="adresse">Adresse: </label><input type="text" value="' + feature.properties.adresse + '"class="form-control" id="adresse"></div>' + '<div class="form-group"><label for="example-date-input-debut">Date</label><input class="form-control" type="date" value="' + feature.properties.date_debut + '"id="example-date-input-debut"></div>' + '<div class="form-group"><label for="example-date-input">Date</label><input class="form-control" type="date" value="' + feature.properties.date_fin + '"id="example-date-input"></div>' + '<div class="form-group"><label for="real">Réalisateur:</label><input type="text" value="' + feature.properties.realisateur + '" class="form-control" id="real"></div>' + '<div class="form-group"><label for="ardt">Arrondissement:</label><input type="text" value="' + feature.properties.ardt + '" class="form-control" id="ardt"></div>' + '<div class="form-group"><label for="titre">Titre</label><input type="text" value="' + feature.properties.titre + '" class="form-control" id="titre"></div>' + '<div class="form-group"><label for="long">Longitude:</label><input type="text" value="' + feature.properties.xy[0] + '" class="form-control" id="long"></div>' + '<div class="form-group"><label for="lat">Longitude:</label><input type="text" value="' + feature.properties.xy[1] + '" class="form-control" id="lat"></div>');
 						}, filter: function (feature, layer) {
 							var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
-							if (val_tdt == '') {var bool_tdp = true;} else {bool_tdp = (feature.properties.type_de_tournage == val_tdt);}
+							if (val_tdt == 'NON RENSEIGNE') {var bool_tdp = true;} else {bool_tdp = (feature.properties.type_de_tournage == val_tdt);}
 							var val_t = document.getElementById('formLoaderFilter__titre').value;
 							if (val_t == '') {var bool_t = true;} else {bool_t = (feature.properties.titre == val_t);}
 							var val_r = document.getElementById('formLoaderFilter__realisateur').value;
@@ -303,7 +286,7 @@
 							var val_od = document.getElementById('formLoaderFilter__organisme_demandeur').value;
 							if (val_od == '') {var bool_od = true;} else {bool_od = (feature.properties.organisme_demandeur == val_od);}
 							var val_ad = document.getElementById('formLoaderFilter__adresse').value;
-							if (val_ad == '') {var bool_ad = true;} else {bool_ad = (feature.properties.ardt == val_ad);}
+							if (val_ad == '') {var bool_ad = true;} else {bool_ad = (feature.properties.adresse == val_ad);}
 							var val_ar = document.getElementById('formLoaderFilter__ardt').value;
 							if (val_ar == '') {var bool_ar = true;} else {bool_ar = (feature.properties.ardt == val_ar);}
 							var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
@@ -328,6 +311,19 @@
 					console.log(jqXHR, text, error);
 				}
 			});
+		});
+		
+		//faire un ready ajax
+		$.ajax({
+			method: 'GET',
+			url: 'http://localhost:444/alreal',
+			dataType: 'json',
+			success: function (response) {
+				alr = response.real;
+			},
+			error: function (jqXHR, text, error) {
+				console.log(jqXHR, text, error);
+			}
 		});
 
     </script>
