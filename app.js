@@ -4,22 +4,21 @@ const http = require('http');
 var path = require('path');
 const Datastore = require('nedb');
 
-// let geojson = require('./data_full.json');
-let geojson = require('./data.json');
+let geojson = require('./data_full.json');
+//let geojson = require('./data.json');
 
 var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
-// for (var i = 0; i < geojson.length; i++){
-//     db.insert(geojson[i]);
-// }
+//for (var i = 0; i < geojson.features.length; i++){
+//    db.insert(geojson.features[i]);
+//}
 
 app.use(express.static('./'));
 
 app.get('/geojson', function (request, response) {
     db.find({}, function (err, docs) {
-        response.send(geojson);
+        response.send({ type: "FeatureCollection", features: docs });
     });
-
 });
 
 
