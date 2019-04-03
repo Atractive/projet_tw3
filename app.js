@@ -16,25 +16,13 @@ var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThresh
 
 app.use(express.static('./'));
 
-
 app.get('/geojson', function (request, response) {
     db.find({}, function (err, docs) {
         response.send({ type: "FeatureCollection", features: docs });
     });
 });
 
-
-app.get('/allreal', function (request, response) {
-    var s = new Set();
-    db.find({}, { "properties.realisateur" : 1 }, function (err, docs) {
-        for (var i = 0; i < docs.length; i++){
-            // console.log(docs[i].properties.realisateur);
-            s.add(docs[i].properties.realisateur);
-        }
-        response.send({nbreal : s.size, real : Array.from(s)});
-    });
-});
-
+//////////////////////////////////////////////////////////////////////
 
 app.get('/alltitre', function (request, response) {
     var s = new Set();
@@ -43,11 +31,20 @@ app.get('/alltitre', function (request, response) {
             // console.log(docs[i].properties.realisateur);
             s.add(docs[i].properties.titre);
         }
-        response.send({nbreal : s.size, real : Array.from(s)});
+        response.send({nb : s.size, info : Array.from(s)});
     });
 });
 
-// orga arroundissement
+app.get('/allreal', function (request, response) {
+    var s = new Set();
+    db.find({}, { "properties.realisateur" : 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++){
+            // console.log(docs[i].properties.realisateur);
+            s.add(docs[i].properties.realisateur);
+        }
+        response.send({nb : s.size, info : Array.from(s)});
+    });
+});
 
 app.get('/allorga', function (request, response) {
     var s = new Set();
@@ -56,22 +53,11 @@ app.get('/allorga', function (request, response) {
             // console.log(docs[i].properties.realisateur);
             s.add(docs[i].properties.organisme_demandeur);
         }
-        response.send({nbreal : s.size, real : Array.from(s)});
+        response.send({nb : s.size, info : Array.from(s)});
     });
 });
 
-app.get('/allardt', function (request, response) {
-    var s = new Set();
-    db.find({}, { "properties.ardt" : 1 }, function (err, docs) {
-        for (var i = 0; i < docs.length; i++){
-            // console.log(docs[i].properties.realisateur);
-            s.add(docs[i].properties.ardt);
-        }
-        response.send({nbreal : s.size, real : Array.from(s)});
-    });
-});
-
-
+//////////////////////////////////////////////////////////////////////
 
 app.get('/', function (request, response) {
     response.sendFile(path.join(__dirname, './', 'map.html'));
