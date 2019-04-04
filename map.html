@@ -96,19 +96,16 @@
 				margin-left: 50px;
 			}
 
-			#main {
-				transition: margin-left .5s;
-				padding: 16px;
-			}
-
 			@media screen and (max-height: 450px) {
 				.sidenav {padding-top: 15px;}
 				.sidenav a {font-size: 18px;}
 			}
 
 			#map {
+				position: absolute;
 				width: 100%;
 				height: 100%;
+				z-index: 1;
 			}
 						
 			.autocomplete {
@@ -137,7 +134,18 @@
 			.autocomplete-items div:hover {
 				background-color: #e9e9e9; 
 			}
-
+			
+			#divFloat {
+				display: none;
+				position: absolute;
+				background-color: white; 
+				margin-left: 80%;
+				margin-top: 2%;
+				padding: 10px;
+				width: 15%;
+				z-index: 2;
+			}
+						
 		</style>
 		
 	</head>
@@ -187,23 +195,23 @@
 							</div>
 							<div class="form-group">
 								<label for="formLoaderFilter__titre">Titre</label>
-								<input class="form-control mdb-autocomplete" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__titre">
+								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__titre">
 							</div>
 							<div class="form-group">
 								<label for="formLoaderFilter__realisateur">Realisateur</label>
-								<input class="form-control mdb-autocomplete" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__realisateur">
+								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__realisateur">
 							</div>
 							<div>
 								<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
-								<input class="form-control mdb-autocomplete" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__organisme_demandeur">
+								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__organisme_demandeur">
 							</div>
 							<div class="form-group">
 								<label for="formLoaderFilter__adresse">Adresse</label>
-								<input class="form-control mdb-autocomplete" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__adresse">
+								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__adresse">
 							</div>
 							<div class="form-group">
 								<label for="formLoaderFilter__ardt">Arrondissement</label>
-								<input class="form-control mdb-autocomplete" type="search" id="formLoaderFilter__ardt">
+								<input class="form-control" type="search" id="formLoaderFilter__ardt">
 							</div>
 							<div class="form-group">
 								<label for="formLoaderFilter__date_debut">Date de debut de tournage</label>
@@ -237,8 +245,53 @@
 				</div>
 			</div>
 		</div>
-
+		
 		<div id="map" class="sidebar-map"></div>
+
+		<div id="divFloat" class="sidebar-form"> 
+			<form id="formAff">
+				<div class="form-group">
+					<label for="formAff__type_de_tournage">Type de tournage</label>
+					<select class="form-control" id="formAff__type_de_tournage">
+						<option>NON RENSEIGNE</option>
+						<option>TELEFILM</option>
+						<option>LONG METRAGE</option>
+						<option>SERIE TELEVISEE</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="formAff__titre">Titre</label>
+					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__titre">
+				</div>
+				<div class="form-group">
+					<label for="formAff__realisateur">Realisateur</label>
+					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__realisateur">
+				</div>
+				<div>
+					<label for="formAff__organisme_demandeur">Organisme demandeur</label>
+					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__organisme_demandeur">
+				</div>
+				<div class="form-group">
+					<label for="formAff__adresse">Adresse</label>
+					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__adresse">
+				</div>
+				<div class="form-group">
+					<label for="formAff__ardt">Arrondissement</label>
+					<input class="form-control" type="search" id="formAff__ardt">
+				</div>
+				<div class="form-group">
+					<label for="formAff__date_debut">Date de debut de tournage</label>
+					<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_debut">
+				</div>
+				<div class="form-group">
+					<label for="formAff__date_fin">Date de fin de tournage</label>
+					<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin">
+				</div>
+				<button class="btn btn-primary">Modifier</button>
+				<button class="btn btn-primary">Supprimer</button>
+				<button class="btn btn-primary" onclick="document.getElementById('divFloat').style.display = 'none';">Fermer</button>
+			</form>
+		</div>
 
 		<script>
 
@@ -272,7 +325,23 @@
 						var markers = L.markerClusterGroup();
 						points = L.geoJSON(response, {
 							onEachFeature: function (feature, layer) {
-								layer.bindPopup('<div class="form-group"><label for="exampleFormControlSelect1">Catégorie du tournage</label><select class="form-control" id="exampleFormControlSelect1"><option>TELEFILM</option><option>SERIE TELEVISEE</option><option>LONG METRAGE</option></select></div>' + '<div class="form-group"><label for="org">Organisme demandeur: </label><input type="text" value="' + feature.properties.organisme_demandeur + '" class="form-control" id="org"></div>' + '<div class="form-group"><label for="adresse">Adresse: </label><input type="text" value="' + feature.properties.adresse + '"class="form-control" id="adresse"></div>' + '<div class="form-group"><label for="example-date-input-debut">Date</label><input class="form-control" type="date" value="' + feature.properties.date_debut + '"id="example-date-input-debut"></div>' + '<div class="form-group"><label for="example-date-input">Date</label><input class="form-control" type="date" value="' + feature.properties.date_fin + '"id="example-date-input"></div>' + '<div class="form-group"><label for="real">Réalisateur:</label><input type="text" value="' + feature.properties.realisateur + '" class="form-control" id="real"></div>' + '<div class="form-group"><label for="ardt">Arrondissement:</label><input type="text" value="' + feature.properties.ardt + '" class="form-control" id="ardt"></div>' + '<div class="form-group"><label for="titre">Titre</label><input type="text" value="' + feature.properties.titre + '" class="form-control" id="titre"></div>' + '<div class="form-group"><label for="long">Longitude:</label><input type="text" value="' + feature.properties.xy[0] + '" class="form-control" id="long"></div>' + '<div class="form-group"><label for="lat">Longitude:</label><input type="text" value="' + feature.properties.xy[1] + '" class="form-control" id="lat"></div>');
+								layer.bindPopup(
+									'<div>'
+										+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
+										+ '</br>'
+										+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
+									+ '</div>');
+								layer.on('click', function () {
+									document.getElementById('divFloat').style.display = 'block';
+									document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
+									document.getElementById('formAff__titre').value = feature.properties.titre;
+									document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
+									document.getElementById('formAff__organisme_demandeur').value = feature.properties.organisme_demandeur;
+									document.getElementById('formAff__adresse').value = feature.properties.adresse;
+									document.getElementById('formAff__ardt').value = feature.properties.ardt;
+									document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
+									document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
+								});
 							}, filter: function (feature, layer) {
 								var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
 								if (val_tdt == 'NON RENSEIGNE') {var bool_tdp = true;} else {bool_tdp = (feature.properties.type_de_tournage == val_tdt);}
