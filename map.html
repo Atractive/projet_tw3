@@ -28,7 +28,7 @@
 
 		<!-- leaflet extension cluster -->
 		<script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
-		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		
 
 		<!-- Boostrap -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -37,8 +37,9 @@
 		<link rel="stylesheet" href="leaflet-sidebar.css" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<!-- Autocomplete -->
-		<script type="text/javascript" src="autocomplete_file.js"></script>
+		
+		<!-- Jquery UI -->
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 		<style>
 		
@@ -107,45 +108,10 @@
 				height: 100%;
 				z-index: 1;
 			}
-						
-			.autocomplete {
-				position: relative;
-				display: inline-block;
+					
+			.ui-autocomplete {
+			  position: relative;
 			}
-			
-			.autocomplete-items {
-				position: relative;
-				border: 1px solid #d4d4d4;
-				border-bottom: none;
-				border-top: none;
-				z-index: 99;
-				top: 100%;
-				left: 0;
-				right: 0;
-			}
-			
-			.autocomplete-items div {
-				padding: 10px;
-				cursor: pointer;
-				background-color: #fff; 
-				border-bottom: 1px solid #d4d4d4; 
-			}
-			
-			.autocomplete-items div:hover {
-				background-color: #e9e9e9; 
-			}
-			
-			#divFloat {
-				display: none;
-				position: absolute;
-				background-color: white; 
-				margin-left: 80%;
-				margin-top: 2%;
-				padding: 10px;
-				width: 15%;
-				z-index: 2;
-			}
-						
 		</style>
 		
 	</head>
@@ -178,10 +144,10 @@
 
 				</div>
 
-				<div class="sidebar-pane" id="formSelect">
+				<div class="sidebar-pane " id="formSelect">
 					<h1 class="sidebar-header">Formulaire de selection<span class="sidebar-close"><i
 								class="fa fa-caret-left"></i></span></h1>
-					<div class="container" style="width:100%;">
+					<div class="container ui-front" style="width:100%;">
 						<h3>Sélectionner les attributs du ou des tournages souhaités</h3>
 						<form id="formLoaderFilter" autocomplete="off">
 							<div class="form-group">
@@ -193,17 +159,19 @@
 									<option>SERIE TELEVISEE</option>
 								</select>
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="titre" >
 								<label for="formLoaderFilter__titre">Titre</label>
 								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__titre">
+								
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="real">
 								<label for="formLoaderFilter__realisateur">Realisateur</label>
 								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__realisateur">
 							</div>
-							<div>
+							<div class="form-group " id="orga">
 								<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
 								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__organisme_demandeur">
+								 
 							</div>
 							<div class="form-group">
 								<label for="formLoaderFilter__adresse">Adresse</label>
@@ -259,7 +227,7 @@
 						<option>SERIE TELEVISEE</option>
 					</select>
 				</div>
-				<div class="form-group">
+				<div class="form-group"  >
 					<label for="formAff__titre">Titre</label>
 					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__titre">
 				</div>
@@ -267,7 +235,7 @@
 					<label for="formAff__realisateur">Realisateur</label>
 					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__realisateur">
 				</div>
-				<div>
+				<div class="form-group">
 					<label for="formAff__organisme_demandeur">Organisme demandeur</label>
 					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__organisme_demandeur">
 				</div>
@@ -293,7 +261,13 @@
 			</form>
 		</div>
 
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		
 		<script>
+		
+			
 
 			//////////////////////////////////////////////////////////////////////
 			
@@ -383,6 +357,30 @@
 				}
 			);
 			
+			var substringMatcher = function(strs) {
+			  return function findMatches(q, cb) {
+				var matches, substringRegex;
+
+				// an array that will be populated with substring matches
+				matches = [];
+
+				// regex used to determine if a string contains the substring `q`
+				substrRegex = new RegExp(q, 'i');
+
+				// iterate through the pool of strings and for any string that
+				// contains the substring `q`, add it to the `matches` array
+				$.each(strs, function(i, str) {
+				  if (substrRegex.test(str)) {
+					matches.push(str);
+				  }
+				});
+
+				cb(matches);
+			  };
+			};
+
+			
+			
 			function alltitreRecup() {
 				var data = [];
 				$.ajax({
@@ -390,8 +388,15 @@
 					url: 'http://localhost:444/alltitre',
 					dataType: 'json',
 					success: function (response) {
-						data = response.info;
-						autocomplete(document.getElementById("formLoaderFilter__titre"),data);
+						<!-- data = response.info; -->
+						$( "#formLoaderFilter__titre" ).autocomplete({
+							source: response.info,
+							appendTo: "#titre"
+						});
+						
+						
+						console.log("coucou");
+						<!-- console.log(data); -->
 					},
 					error: function (jqXHR, text, error) {
 						console.log(jqXHR, text, error);
@@ -406,9 +411,10 @@
 					url: 'http://localhost:444/allreal',
 					dataType: 'json',
 					success: function (response) {
-						data = response.info;
-						autocomplete(document.getElementById("formLoaderFilter__realisateur"),data);
-
+						$( "#formLoaderFilter__realisateur" ).autocomplete({
+							source: response.info,
+							appendTo: "#real"
+						});
 					},
 					error: function (jqXHR, text, error) {
 						console.log(jqXHR, text, error);
@@ -424,7 +430,10 @@
 					dataType: 'json',
 					success: function (response) {
 						data = response.info;
-						autocomplete(document.getElementById("formLoaderFilter__organisme_demandeur"),data);
+						$( "#formLoaderFilter__organisme_demandeur" ).autocomplete({
+							source: response.info,
+							appendTo: "#orga"
+						});
 					},
 					error: function (jqXHR, text, error) {
 						console.log(jqXHR, text, error);
