@@ -241,6 +241,9 @@
 
 	<div id="divFloat" class="sidebar-form">
 		<form id="formAff">
+			<div style="display:none;">
+				<p id="formAff__id">vide</p>
+			</div>
 			<div class="form-group">
 				<label for="formAff__type_de_tournage">Type de tournage</label>
 				<select class="form-control" id="formAff__type_de_tournage">
@@ -252,27 +255,27 @@
 			</div>
 			<div class="form-group">
 				<label for="formAff__titre">Titre</label>
-				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
 					id="formAff__titre">
 			</div>
 			<div class="form-group">
 				<label for="formAff__realisateur">Realisateur</label>
-				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
 					id="formAff__realisateur">
 			</div>
 			<div class="form-group">
 				<label for="formAff__organisme_demandeur">Organisme demandeur</label>
-				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
 					id="formAff__organisme_demandeur">
 			</div>
 			<div class="form-group">
 				<label for="formAff__adresse">Adresse</label>
-				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
 					id="formAff__adresse">
 			</div>
 			<div class="form-group">
 				<label for="formAff__ardt">Arrondissement</label>
-				<input class="form-control" type="search" id="formAff__ardt">
+				<input class="form-control" type="text" id="formAff__ardt">
 			</div>
 			<div class="form-group">
 				<label for="formAff__date_debut">Date de debut de tournage</label>
@@ -282,11 +285,10 @@
 				<label for="formAff__date_fin">Date de fin de tournage</label>
 				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin">
 			</div>
-			<button class="btn btn-primary">Modifier</button>
-			<button class="btn btn-primary">Supprimer</button>
-			<button class="btn btn-primary"
-				onclick="document.getElementById('divFloat').style.display = 'none';">Fermer</button>
 		</form>
+		<button class="btn btn-primary">Modifier</button>
+		<button class="btn btn-primary">Supprimer</button>
+		<button class="btn btn-primary" onclick="document.getElementById('divFloat').style.display = 'none'">Fermer</button>
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -294,8 +296,6 @@
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 	<script>
-
-
 
 		//////////////////////////////////////////////////////////////////////
 
@@ -335,6 +335,7 @@
 								+ '</div>');
 							layer.on('click', function (evt) {
 								document.getElementById('divFloat').style.display = 'block';
+								document.getElementById('formAff__id').value = feature.properties._id;
 								document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
 								document.getElementById('formAff__titre').value = feature.properties.titre;
 								document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
@@ -468,7 +469,7 @@
 			});
 		}
 
-			//////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////
 
 	</script>
 
