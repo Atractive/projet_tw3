@@ -2,363 +2,391 @@
 
 <html>
 
-	<head>
+<head>
 
-		<title>Carte</title>
+	<title>Carte</title>
 
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
 
-		<!-- carte background -->
-		<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-			integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-			crossorigin=""></script>
+	<!-- carte background -->
+	<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+		integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+		crossorigin=""></script>
 
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-			integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+		integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
 
-		<!-- leaflet main -->
-		<link rel="stylesheet" href="screen.css" />
-		<link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
-		<link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+	<!-- leaflet main -->
+	<link rel="stylesheet" href="screen.css" />
+	<link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
-		<!-- leaflet extension cluster -->
-		<script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
-		
+	<!-- leaflet extension cluster -->
+	<script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 
-		<!-- Boostrap -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="leaflet-sidebar.css" />
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		
-		<!-- Jquery UI -->
-		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-		<style>
-		
-			body {
-				padding: 0;
-				margin: 0;
-			}
-			
-			html, body {
-				height: 100%;
-				margin: 0;
-			}
+	<!-- Boostrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="leaflet-sidebar.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-			html, body, #map {
-				height: 100%;
-				font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif;
-			}
+	<!-- Jquery UI -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-			.lorem {
-				font-style: italic;
-				color: #AAA;
-			}
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
 
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+		}
+
+		html,
+		body,
+		#map {
+			height: 100%;
+			font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif;
+		}
+
+		.lorem {
+			font-style: italic;
+			color: #AAA;
+		}
+
+		.sidenav {
+			height: 100%;
+			width: 0;
+			position: fixed;
+			z-index: 1;
+			top: 0;
+			left: 0;
+			background-color: #111;
+			overflow-x: hidden;
+			transition: 0.5s;
+			padding-top: 60px;
+		}
+
+		.sidenav a {
+			padding: 8px 8px 8px 32px;
+			text-decoration: none;
+			font-size: 25px;
+			color: #818181;
+			display: block;
+			transition: 0.3s;
+		}
+
+		.sidenav a:hover {
+			color: #f1f1f1;
+		}
+
+		.sidenav .closebtn {
+			position: absolute;
+			top: 0;
+			right: 25px;
+			font-size: 36px;
+			margin-left: 50px;
+		}
+
+		@media screen and (max-height: 450px) {
 			.sidenav {
-				height: 100%;
-				width: 0;
-				position: fixed;
-				z-index: 1;
-				top: 0;
-				left: 0;
-				background-color: #111;
-				overflow-x: hidden;
-				transition: 0.5s;
-				padding-top: 60px;
+				padding-top: 15px;
 			}
 
 			.sidenav a {
-				padding: 8px 8px 8px 32px;
-				text-decoration: none;
-				font-size: 25px;
-				color: #818181;
-				display: block;
-				transition: 0.3s;
+				font-size: 18px;
 			}
+		}
 
-			.sidenav a:hover {
-				color: #f1f1f1;
-			}
+		#map {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+		}
 
-			.sidenav .closebtn {
-				position: absolute;
-				top: 0;
-				right: 25px;
-				font-size: 36px;
-				margin-left: 50px;
-			}
+		.ui-autocomplete {
+			position: relative;
+		}
 
-			@media screen and (max-height: 450px) {
-				.sidenav {padding-top: 15px;}
-				.sidenav a {font-size: 18px;}
-			}
+		#divFloat {
+			display: none;
+			position: absolute;
+			background-color: white;
+			margin-left: 80%;
+			margin-top: 2%;
+			padding: 10px;
+			width: 15%;
+			z-index: 2;
+		}
+	</style>
 
-			#map {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				z-index: 1;
-			}
-					
-			.ui-autocomplete {
-			  position: relative;
-			}
-		</style>
-		
-	</head>
+</head>
 
-	<body>
-	
-		<script src="leaflet-sidebar.js"></script>
-		<div id="sidebar" class="sidebar collapsed">
-			<div class="sidebar-tabs">
-				<ul role="tablist">
-					<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-					<li><a href="#formSelect" role="tab"><i class="fab fa-wpforms"></i></a></li>
-					<li><a href="#profile" role="tab"><i class="fa fa-user"></i></a></li>
-					<li class="disabled"><a href="#messages" role="tab"><i class="fa fa-envelope"></i></a></li>
-				</ul>
+<body>
 
-				<ul role="tablist">
-					<li><a href="#aboutus" role="tab"><i class="fas fa-users"></i></a></li>
-				</ul>
-			</div>
+	<script src="leaflet-sidebar.js"></script>
+	<div id="sidebar" class="sidebar collapsed">
+		<div class="sidebar-tabs">
+			<ul role="tablist">
+				<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+				<li><a href="#formSelect" role="tab"><i class="fab fa-wpforms"></i></a></li>
+				<li><a href="#profile" role="tab"><i class="fa fa-user"></i></a></li>
+				<li class="disabled"><a href="#messages" role="tab"><i class="fa fa-envelope"></i></a></li>
+			</ul>
 
-			<div class="sidebar-content">
-				<div class="sidebar-pane" id="home">
-					<h1 class="sidebar-header">
-						Menu Site Web
-						<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-					</h1>
-					<h2><a href="" role="button"><i class="fas fa-globe-europe"></i> La carte</a></h2>
-					<h2><a href="stats" role="button"><i class="far fa-chart-bar"></i> Les stats</a></h2>
-
-				</div>
-
-				<div class="sidebar-pane " id="formSelect">
-					<h1 class="sidebar-header">Formulaire de selection<span class="sidebar-close"><i
-								class="fa fa-caret-left"></i></span></h1>
-					<div class="container ui-front" style="width:100%;">
-						<h3>Sélectionner les attributs du ou des tournages souhaités</h3>
-						<form id="formLoaderFilter" autocomplete="off">
-							<div class="form-group">
-								<label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
-								<select class="form-control" id="formLoaderFilter__type_de_tournage">
-									<option>NON RENSEIGNE</option>
-									<option>TELEFILM</option>
-									<option>LONG METRAGE</option>
-									<option>SERIE TELEVISEE</option>
-								</select>
-							</div>
-							<div class="form-group" id="titre" >
-								<label for="formLoaderFilter__titre">Titre</label>
-								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__titre">
-								
-							</div>
-							<div class="form-group" id="real">
-								<label for="formLoaderFilter__realisateur">Realisateur</label>
-								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__realisateur">
-							</div>
-							<div class="form-group " id="orga">
-								<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
-								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__organisme_demandeur">
-								 
-							</div>
-							<div class="form-group">
-								<label for="formLoaderFilter__adresse">Adresse</label>
-								<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__adresse">
-							</div>
-							<div class="form-group">
-								<label for="formLoaderFilter__ardt">Arrondissement</label>
-								<input class="form-control" type="search" id="formLoaderFilter__ardt">
-							</div>
-							<div class="form-group">
-								<label for="formLoaderFilter__date_debut">Date de debut de tournage</label>
-								<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formLoaderFilter__date_debut">
-							</div>
-							<div class="form-group">
-								<label for="formLoaderFilter__date_fin">Date de fin de tournage</label>
-								<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formLoaderFilter__date_fin">
-							</div>
-							<button class="btn btn-primary" type="submit">Valider</button>
-						</form>
-					</div>
-				</div>
-				<div class="sidebar-pane" id="profile">
-					<h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-					</h1>
-					<p> COUCOU TOI </p>
-				</div>
-
-				<div class="sidebar-pane" id="messages">
-					<h1 class="sidebar-header">Messages<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-					</h1>
-				</div>
-
-				<div class="sidebar-pane" id="aboutus">
-					<h1 class="sidebar-header">Notre groupe<span class="sidebar-close"><i
-								class="fa fa-caret-left"></i></span></h1>
-					<h2> <i class="fas fa-user-astronaut"></i> Pierre CRY </h2>
-					<h2> <i class="fas fa-user-secret"></i> Diego ORTIZ </h2>
-					<h2> <i class="fas fa-user-ninja"></i> Matthias AMBROISE </h2>
-				</div>
-			</div>
-		</div>
-		
-		<div id="map" class="sidebar-map"></div>
-
-		<div id="divFloat" class="sidebar-form"> 
-			<form id="formAff">
-				<div class="form-group">
-					<label for="formAff__type_de_tournage">Type de tournage</label>
-					<select class="form-control" id="formAff__type_de_tournage">
-						<option>NON RENSEIGNE</option>
-						<option>TELEFILM</option>
-						<option>LONG METRAGE</option>
-						<option>SERIE TELEVISEE</option>
-					</select>
-				</div>
-				<div class="form-group"  >
-					<label for="formAff__titre">Titre</label>
-					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__titre">
-				</div>
-				<div class="form-group">
-					<label for="formAff__realisateur">Realisateur</label>
-					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__realisateur">
-				</div>
-				<div class="form-group">
-					<label for="formAff__organisme_demandeur">Organisme demandeur</label>
-					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__organisme_demandeur">
-				</div>
-				<div class="form-group">
-					<label for="formAff__adresse">Adresse</label>
-					<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()' id="formAff__adresse">
-				</div>
-				<div class="form-group">
-					<label for="formAff__ardt">Arrondissement</label>
-					<input class="form-control" type="search" id="formAff__ardt">
-				</div>
-				<div class="form-group">
-					<label for="formAff__date_debut">Date de debut de tournage</label>
-					<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_debut">
-				</div>
-				<div class="form-group">
-					<label for="formAff__date_fin">Date de fin de tournage</label>
-					<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin">
-				</div>
-				<button class="btn btn-primary">Modifier</button>
-				<button class="btn btn-primary">Supprimer</button>
-				<button class="btn btn-primary" onclick="document.getElementById('divFloat').style.display = 'none';">Fermer</button>
-			</form>
+			<ul role="tablist">
+				<li><a href="#aboutus" role="tab"><i class="fas fa-users"></i></a></li>
+			</ul>
 		</div>
 
-		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-		
-		<script>
-		
-			
+		<div class="sidebar-content">
+			<div class="sidebar-pane" id="home">
+				<h1 class="sidebar-header">
+					Menu Site Web
+					<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+				</h1>
+				<h2><a href="" role="button"><i class="fas fa-globe-europe"></i> La carte</a></h2>
+				<h2><a href="stats" role="button"><i class="far fa-chart-bar"></i> Les stats</a></h2>
 
-			//////////////////////////////////////////////////////////////////////
-			
-			var map;
-			var sidebar = L.control.sidebar('sidebar').addTo(map);
-			map = L.map('map').setView([48.866667, 2.333333], 12);
-			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-				maxZoom: 18,
-				attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-					'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-					'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-				id: 'mapbox.streets'
-			}).addTo(map);
-		
-			//////////////////////////////////////////////////////////////////////
-			
-			var points;
-			var mapMarkers = [];
-			$('#formLoaderFilter').submit(function(evt) {
-			
-				evt.preventDefault();
+			</div>
 
-				$.ajax({
-					method: 'GET',
-					url: 'http://localhost:444/geojson',
-					dataType: 'json',
-					success: function (response) {
-						
-						var markers = L.markerClusterGroup();
-						points = L.geoJSON(response, {
-							onEachFeature: function (feature, layer) {
-								layer.bindPopup(
-									'<div>'
-										+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
-										+ '</br>'
-										+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
-									+ '</div>');
-								layer.on('click', function () {
-									document.getElementById('divFloat').style.display = 'block';
-									document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
-									document.getElementById('formAff__titre').value = feature.properties.titre;
-									document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
-									document.getElementById('formAff__organisme_demandeur').value = feature.properties.organisme_demandeur;
-									document.getElementById('formAff__adresse').value = feature.properties.adresse;
-									document.getElementById('formAff__ardt').value = feature.properties.ardt;
-									document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
-									document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
-								});
-							}, filter: function (feature, layer) {
-								var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
-								if (val_tdt == 'NON RENSEIGNE') {var bool_tdp = true;} else {bool_tdp = (feature.properties.type_de_tournage == val_tdt);}
-								var val_t = document.getElementById('formLoaderFilter__titre').value;
-								if (val_t == '') {var bool_t = true;} else {bool_t = (feature.properties.titre == val_t);}
-								var val_r = document.getElementById('formLoaderFilter__realisateur').value;
-								if (val_r == '') {var bool_r = true;} else {bool_r = (feature.properties.realisateur == val_r);}
-								var val_od = document.getElementById('formLoaderFilter__organisme_demandeur').value;
-								if (val_od == '') {var bool_od = true;} else {bool_od = (feature.properties.organisme_demandeur == val_od);}
-								var val_ad = document.getElementById('formLoaderFilter__adresse').value;
-								if (val_ad == '') {var bool_ad = true;} else {bool_ad = (feature.properties.adresse == val_ad);}
-								var val_ar = document.getElementById('formLoaderFilter__ardt').value;
-								if (val_ar == '') {var bool_ar = true;} else {bool_ar = (feature.properties.ardt == val_ar);}
-								var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
-								if (val_dd == '') {var bool_dd = true;} else {bool_dd = (feature.properties.date_debut == val_dd);}
-								var val_df = document.getElementById('formLoaderFilter__date_fin').value;
-								if (val_df == '') {var bool_df = true;} else {bool_df = (feature.properties.date_fin == val_df);}
-								return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
-							}
-						});
-						mapMarkers.push(markers);
-						for(var i = 0; i < mapMarkers.length; i++){map.removeLayer(mapMarkers[i]);}
-						markers.addLayer(points);
-						map.addLayer(markers);
-					},
-					error: function (jqXHR, text, error) {
-						console.log(jqXHR, text, error);
-					}
-				});
-			});
-			
-			//////////////////////////////////////////////////////////////////////
-			
-			$(document).ready(
-				function () {
-					alltitreRecup();
-					allrealRecup();
-					allorgaRecup();
+			<div class="sidebar-pane " id="formSelect">
+				<h1 class="sidebar-header">Formulaire de selection<span class="sidebar-close"><i
+							class="fa fa-caret-left"></i></span></h1>
+				<div class="container ui-front" style="width:100%;">
+					<h3>Sélectionner les attributs du ou des tournages souhaités</h3>
+					<form id="formLoaderFilter" autocomplete="off">
+						<div class="form-group">
+							<label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
+							<select class="form-control" id="formLoaderFilter__type_de_tournage">
+								<option>NON RENSEIGNE</option>
+								<option>TELEFILM</option>
+								<option>LONG METRAGE</option>
+								<option>SERIE TELEVISEE</option>
+							</select>
+						</div>
+						<div class="form-group" id="titre">
+							<label for="formLoaderFilter__titre">Titre</label>
+							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+								id="formLoaderFilter__titre">
+
+						</div>
+						<div class="form-group" id="real">
+							<label for="formLoaderFilter__realisateur">Realisateur</label>
+							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+								id="formLoaderFilter__realisateur">
+						</div>
+						<div class="form-group " id="orga">
+							<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
+							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+								id="formLoaderFilter__organisme_demandeur">
+
+						</div>
+						<div class="form-group">
+							<label for="formLoaderFilter__adresse">Adresse</label>
+							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+								id="formLoaderFilter__adresse">
+						</div>
+						<div class="form-group">
+							<label for="formLoaderFilter__ardt">Arrondissement</label>
+							<input class="form-control" type="search" id="formLoaderFilter__ardt">
+						</div>
+						<div class="form-group">
+							<label for="formLoaderFilter__date_debut">Date de debut de tournage</label>
+							<input class="form-control" type="date" min="2016-01-01" max="2016-12-01"
+								id="formLoaderFilter__date_debut">
+						</div>
+						<div class="form-group">
+							<label for="formLoaderFilter__date_fin">Date de fin de tournage</label>
+							<input class="form-control" type="date" min="2016-01-01" max="2016-12-01"
+								id="formLoaderFilter__date_fin">
+						</div>
+						<button class="btn btn-primary" type="submit">Valider</button>
+					</form>
+				</div>
+			</div>
+			<div class="sidebar-pane" id="profile">
+				<h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+				</h1>
+				<p> COUCOU TOI </p>
+			</div>
+
+			<div class="sidebar-pane" id="messages">
+				<h1 class="sidebar-header">Messages<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+				</h1>
+			</div>
+
+			<div class="sidebar-pane" id="aboutus">
+				<h1 class="sidebar-header">Notre groupe<span class="sidebar-close"><i
+							class="fa fa-caret-left"></i></span></h1>
+				<h2> <i class="fas fa-user-astronaut"></i> Pierre CRY </h2>
+				<h2> <i class="fas fa-user-secret"></i> Diego ORTIZ </h2>
+				<h2> <i class="fas fa-user-ninja"></i> Matthias AMBROISE </h2>
+			</div>
+		</div>
+	</div>
+
+	<div id="map" class="sidebar-map"></div>
+
+	<div id="divFloat" class="sidebar-form">
+		<form id="formAff">
+			<div class="form-group">
+				<label for="formAff__type_de_tournage">Type de tournage</label>
+				<select class="form-control" id="formAff__type_de_tournage">
+					<option>NON RENSEIGNE</option>
+					<option>TELEFILM</option>
+					<option>LONG METRAGE</option>
+					<option>SERIE TELEVISEE</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="formAff__titre">Titre</label>
+				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+					id="formAff__titre">
+			</div>
+			<div class="form-group">
+				<label for="formAff__realisateur">Realisateur</label>
+				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+					id="formAff__realisateur">
+			</div>
+			<div class="form-group">
+				<label for="formAff__organisme_demandeur">Organisme demandeur</label>
+				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+					id="formAff__organisme_demandeur">
+			</div>
+			<div class="form-group">
+				<label for="formAff__adresse">Adresse</label>
+				<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+					id="formAff__adresse">
+			</div>
+			<div class="form-group">
+				<label for="formAff__ardt">Arrondissement</label>
+				<input class="form-control" type="search" id="formAff__ardt">
+			</div>
+			<div class="form-group">
+				<label for="formAff__date_debut">Date de debut de tournage</label>
+				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_debut">
+			</div>
+			<div class="form-group">
+				<label for="formAff__date_fin">Date de fin de tournage</label>
+				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin">
+			</div>
+			<button class="btn btn-primary">Modifier</button>
+			<button class="btn btn-primary">Supprimer</button>
+			<button class="btn btn-primary"
+				onclick="document.getElementById('divFloat').style.display = 'none';">Fermer</button>
+		</form>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<script>
+
+
+
+		//////////////////////////////////////////////////////////////////////
+
+		var map;
+		var sidebar = L.control.sidebar('sidebar').addTo(map);
+		map = L.map('map').setView([48.866667, 2.333333], 12);
+		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+				'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			id: 'mapbox.streets'
+		}).addTo(map);
+
+		//////////////////////////////////////////////////////////////////////
+
+		var points;
+		var mapMarkers = [];
+		$('#formLoaderFilter').submit(function (evt) {
+
+			evt.preventDefault();
+
+			$.ajax({
+				method: 'GET',
+				url: 'http://localhost:444/geojson',
+				dataType: 'json',
+				success: function (response) {
+
+					var markers = L.markerClusterGroup();
+					points = L.geoJSON(response, {
+						onEachFeature: function (feature, layer) {
+							layer.bindPopup(
+								'<div>'
+								+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
+								+ '</br>'
+								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
+								+ '</div>');
+							layer.on('click', function (evt) {
+								document.getElementById('divFloat').style.display = 'block';
+								document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
+								document.getElementById('formAff__titre').value = feature.properties.titre;
+								document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
+								document.getElementById('formAff__organisme_demandeur').value = feature.properties.organisme_demandeur;
+								document.getElementById('formAff__adresse').value = feature.properties.adresse;
+								document.getElementById('formAff__ardt').value = feature.properties.ardt;
+								document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
+								document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
+							});
+						}, filter: function (feature, layer) {
+							var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
+							if (val_tdt == 'NON RENSEIGNE') { var bool_tdp = true; } else { bool_tdp = (feature.properties.type_de_tournage == val_tdt); }
+							var val_t = document.getElementById('formLoaderFilter__titre').value;
+							if (val_t == '') { var bool_t = true; } else { bool_t = (feature.properties.titre == val_t); }
+							var val_r = document.getElementById('formLoaderFilter__realisateur').value;
+							if (val_r == '') { var bool_r = true; } else { bool_r = (feature.properties.realisateur == val_r); }
+							var val_od = document.getElementById('formLoaderFilter__organisme_demandeur').value;
+							if (val_od == '') { var bool_od = true; } else { bool_od = (feature.properties.organisme_demandeur == val_od); }
+							var val_ad = document.getElementById('formLoaderFilter__adresse').value;
+							if (val_ad == '') { var bool_ad = true; } else { bool_ad = (feature.properties.adresse == val_ad); }
+							var val_ar = document.getElementById('formLoaderFilter__ardt').value;
+							if (val_ar == '') { var bool_ar = true; } else { bool_ar = (feature.properties.ardt == val_ar); }
+							var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
+							if (val_dd == '') { var bool_dd = true; } else { bool_dd = (feature.properties.date_debut == val_dd); }
+							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
+							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin == val_df); }
+							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
+						}
+					});
+					mapMarkers.push(markers);
+					for (var i = 0; i < mapMarkers.length; i++) { map.removeLayer(mapMarkers[i]); }
+					markers.addLayer(points);
+					map.addLayer(markers);
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
 				}
-			);
-			
-			var substringMatcher = function(strs) {
-			  return function findMatches(q, cb) {
+			});
+		});
+
+		//////////////////////////////////////////////////////////////////////
+
+		$(document).ready(
+			function () {
+				alltitreRecup();
+				allrealRecup();
+				allorgaRecup();
+			}
+		);
+
+		var substringMatcher = function (strs) {
+			return function findMatches(q, cb) {
 				var matches, substringRegex;
 
 				// an array that will be populated with substring matches
@@ -369,82 +397,81 @@
 
 				// iterate through the pool of strings and for any string that
 				// contains the substring `q`, add it to the `matches` array
-				$.each(strs, function(i, str) {
-				  if (substrRegex.test(str)) {
-					matches.push(str);
-				  }
+				$.each(strs, function (i, str) {
+					if (substrRegex.test(str)) {
+						matches.push(str);
+					}
 				});
 
 				cb(matches);
-			  };
 			};
+		};
 
-			
-			
-			function alltitreRecup() {
-				var data = [];
-				$.ajax({
-					method: 'GET',
-					url: 'http://localhost:444/alltitre',
-					dataType: 'json',
-					success: function (response) {
-						<!-- data = response.info; -->
-						$( "#formLoaderFilter__titre" ).autocomplete({
-							source: response.info,
-							appendTo: "#titre"
-						});
-						
-						
-						console.log("coucou");
-						<!-- console.log(data); -->
-					},
-					error: function (jqXHR, text, error) {
-						console.log(jqXHR, text, error);
-					}
-				});
-			}
-			
-			function allrealRecup() {
-				var data = []
-				$.ajax({
-					method: 'GET',
-					url: 'http://localhost:444/allreal',
-					dataType: 'json',
-					success: function (response) {
-						$( "#formLoaderFilter__realisateur" ).autocomplete({
-							source: response.info,
-							appendTo: "#real"
-						});
-					},
-					error: function (jqXHR, text, error) {
-						console.log(jqXHR, text, error);
-					}
-				});
-			}
-			
-			function allorgaRecup() {
-				var data = [];
-				$.ajax({
-					method: 'GET',
-					url: 'http://localhost:444/allorga',
-					dataType: 'json',
-					success: function (response) {
-						data = response.info;
-						$( "#formLoaderFilter__organisme_demandeur" ).autocomplete({
-							source: response.info,
-							appendTo: "#orga"
-						});
-					},
-					error: function (jqXHR, text, error) {
-						console.log(jqXHR, text, error);
-					}
-				});
-			}
+
+
+		function alltitreRecup() {
+			var data = [];
+			$.ajax({
+				method: 'GET',
+				url: 'http://localhost:444/alltitre',
+				dataType: 'json',
+				success: function (response) {
+					data = response.info;
+					$("#formLoaderFilter__titre").autocomplete({
+						source: response.info,
+						appendTo: "#titre"
+					});
+
+
+					console.log("coucou");
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+		}
+
+		function allrealRecup() {
+			var data = []
+			$.ajax({
+				method: 'GET',
+				url: 'http://localhost:444/allreal',
+				dataType: 'json',
+				success: function (response) {
+					$("#formLoaderFilter__realisateur").autocomplete({
+						source: response.info,
+						appendTo: "#real"
+					});
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+		}
+
+		function allorgaRecup() {
+			var data = [];
+			$.ajax({
+				method: 'GET',
+				url: 'http://localhost:444/allorga',
+				dataType: 'json',
+				success: function (response) {
+					data = response.info;
+					$("#formLoaderFilter__organisme_demandeur").autocomplete({
+						source: response.info,
+						appendTo: "#orga"
+					});
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+		}
 
 			//////////////////////////////////////////////////////////////////////
-			
-		</script>
 
-	</body>
+	</script>
+
+</body>
 
 </html>
