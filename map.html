@@ -242,7 +242,7 @@
 	<div id="divFloat" class="sidebar-form">
 		<form id="formAff">
 			<div style="display:block;">
-				<p id="formAff__id">vide</p>
+				<input id="formAff__id"></input>
 			</div>
 			<div class="form-group">
 				<label for="formAff__type_de_tournage">Type de tournage</label>
@@ -335,7 +335,6 @@
 								+ '</div>');
 							layer.on('click', function (evt) {
 								document.getElementById('divFloat').style.display = 'block';
-								console.log(feature.properties.id);
 								document.getElementById('formAff__id').value = feature.properties.id;
 								document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
 								document.getElementById('formAff__titre').value = feature.properties.titre;
@@ -380,25 +379,37 @@
 		//////////////////////////////////////////////////////////////////////
 		
 		map.on('click',function(e) {
-			var newMarker = new L.marker(e.latlng).addTo(map);
-			newMarker.bindPopup(
-				'<div>'
-				+ '<label>Longitude: ' + e.latlng.lat + '</label>'
-				+ '</br>'
-				+ '<label>Latitude: ' + e.latlng.lng + '</label>'
-				+ '</div>');
-			newMarker.on('click', function (evt) {
-				document.getElementById('divFloat').style.display = 'block';
-				document.getElementById('formAff__id').value = feature.properties.id_;
-				document.getElementById('formAff__type_de_tournage').value = "";
-				document.getElementById('formAff__titre').value = "";
-				document.getElementById('formAff__realisateur').value = "";
-				document.getElementById('formAff__organisme_demandeur').value = "";
-				document.getElementById('formAff__adresse').value = "";
-				document.getElementById('formAff__ardt').value = "";
-				document.getElementById('formAff__date_debut').value = "";
-				document.getElementById('formAff__date_fin').value = "";
+			$.ajax({
+				method: 'GET',
+				url: 'http://localhost:444/nombredeligne',
+				dataType: 'json',
+				success: function (response) {
+					var newMarker = new L.marker(e.latlng).addTo(map);
+					newMarker.bindPopup(
+						'<div>'
+						+ '<label>Longitude: ' + e.latlng.lat + '</label>'
+						+ '</br>'
+						+ '<label>Latitude: ' + e.latlng.lng + '</label>'
+						+ '</div>');
+					newMarker.on('click', function (evt) {
+						document.getElementById('divFloat').style.display = 'block';
+						document.getElementById('formAff__id').value = response.nb+1;
+						document.getElementById('formAff__type_de_tournage').value = "";
+						document.getElementById('formAff__titre').value = "";
+						document.getElementById('formAff__realisateur').value = "";
+						document.getElementById('formAff__organisme_demandeur').value = "";
+						document.getElementById('formAff__adresse').value = "";
+						document.getElementById('formAff__ardt').value = "";
+						document.getElementById('formAff__date_debut').value = "";
+						document.getElementById('formAff__date_fin').value = "";
+					});
+					
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
 			});
+			
 		});
 
 		//////////////////////////////////////////////////////////////////////
