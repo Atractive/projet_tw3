@@ -287,7 +287,6 @@
 			</div>
 		</form>
 		<button class="btn btn-primary">Modifier</button>
-		<button class="btn btn-primary">Supprimer</button>
 		<button class="btn btn-primary" onclick="document.getElementById('divFloat').style.display = 'none'">Fermer</button>
 	</div>
 
@@ -297,6 +296,23 @@
 
 	<script>
 
+		function onPopupOpen() {
+
+			var tempMarker = this;
+
+			//var tempMarkerGeoJSON = this.toGeoJSON();
+			
+			// To remove marker on click of delete
+			$(".marker-delete-button:visible").click(function () {
+				var lID = tempMarker._leaflet_id; // Getting Leaflet ID of this marker
+				console.log(lID);
+				
+				// Faire un appel ajax pour supprimer côté client
+				
+				map.removeLayer(tempMarker);
+				$("#divFloat").css("display","none");
+			});
+		}
 		//////////////////////////////////////////////////////////////////////
 
 		var map;
@@ -332,7 +348,12 @@
 								+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
 								+ '</br>'
 								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
-								+ '</div>');
+								+ '</div>'
+								+ "<input type='button' value='Delete this marker' class='marker-delete-button btn btn-primary'/>"
+								);
+								
+							layer.on("popupopen", onPopupOpen);
+							
 							layer.on('click', function (evt) {
 								document.getElementById('divFloat').style.display = 'block';
 								document.getElementById('formAff__id').value = feature.properties._id;
