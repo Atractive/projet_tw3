@@ -3,6 +3,8 @@ var app = express();
 const http = require('http');
 var path = require('path');
 const Datastore = require('nedb');
+const bodyParser = require('body-parser');
+
 
 let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
@@ -14,6 +16,8 @@ var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThresh
 //     db.insert(geojson.features[i]);
 // }
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('./'));
 
 app.get('/geojson', function (request, response) {
@@ -62,6 +66,13 @@ app.get('/nombredeligne', function (req, res) {
         res.send({ nb: docs.length });
     });
 
+});
+
+//////////////////////////////////////////////////////////////////////
+
+app.post('/userInput', function (req, res) {
+    console.log(req.body);
+    res.send({ ok: true });
 });
 
 //////////////////////////////////////////////////////////////////////

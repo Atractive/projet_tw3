@@ -378,7 +378,9 @@
 		
 		//////////////////////////////////////////////////////////////////////
 		
-		map.on('click',function(e) {
+		//Creation d'un point dans la map et dans la db
+		
+		function addMarker(e) {
 			$.ajax({
 				method: 'GET',
 				url: 'http://localhost:444/nombredeligne',
@@ -403,12 +405,28 @@
 						document.getElementById('formAff__date_debut').value = "";
 						document.getElementById('formAff__date_fin').value = "";
 					});
-					
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
 				}
 			});
+		}
+		
+		map.on('click',function(e) {
+			console.log("inmap");
+			$.ajax({
+				method: 'POST',
+				url: 'http://localhost:444/userInput',
+				data: {id: "3000"},
+				success: function (response) {
+					console.log("suc");
+					addMarker(e);
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+			
 			
 		});
 
