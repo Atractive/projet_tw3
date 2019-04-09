@@ -288,7 +288,8 @@
 		</form>
 		<button class="btn btn-primary">Modifier</button>
 		<button class="btn btn-primary">Supprimer</button>
-		<button class="btn btn-primary" onclick="document.getElementById('divFloat').style.display = 'none'">Fermer</button>
+		<button class="btn btn-primary"
+			onclick="document.getElementById('divFloat').style.display = 'none'">Fermer</button>
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -375,18 +376,36 @@
 				}
 			});
 		});
-		
+
 		//////////////////////////////////////////////////////////////////////
-		
+
 		//Creation d'un point dans la map et dans la db
-		
-		function addMarker(e) {
+
+		function addMarker(lat, lng, newid) {
+			$.ajax({
+				method: 'POST',
+				url: 'http://localhost:444/userInput',
+				data: { id: newid, x: lat, y: lng },
+				success: function (response) {
+					console.log("suc");
+					addMarker(e);
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+		}
+
+		map.on('click', function (e) {
 			$.ajax({
 				method: 'GET',
 				url: 'http://localhost:444/nombredeligne',
 				dataType: 'json',
 				success: function (response) {
 					var newMarker = new L.marker(e.latlng).addTo(map);
+					var lat = e.latlng.lat;
+					var lng = e.latlng.lng;
+					var newid = response.nb + 1;
 					newMarker.bindPopup(
 						'<div>'
 						+ '<label>Longitude: ' + e.latlng.lat + '</label>'
@@ -395,7 +414,7 @@
 						+ '</div>');
 					newMarker.on('click', function (evt) {
 						document.getElementById('divFloat').style.display = 'block';
-						document.getElementById('formAff__id').value = response.nb+1;
+						document.getElementById('formAff__id').value = response.nb + 1;
 						document.getElementById('formAff__type_de_tournage').value = "";
 						document.getElementById('formAff__titre').value = "";
 						document.getElementById('formAff__realisateur').value = "";
@@ -405,29 +424,16 @@
 						document.getElementById('formAff__date_debut').value = "";
 						document.getElementById('formAff__date_fin').value = "";
 					});
+					addMarker(lat, lng, newid);
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
 				}
 			});
-		}
-		
-		map.on('click',function(e) {
 			console.log("inmap");
-			$.ajax({
-				method: 'POST',
-				url: 'http://localhost:444/userInput',
-				data: {id: "3000"},
-				success: function (response) {
-					console.log("suc");
-					addMarker(e);
-				},
-				error: function (jqXHR, text, error) {
-					console.log(jqXHR, text, error);
-				}
-			});
-			
-			
+
+
+
 		});
 
 		//////////////////////////////////////////////////////////////////////

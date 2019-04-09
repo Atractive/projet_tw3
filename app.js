@@ -72,6 +72,35 @@ app.get('/nombredeligne', function (req, res) {
 
 app.post('/userInput', function (req, res) {
     console.log(req.body);
+    var temp = {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                parseFloat(req.body.y).toFixed(2),
+                parseFloat(req.body.x).toFixed(2)
+            ]
+        },
+        "properties": {
+            "type_de_tournage": "",
+            "organisme_demandeur": "",
+            "adresse": "",
+            "date_fin": "",
+            "realisateur": "",
+            "xy": [
+                parseFloat(req.body.x).toFixed(2),
+                parseFloat(req.body.y).toFixed(2)
+            ],
+            "ardt": "",
+            "titre": "",
+            "date_debut": "",
+            "id": req.body.id
+        },
+    };
+
+    db.insert(temp, function (err, newDoc) {
+        console.log(newDoc)
+    });
     res.send({ ok: true });
 });
 
