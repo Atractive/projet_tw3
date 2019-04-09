@@ -3,6 +3,8 @@ var app = express();
 const http = require('http');
 var path = require('path');
 const Datastore = require('nedb');
+const bodyParser = require('body-parser');
+
 
 let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
@@ -14,6 +16,8 @@ var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThresh
 //     db.insert(geojson.features[i]);
 // }
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('./'));
 
 app.get('/geojson', function (request, response) {
@@ -26,35 +30,49 @@ app.get('/geojson', function (request, response) {
 
 app.get('/alltitre', function (request, response) {
     var s = new Set();
-    db.find({}, { "properties.titre" : 1 }, function (err, docs) {
-        for (var i = 0; i < docs.length; i++){
+    db.find({}, { "properties.titre": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
             // console.log(docs[i].properties.realisateur);
             s.add(docs[i].properties.titre);
         }
-        response.send({nb : s.size, info : Array.from(s)});
+        response.send({ nb: s.size, info: Array.from(s) });
     });
 });
 
 app.get('/allreal', function (request, response) {
     var s = new Set();
-    db.find({}, { "properties.realisateur" : 1 }, function (err, docs) {
-        for (var i = 0; i < docs.length; i++){
+    db.find({}, { "properties.realisateur": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
             // console.log(docs[i].properties.realisateur);
             s.add(docs[i].properties.realisateur);
         }
-        response.send({nb : s.size, info : Array.from(s)});
+        response.send({ nb: s.size, info: Array.from(s) });
     });
 });
 
 app.get('/allorga', function (request, response) {
     var s = new Set();
-    db.find({}, { "properties.organisme_demandeur" : 1 }, function (err, docs) {
-        for (var i = 0; i < docs.length; i++){
+    db.find({}, { "properties.organisme_demandeur": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
             // console.log(docs[i].properties.realisateur);
             s.add(docs[i].properties.organisme_demandeur);
         }
-        response.send({nb : s.size, info : Array.from(s)});
+        response.send({ nb: s.size, info: Array.from(s) });
     });
+});
+
+app.get('/nombredeligne', function (req, res) {
+    db.find({}, function (err, docs) {
+        res.send({ nb: docs.length });
+    });
+
+});
+
+//////////////////////////////////////////////////////////////////////
+
+app.post('/userInput', function (req, res) {
+    console.log(req.body);
+    res.send({ ok: true });
 });
 
 //////////////////////////////////////////////////////////////////////

@@ -241,8 +241,8 @@
 
 	<div id="divFloat" class="sidebar-form">
 		<form id="formAff">
-			<div style="display:none;">
-				<p id="formAff__id">vide</p>
+			<div style="display:block;">
+				<input id="formAff__id"></input>
 			</div>
 			<div class="form-group">
 				<label for="formAff__type_de_tournage">Type de tournage</label>
@@ -356,7 +356,7 @@
 							
 							layer.on('click', function (evt) {
 								document.getElementById('divFloat').style.display = 'block';
-								document.getElementById('formAff__id').value = feature.properties._id;
+								document.getElementById('formAff__id').value = feature.properties.id;
 								document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
 								document.getElementById('formAff__titre').value = feature.properties.titre;
 								document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
@@ -396,6 +396,60 @@
 				}
 			});
 		});
+		
+		//////////////////////////////////////////////////////////////////////
+		
+		//Creation d'un point dans la map et dans la db
+		
+		function addMarker(e) {
+			$.ajax({
+				method: 'GET',
+				url: 'http://localhost:444/nombredeligne',
+				dataType: 'json',
+				success: function (response) {
+					var newMarker = new L.marker(e.latlng).addTo(map);
+					newMarker.bindPopup(
+						'<div>'
+						+ '<label>Longitude: ' + e.latlng.lat + '</label>'
+						+ '</br>'
+						+ '<label>Latitude: ' + e.latlng.lng + '</label>'
+						+ '</div>');
+					newMarker.on('click', function (evt) {
+						document.getElementById('divFloat').style.display = 'block';
+						document.getElementById('formAff__id').value = response.nb+1;
+						document.getElementById('formAff__type_de_tournage').value = "";
+						document.getElementById('formAff__titre').value = "";
+						document.getElementById('formAff__realisateur').value = "";
+						document.getElementById('formAff__organisme_demandeur').value = "";
+						document.getElementById('formAff__adresse').value = "";
+						document.getElementById('formAff__ardt').value = "";
+						document.getElementById('formAff__date_debut').value = "";
+						document.getElementById('formAff__date_fin').value = "";
+					});
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+		}
+		
+		map.on('click',function(e) {
+			console.log("inmap");
+			$.ajax({
+				method: 'POST',
+				url: 'http://localhost:444/userInput',
+				data: {id: "3000"},
+				success: function (response) {
+					console.log("suc");
+					addMarker(e);
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+			
+			
+		});
 
 		//////////////////////////////////////////////////////////////////////
 
@@ -428,8 +482,6 @@
 				cb(matches);
 			};
 		};
-
-
 
 		function alltitreRecup() {
 			var data = [];
