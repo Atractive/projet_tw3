@@ -77,8 +77,8 @@ app.post('/userInput', function (req, res) {
         "geometry": {
             "type": "Point",
             "coordinates": [
-                parseFloat(req.body.y).toFixed(2),
-                parseFloat(req.body.x).toFixed(2)
+                parseFloat(req.body.y).toFixed(14),
+                parseFloat(req.body.x).toFixed(14)
             ]
         },
         "properties": {
@@ -88,8 +88,8 @@ app.post('/userInput', function (req, res) {
             "date_fin": "",
             "realisateur": "",
             "xy": [
-                parseFloat(req.body.x).toFixed(2),
-                parseFloat(req.body.y).toFixed(2)
+                parseFloat(req.body.x).toFixed(14),
+                parseFloat(req.body.y).toFixed(14)
             ],
             "ardt": "",
             "titre": "",
