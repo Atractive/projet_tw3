@@ -252,11 +252,11 @@ TODO :
 	<div id="divFloat" class="sidebar-form">
 		<form id="formAff">
 			<div style="display:block;">
-				<input id="formAff__id"></input>
+				<input id="formAff__id" name="id"></input>
 			</div>
 			<div class="form-group">
 				<label for="formAff__type_de_tournage">Type de tournage</label>
-				<select class="form-control" id="formAff__type_de_tournage">
+				<select class="form-control" id="formAff__type_de_tournage" name="type_de_tournage">
 					<option>NON RENSEIGNE</option>
 					<option>TELEFILM</option>
 					<option>LONG METRAGE</option>
@@ -266,41 +266,44 @@ TODO :
 			<div class="form-group">
 				<label for="formAff__titre">Titre</label>
 				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
-					id="formAff__titre">
+					id="formAff__titre" name="titre">
 			</div>
 			<div class="form-group">
 				<label for="formAff__realisateur">Realisateur</label>
 				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
-					id="formAff__realisateur">
+					id="formAff__realisateur" name="realisateur">
 			</div>
 			<div class="form-group">
 				<label for="formAff__organisme_demandeur">Organisme demandeur</label>
 				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
-					id="formAff__organisme_demandeur">
+					id="formAff__organisme_demandeur" name="organisme_demandeur">
 			</div>
 			<div class="form-group">
 				<label for="formAff__adresse">Adresse</label>
 				<input class="form-control" type="text" onkeyup='this.value=this.value.toUpperCase()'
-					id="formAff__adresse">
+					id="formAff__adresse" name="adresse">
 			</div>
 			<div class="form-group">
 				<label for="formAff__ardt">Arrondissement</label>
-				<input class="form-control" type="text" id="formAff__ardt">
+				<input class="form-control" type="text" id="formAff__ardt" name="ardt">
 			</div>
 			<div class="form-group">
 				<label for="formAff__date_debut">Date de debut de tournage</label>
-				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_debut">
+				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_debut"
+					name="date_debut">
 			</div>
 			<div class="form-group">
 				<label for="formAff__date_fin">Date de fin de tournage</label>
-				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin">
+				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin"
+					name="date_fin">
 			</div>
-		</form>
-		<button class="btn btn-primary" onclick="modifMarker(document.getElementById('formAff__id').value)">Modifier</button>
+			<button class="btn btn-primary" id="mod" type="submit"
+				onclick="modifMarker(document.getElementById('formAff__id').value)">Modifier</button>
 
-		<button class="btn btn-primary">Supprimer</button>
-		<button class="btn btn-primary"
-			onclick="document.getElementById('divFloat').style.display = 'none'">Fermer</button>
+			<button class="btn btn-primary">Supprimer</button>
+			<button class="btn btn-primary"
+				onclick="document.getElementById('divFloat').style.display = 'none'">Fermer</button>
+		</form>
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -313,7 +316,6 @@ TODO :
 		var flag = true;
 		var newMarker;
 		var newMarkerId;
-		
 
 		var sidebar = L.control.sidebar('sidebar').addTo(map);
 		map = L.map('map').setView([48.866667, 2.333333], 12);
@@ -325,7 +327,6 @@ TODO :
 				'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 			id: 'mapbox.streets'
 		}).addTo(map);
-
 
 		var points;
 		var mapMarkers = [];
@@ -354,20 +355,32 @@ TODO :
 			});
 		}
 		//////////////////////////////////////////////////////////////////////
-		
+
 		function modifMarker(id) {
-			
-			console.log(id,newMarkerId,id == newMarkerId);
 			if (id == newMarkerId) {
 				flag = true;
-				console.log("lol",newMarker);
-				console.log(map.removeLayer(newMarker));
 				map.removeLayer(newMarker)
-				console.log("done");
 				document.getElementById('sub').click();
 			}
 		}
-		
+
+		$("#formAff").submit(function (event) {
+			event.preventDefault();
+			console.log("clic sur formAff");
+			console.log($(this).serialize());
+			$.ajax({
+				type: 'POST',
+				url: 'http://localhost:444/modifergstr',
+				data: $(this).serialize(),
+				success: function (response) {
+				},
+				error: function (jqXHR, text, error) {
+					console.log(jqXHR, text, error);
+				}
+			});
+
+		});
+
 		$('#formLoaderFilter').submit(function (evt) {
 
 			evt.preventDefault();
@@ -439,7 +452,7 @@ TODO :
 		});
 
 		//Creation d'un point dans la map et dans la db
-		
+
 		function addMarker(lat, lng, newid) {
 			$.ajax({
 				method: 'POST',
@@ -454,7 +467,7 @@ TODO :
 			});
 		}
 		map.on('click', function (e) {
-			if (!flag) {return;}
+			if (!flag) { return; }
 			$.ajax({
 				method: 'GET',
 				url: 'http://localhost:444/nombredeligne',
@@ -485,7 +498,7 @@ TODO :
 						document.getElementById('formAff__date_debut').value = "";
 						document.getElementById('formAff__date_fin').value = "";
 					});
-					console.log(newMarker);
+					// console.log(newMarker);
 					map.addLayer(newMarker);
 					addMarker(lat, lng, newid);
 					flag = false;	//Pour créer un nouveau markers, il faut cliquer sur modif
@@ -497,7 +510,7 @@ TODO :
 			});
 		});
 
-		
+
 		function alltitreRecup() {
 			var data = [];
 			$.ajax({

@@ -9,7 +9,8 @@ const bodyParser = require('body-parser');
 let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
 
-var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
+var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
+// var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
 // console.log(geojson.features.length);
 // for (var i = 0; i < geojson.features.length; i++) {
@@ -71,7 +72,6 @@ app.get('/nombredeligne', function (req, res) {
 //////////////////////////////////////////////////////////////////////
 
 app.post('/userInput', function (req, res) {
-    console.log(req.body);
     var temp = {
         "type": "Feature",
         "geometry": {
@@ -99,10 +99,36 @@ app.post('/userInput', function (req, res) {
     };
 
     db.insert(temp, function (err, newDoc) {
-        console.log(newDoc)
     });
     res.send({ ok: true });
 });
+
+app.post('/modifergstr', function (req, res) {
+
+
+    var temp = {
+        "properties.type_de_tournage": req.body.type_de_tournage,
+        "properties.organisme_demandeur": req.body.organisme_demandeur,
+        "properties.adresse": req.body.adresse,
+        "properties.realisateur": req.body.realisateur,
+        "properties.ardt": req.body.ardt,
+        "properties.titre": req.body.titre,
+        "properties.date_fin": req.body.date_fin,
+        "properties.date_debut": req.body.date_fin
+    }
+
+    db.update({ "properties.id": req.body.id }, { $set: temp }, {}, function (err, num) {
+        if (err) res.send({ status: -1, message: 'unknown question id' });
+        else {
+            console.log("nombre d'enregistrement dans la base modifié : ", num);
+            res.send({ status: 0, message: "Document updated pour l'id " + req.body.id, data: temp });
+        }
+    })
+
+});
+
+
+
 
 //////////////////////////////////////////////////////////////////////
 
