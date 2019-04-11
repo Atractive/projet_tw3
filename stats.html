@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+        
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 		integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
@@ -25,50 +25,69 @@
 		}
 	</style>
 	<script>
-		window.onload = function () {
+		window.onload = function() {
 
-			//Chart 1
+			var dataPoints = [];
+			var dataPoints2 = [];
+			var dataPoints3 = [];
+			
 			var chart = new CanvasJS.Chart("chartContainer", {
 				animationEnabled: true,
 				theme: "light2",
 				title: {
-					text: "Simple Line Chart"
+					text: "Daily Sales Data"
 				},
 				axisY: {
-					includeZero: false
+					title: "Units",
+					titleFontSize: 24
 				},
 				data: [{
-					type: "line",
-					dataPoints: [
-						{ y: 450 },
-						{ y: 414 },
-						{ y: 520, indexLabel: "highest", markerColor: "red", markerType: "triangle" },
-						{ y: 460 },
-						{ y: 450 },
-						{ y: 500 },
-						{ y: 480 },
-						{ y: 480 },
-						{ y: 410, indexLabel: "lowest", markerColor: "DarkSlateGrey", markerType: "cross" },
-						{ y: 500 },
-						{ y: 480 },
-						{ y: 510 }
-					]
+					type: "column",
+					yValueFormatString: "#,### Units",
+					dataPoints: dataPoints
 				}]
 			});
+
+			function addData(data) {
+				console.log(data.length);
+				console.log(data);
+				for (var i = 0; i < data.nb; i++) {
+					dataPoints.push({
+						x: i,
+						y: i+10,
+						indexLabel : data.info[i]
+					});
+				}
+				console.log(dataPoints[2]);
+				chart.render();
+
+			}
+			
+			$.getJSON('http://localhost:444/alltitre',addData);
+			
+			
+			<!-- Idée de statistiques: -->
+				<!-- - Nombre de tournages par film -->
+				<!-- - Nombre de film par réalisateur -->
+				<!-- - Nombre de tournages par mois -->
+				<!-- - Nombre de tournages par arrondissement -->
+				<!-- - Nombre de tournages par organisme demandeur //Faire un bouton qui affiche un deuxieme bouton avec le deuxieme parametre -->
+				<!-- - Nombre de tournages entre deux dates comprise -->
+				<!-- -  
+				
+				-->
 
 			//Chart2
 			var chart2 = new CanvasJS.Chart("chartContainer2", {
 				animationEnabled: false,
 				title: {
-					text: "Number of iPhones Sold in Different Quarters"
+					text: "Organisme"
 				},
 				axisX: {
-					minimum: new Date(2015, 01, 25),
-					maximum: new Date(2017, 02, 15),
-					valueFormatString: "MMM YY"
+					title: "Liste Organisme"
 				},
 				axisY: {
-					title: "Number of Sales",
+					title: "Test",
 					titleFontColor: "#4F81BC",
 					suffix: "mn"
 				},
@@ -76,66 +95,67 @@
 					indexLabelFontColor: "darkSlateGray",
 					name: "views",
 					type: "area",
-					yValueFormatString: "#,##0.0mn",
-					dataPoints: [
-						{ x: new Date(2015, 02, 1), y: 74.4, label: "Q1-2015" },
-						{ x: new Date(2015, 05, 1), y: 61.1, label: "Q2-2015" },
-						{ x: new Date(2015, 08, 1), y: 47.0, label: "Q3-2015" },
-						{ x: new Date(2015, 11, 1), y: 48.0, label: "Q4-2015" },
-						{ x: new Date(2016, 02, 1), y: 74.8, label: "Q1-2016" },
-						{ x: new Date(2016, 05, 1), y: 51.1, label: "Q2-2016" },
-						{ x: new Date(2016, 08, 1), y: 40.4, label: "Q3-2016" },
-						{ x: new Date(2016, 11, 1), y: 45.5, label: "Q4-2016" },
-						{ x: new Date(2017, 02, 1), y: 78.3, label: "Q1-2017", indexLabel: "Highest", markerColor: "red" }
-					]
+					yValueFormatString: "#",
+					dataPoints: dataPoints2
 				}]
 			});
+
+			function addData2(data) {
+				console.log(data.length);
+				console.log(data);
+				for (var i = 0; i < data.nb; i++) {
+					dataPoints2.push({
+						x: i,
+						y: i+10,
+						indexLabel : data.info[i]
+					});
+				}
+				console.log(dataPoints2[2]);
+				chart2.render();
+
+			}
+			
+			$.getJSON('http://localhost:444/allorga',addData2);
 
 			//Chart3
-			var dps = [];
+			
 			var chart3 = new CanvasJS.Chart("chartContainer3", {
-				exportEnabled: true,
-				title: {
-					text: "Dynamic Spline Chart"
+				animationEnabled: true,
+				zoomEnabled: true,
+				title:{
+					text: "Real Estate Rates"
 				},
-				axisY: {
-					includeZero: false
+				axisX: {
+					title:"Area (in sq. ft)",
+					minimum: 0
+				},
+				axisY:{
+					title: "Price (in USD)",
+					valueFormatString: "$#,##0k"
 				},
 				data: [{
-					type: "spline",
-					markerSize: 0,
-					dataPoints: dps
+					type: "scatter",
+					toolTipContent: "<b>Area: </b>{x} sq.ft<br/><b>Price: </b>${y}k",
+					dataPoints: dataPoints3
 				}]
 			});
-
-			var xVal = 0;
-			var yVal = 100;
-			var updateInterval = 1000;
-			var dataLength = 50; // number of dataPoints visible at any point
-
-			var updateChart = function (count) {
-				count = count || 1;
-				// count is number of times loop runs to generate random dataPoints.
-				for (var j = 0; j < count; j++) {
-					yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
-					dps.push({
-						x: xVal,
-						y: yVal
+			
+			function addData3(data) {
+				console.log(data.length);
+				console.log(data);
+				for (var i = 0; i < data.nb; i++) {
+					dataPoints3.push({
+						x: i,
+						y: i+10,
+						indexLabel : data.info[i]
 					});
-					xVal++;
 				}
-				if (dps.length > dataLength) {
-					dps.shift();
-				}
+				console.log(dataPoints3[2]);
 				chart3.render();
-			};
 
-			updateChart(dataLength);
-			setInterval(function () { updateChart() }, updateInterval);
-
-			chart.render();
-			chart2.render();
-
+			}
+			
+			$.getJSON('http://localhost:444/allreal',addData3);
 		}
 	</script>
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -156,7 +176,7 @@
 			<div id="chartContainer2" style="height: 370px; width: 100%;"></div>
 		</div>
 		<div class="col">
-			<div id="chartContainer3" style="height: 370px; width:100%;"></div>
+			<div id="chartContainer3" style="height: 370px; width: 100%;"></div>
 		</div>
 		<div class="w-100"></div>
 		<div class="col">Column</div>
@@ -167,10 +187,9 @@
 
 
 
+	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-		crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
 		crossorigin="anonymous"></script>
