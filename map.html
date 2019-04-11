@@ -222,7 +222,7 @@ TODO :
 							<input class="form-control" type="date" min="2016-01-01" max="2016-12-01"
 								id="formLoaderFilter__date_fin">
 						</div>
-						<button class="btn btn-primary" type="submit">Valider</button>
+						<button class="btn btn-primary" type="submit" id="sub">Valider</button>
 					</form>
 				</div>
 			</div>
@@ -296,7 +296,7 @@ TODO :
 				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin">
 			</div>
 		</form>
-		<button class="btn btn-primary">Modifier</button>
+		<button class="btn btn-primary" onclick="modifMarker(document.getElementById('formAff__id').value)">Modifier</button>
 
 		<button class="btn btn-primary">Supprimer</button>
 		<button class="btn btn-primary"
@@ -310,6 +310,10 @@ TODO :
 	<script>
 
 		var map;
+		var flag = true;
+		var newMarker;
+		var newMarkerId;
+		
 
 		var sidebar = L.control.sidebar('sidebar').addTo(map);
 		map = L.map('map').setView([48.866667, 2.333333], 12);
@@ -350,8 +354,20 @@ TODO :
 			});
 		}
 		//////////////////////////////////////////////////////////////////////
-
-
+		
+		function modifMarker(id) {
+			
+			console.log(id,newMarkerId,id == newMarkerId);
+			if (id == newMarkerId) {
+				flag = true;
+				console.log("lol",newMarker);
+				console.log(map.removeLayer(newMarker));
+				map.removeLayer(newMarker)
+				console.log("done");
+				document.getElementById('sub').click();
+			}
+		}
+		
 		$('#formLoaderFilter').submit(function (evt) {
 
 			evt.preventDefault();
@@ -423,7 +439,7 @@ TODO :
 		});
 
 		//Creation d'un point dans la map et dans la db
-
+		
 		function addMarker(lat, lng, newid) {
 			$.ajax({
 				method: 'POST',
@@ -437,19 +453,18 @@ TODO :
 				}
 			});
 		}
-
 		map.on('click', function (e) {
+			if (!flag) {return;}
 			$.ajax({
 				method: 'GET',
 				url: 'http://localhost:444/nombredeligne',
 				dataType: 'json',
 				success: function (response) {
-
 					var lat = e.latlng.lat;
 					var lng = e.latlng.lng;
-					var newid = response.nb + 1;
-
-					var newMarker = L.marker(e.latlng);
+					var newid = response.nb;
+					newMarkerId = newid;
+					newMarker = L.marker(e.latlng);
 					newMarker.bindPopup(
 						'<div>'
 						+ '<label>Longitude: ' + e.latlng.lng + '</label>'
@@ -460,7 +475,7 @@ TODO :
 					);
 					newMarker.on('click', function (evt) {
 						document.getElementById('divFloat').style.display = 'block';
-						document.getElementById('formAff__id').value = response.nb + 1;
+						document.getElementById('formAff__id').value = response.nb;
 						document.getElementById('formAff__type_de_tournage').value = "";
 						document.getElementById('formAff__titre').value = "";
 						document.getElementById('formAff__realisateur').value = "";
@@ -471,23 +486,18 @@ TODO :
 						document.getElementById('formAff__date_fin').value = "";
 					});
 					console.log(newMarker);
-
-					var markers = L.markerClusterGroup();
-					markers.addLayer(newMarker);
-					map.addLayer(markers);
-					markers.refreshClusters();
+					map.addLayer(newMarker);
 					addMarker(lat, lng, newid);
+					flag = false;	//Pour créer un nouveau markers, il faut cliquer sur modif
+					newMarkerId = newid;
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
 				}
 			});
-
-
 		});
 
-
-
+		
 		function alltitreRecup() {
 			var data = [];
 			$.ajax({
