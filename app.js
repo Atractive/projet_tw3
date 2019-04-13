@@ -103,9 +103,7 @@ app.post('/userInput', function (req, res) {
     res.send({ ok: true });
 });
 
-app.post('/modifergstr', function (req, res) {
-
-
+app.post('/modifmarqueur', function (req, res) {
     var temp = {
         "properties.type_de_tournage": req.body.type_de_tournage,
         "properties.organisme_demandeur": req.body.organisme_demandeur,
@@ -120,7 +118,7 @@ app.post('/modifergstr', function (req, res) {
     db.update({ "properties.id": req.body.id }, { $set: temp }, {}, function (err, num) {
         if (err) res.send({ status: -1, message: 'unknown question id' });
         else {
-            console.log("nombre d'enregistrement dans la base modifié : ", num);
+            console.log("nombre d'enregistrement dans la base MODIFIER : ", num);
             res.send({ status: 0, message: "Document updated pour l'id " + req.body.id, data: temp });
         }
     })
@@ -128,7 +126,21 @@ app.post('/modifergstr', function (req, res) {
 });
 
 
+app.post('/removemarqueur', function (req, res) {
+    // console.log(req.body.id, parseInt(req.body.id, 10));
+    db.remove({ "properties.id": parseInt(req.body.id, 10) }, {}, function (err, num) {
+        if (err) res.send({ status: -1, message: 'unknown question id' });
+        else {
+            // console.log("nombre d'enregistrement dans la base RETIRE : ", num);
+            res.send({ status: 0, message: "Document removed pour l'id " + req.body.id });
+        }
+    });
+});
 
+app.post('/loadFields', function (req, res) {
+
+    console.log(req.body.id, typeof req.body.id);
+});
 
 //////////////////////////////////////////////////////////////////////
 

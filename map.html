@@ -5,8 +5,17 @@ TODO :
 - Lorsqu'on ajout un nouveau marqueur en cliquant, il faut l'ajouter au 'L.markerClusterGroup' (todo diego) (fixed)
 - Lorsqu'on ajout un nouveau marqueur en cliquant et qu'on dessine tout les points avec la side bar, tout les points ajouté par l'user sont en double.
 - zoom in / out il se réaffiche
+- Changer la couleur des marqueurs (notamment mettre en rouge le dernier a avoir été ajouté ? (dans le cas ou il serait vide ))
+- Pop up (pierre)
+- ne pas laisser cliquer l'utilisateur si il n'a pas rempli totalement (tout les champs) du div bar a droite
 -->
 
+
+<!-- 
+BUG FIX:
+- le contenu du form de droite s'éfface des fois (il faut faire un ajax ou garder en variable les différents)
+- Bug sur la suppresion de points (tant server que client side)
+-->
 
 <!DOCTYPE html>
 
@@ -151,8 +160,6 @@ TODO :
 			<ul role="tablist">
 				<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
 				<li><a href="#formSelect" role="tab"><i class="fab fa-wpforms"></i></a></li>
-				<li><a href="#profile" role="tab"><i class="fa fa-user"></i></a></li>
-				<li class="disabled"><a href="#messages" role="tab"><i class="fa fa-envelope"></i></a></li>
 			</ul>
 
 			<ul role="tablist">
@@ -226,16 +233,7 @@ TODO :
 					</form>
 				</div>
 			</div>
-			<div class="sidebar-pane" id="profile">
-				<h1 class="sidebar-header">Profile<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-				</h1>
-				<p> COUCOU TOI </p>
-			</div>
 
-			<div class="sidebar-pane" id="messages">
-				<h1 class="sidebar-header">Messages<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-				</h1>
-			</div>
 
 			<div class="sidebar-pane" id="aboutus">
 				<h1 class="sidebar-header">Notre groupe<span class="sidebar-close"><i
@@ -251,10 +249,11 @@ TODO :
 
 	<div id="divFloat" class="sidebar-form">
 		<form id="formAff">
-			<div style="display:block;">
-				<input id="formAff__id" name="id"></input>
-			</div>
 			<div class="form-group">
+				<label for="formAff__id">ID</label>
+				<input class="form-control" type="text" id="formAff__id" name="id" readonly="readonly>
+			</div>
+			<div class=" form-group">
 				<label for="formAff__type_de_tournage">Type de tournage</label>
 				<select class="form-control" id="formAff__type_de_tournage" name="type_de_tournage">
 					<option>NON RENSEIGNE</option>
@@ -300,7 +299,7 @@ TODO :
 			<button class="btn btn-primary" id="mod" type="submit"
 				onclick="modifMarker(document.getElementById('formAff__id').value)">Modifier</button>
 
-			<button class="btn btn-primary">Supprimer</button>
+			<button class="btn btn-primary" name="Supprimer" id="suppr">Supprimer</button>
 			<button class="btn btn-primary"
 				onclick="document.getElementById('divFloat').style.display = 'none'">Fermer</button>
 		</form>
@@ -313,9 +312,22 @@ TODO :
 	<script>
 
 		var map;
-		var flag = true;
+		var flag = true; // true -> on peut ajouter un marqueur / false -> on ne peut pas ajouter de marqueur en cliquant sur la carte
 		var newMarker;
 		var newMarkerId;
+		var clickedMarker; // dernier marqueur sur lequel on clic
+
+
+
+		// var lastdivFloatContent; 
+		// var lastTdt;
+		// var lasttitle;
+		// var lastreal;
+		// var lastorg;
+		// var lastadresse;
+		// var lastardt;
+		// var lastdebut;
+		// var lastfin;
 
 		var sidebar = L.control.sidebar('sidebar').addTo(map);
 		map = L.map('map').setView([48.866667, 2.333333], 12);
@@ -339,21 +351,24 @@ TODO :
 			}
 		);
 
-
 		function onPopupOpen() {
+			console.log("in")
+			clickedMarker = this;
+			var clickedMarkerID = clickedMarker._leaflet_id; // Getting Leaflet ID of this marker
+			$.ajax({
+				type: "POST",
+				url: 'http://localhost:444/loadFields',
+				data: { id: $('#divFloat').find('input[name="id"]').val() },
+				success: function (response) {
 
-			var tempMarker = this;
 
-			// To remove marker on click of delete
-			$(".marker-delete-button:visible").click(function () {
-				var lID = tempMarker._leaflet_id; // Getting Leaflet ID of this marker
-
-				// Faire un appel ajax pour supprimer côté client
-
-				map.removeLayer(tempMarker);
-				$("#divFloat").css("display", "none");
+				}
 			});
+
+
 		}
+
+
 		//////////////////////////////////////////////////////////////////////
 
 		function modifMarker(id) {
@@ -365,20 +380,40 @@ TODO :
 		}
 
 		$("#formAff").submit(function (event) {
+			var btn_id = $(document.activeElement).attr('id');
+			var marqueur_id = $("#formAff").find('input[name="id"]').val();
 			event.preventDefault();
-			console.log("clic sur formAff");
-			console.log($(this).serialize());
-			$.ajax({
-				type: 'POST',
-				url: 'http://localhost:444/modifergstr',
-				data: $(this).serialize(),
-				success: function (response) {
-				},
-				error: function (jqXHR, text, error) {
-					console.log(jqXHR, text, error);
-				}
-			});
+			if (btn_id == "mod") {
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:444/modifmarqueur',
+					data: $(this).serialize(),
+					success: function (response) {
+						if (response.status == 0) {
+							console.log(response);
 
+
+						}
+					},
+					error: function (jqXHR, text, error) {
+						console.log(jqXHR, text, error);
+					}
+				});
+			} else if (btn_id == "suppr") {
+				// console.log(marqueur_id);
+				map.removeLayer(clickedMarker);
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:444/removemarqueur',
+					data: { id: marqueur_id },
+					success: function (response) {
+					},
+					error: function (jqXHR, text, error) {
+						console.log(jqXHR, text, error);
+					}
+				});
+				flag = true;
+			}
 		});
 
 		$('#formLoaderFilter').submit(function (evt) {
@@ -399,7 +434,6 @@ TODO :
 								+ '</br>'
 								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
 								+ '</div>'
-								+ "<input type='button' value='Supprimer ce marqueur' class='marker-delete-button btn btn-primary'/>"
 							);
 
 							layer.on("popupopen", onPopupOpen);
@@ -484,8 +518,8 @@ TODO :
 						+ '</br>'
 						+ '<label>Latitude: ' + e.latlng.lat + '</label>'
 						+ '</div>'
-						+ "<input type='button' value='Supprimer ce marqueur' class='marker-delete-button btn btn-primary'/>"
 					);
+					newMarker.on("popupopen", onPopupOpen);
 					newMarker.on('click', function (evt) {
 						document.getElementById('divFloat').style.display = 'block';
 						document.getElementById('formAff__id').value = response.nb;
