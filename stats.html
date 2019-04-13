@@ -27,136 +27,159 @@
 	<script>
 		window.onload = function() {
 
-			var dataPoints = [];
-			var dataPoints2 = [];
-			var dataPoints3 = [];
+			var dataTournageReal = [];
+			var dataTournageArdt = [];
+			var dataTypeTournage = [];
+			var line;
 			
-			var chart = new CanvasJS.Chart("chartContainer", {
-				animationEnabled: true,
-				theme: "light2",
-				title: {
-					text: "Daily Sales Data"
-				},
-				axisY: {
-					title: "Units",
-					titleFontSize: 24
-				},
-				data: [{
-					type: "column",
-					yValueFormatString: "#,### Units",
-					dataPoints: dataPoints
-				}]
+			function numberLine(data){
+				line = data.nb;
+				
+			}
+			<!-- console.log(line); -->
+			
+			$.getJSON('http://localhost:444/nombredeligne',numberLine);
+			
+			//Chart du nombre de tournage par Réalisateur
+			var TournageReal = new CanvasJS.Chart("TournageReal", {
+			animationEnabled: true,  
+			title:{
+				text: "Nombre de tournages par film"
+			},
+			axisY: {
+				title: "Nombre de tournage",
+				valueFormatString: "#0,,.",
+				suffix: "mn",
+				prefix: "$"
+			},
+			data: [{
+				type: "splineArea",
+				color: "rgba(54,158,173,.7)",
+				markerSize: 5,
+				xValueFormatString: "YYYY",
+				yValueFormatString: "$#,##0.##",
+				dataPoints: dataTournageReal
+			}]
 			});
 
-			function addData(data) {
-				console.log(data.length);
-				console.log(data);
-				for (var i = 0; i < data.nb; i++) {
-					dataPoints.push({
-						x: i,
-						y: i+10,
-						indexLabel : data.info[i]
+		function DataTournageReal(data) {
+			var temp = (Object.getOwnPropertyNames(data.result))
+				for (var i = 0; i < data.taille; i++) {
+					dataTournageReal.push({
+						x : i*10,
+						y : data.result[temp[i]],
+						label : temp[i]
 					});
 				}
-				console.log(dataPoints[2]);
-				chart.render();
-
+				TournageReal.render();
 			}
-			
-			$.getJSON('http://localhost:444/alltitre',addData);
+			$.getJSON('http://localhost:444/tournagesparreal',DataTournageReal);
 			
 			
 			<!-- Idée de statistiques: -->
-				<!-- - Nombre de tournages par film -->
-				<!-- - Nombre de film par réalisateur -->
+				<!-- - Nombre de tournages par film --> Fait
+				<!-- - Nombre de tournages par réalisateur --> Fait
 				<!-- - Nombre de tournages par mois -->
-				<!-- - Nombre de tournages par arrondissement -->
-				<!-- - Nombre de tournages par organisme demandeur //Faire un bouton qui affiche un deuxieme bouton avec le deuxieme parametre -->
+				<!-- - Nombre de tournages par arrondissement --> Fait
+				<!-- - Nombre de tournages par organisme demandeur --> Fait
 				<!-- - Nombre de tournages entre deux dates comprise -->
-				<!-- -  
+				<!-- -  //Faire un bouton qui affiche un deuxieme bouton avec le deuxieme parametre 
 				
 				-->
 
-			//Chart2
-			var chart2 = new CanvasJS.Chart("chartContainer2", {
-				animationEnabled: false,
-				title: {
-					text: "Organisme"
-				},
-				axisX: {
-					title: "Liste Organisme"
-				},
-				axisY: {
-					title: "Test",
-					titleFontColor: "#4F81BC",
-					suffix: "mn"
-				},
-				data: [{
-					indexLabelFontColor: "darkSlateGray",
-					name: "views",
-					type: "area",
-					yValueFormatString: "#",
-					dataPoints: dataPoints2
-				}]
-			});
-
-			function addData2(data) {
-				console.log(data.length);
-				console.log(data);
-				for (var i = 0; i < data.nb; i++) {
-					dataPoints2.push({
-						x: i,
-						y: i+10,
-						indexLabel : data.info[i]
-					});
-				}
-				console.log(dataPoints2[2]);
-				chart2.render();
-
-			}
 			
-			$.getJSON('http://localhost:444/allorga',addData2);
-
-			//Chart3
-			
-			var chart3 = new CanvasJS.Chart("chartContainer3", {
+			//Nombre de tournages par arrondissement
+			var TournageArrdt = new CanvasJS.Chart("TournageArrdt", {
 				animationEnabled: true,
-				zoomEnabled: true,
+				
 				title:{
-					text: "Real Estate Rates"
+					text:"Nombre de tournages par arrondissement"
 				},
-				axisX: {
-					title:"Area (in sq. ft)",
-					minimum: 0
+				axisX:{
+					interval: 2
 				},
-				axisY:{
-					title: "Price (in USD)",
-					valueFormatString: "$#,##0k"
+				axisY2:{
+					interlacedColor: "rgba(1,77,101,.2)",
+					gridColor: "rgba(1,77,101,.1)",
+					title: "Nombre de tournages"
 				},
 				data: [{
-					type: "scatter",
-					toolTipContent: "<b>Area: </b>{x} sq.ft<br/><b>Price: </b>${y}k",
-					dataPoints: dataPoints3
+					type: "bar",
+					name: "Arrondissement",
+					axisYType: "secondary",
+					color: "#014D65",
+					dataPoints: dataTournageArdt
 				}]
 			});
 			
-			function addData3(data) {
-				console.log(data.length);
-				console.log(data);
-				for (var i = 0; i < data.nb; i++) {
-					dataPoints3.push({
-						x: i,
-						y: i+10,
-						indexLabel : data.info[i]
+			
+			function DataTournageArdt(data) {
+			var temp = (Object.getOwnPropertyNames(data.result))
+				for (var i = 0; i < data.taille; i++) {
+					dataTournageArdt.push({
+						y: data.result[temp[i]],
+						label : temp[i]
 					});
 				}
-				console.log(dataPoints3[2]);
-				chart3.render();
-
+				TournageArrdt.render();
 			}
-			
-			$.getJSON('http://localhost:444/allreal',addData3);
+			$.getJSON('http://localhost:444/tournagesparardt',DataTournageArdt);
+
+		
+		//Pourcentage de chaque type de tournage
+		var TypeTournage = new CanvasJS.Chart("TypeTournage", {
+			theme: "light2",
+			animationEnabled: true,
+			title: {
+				text: "Type de Tournage"
+			},
+			data: [{
+				type: "pie",
+				startAngle: 240,
+				yValueFormatString: "##0.00\"%\"",
+				indexLabel: "{label} {y}",
+				dataPoints: dataTypeTournage
+			}]
+		});
+		
+		function DataTypeTournage(data) {
+			var temp = (Object.getOwnPropertyNames(data.result))
+				for (var i = 0; i < data.taille; i++) {
+					dataTypeTournage.push({
+						y: (data.result[temp[i]]/line)*100,
+						label : temp[i]
+					});
+				}
+				TypeTournage.render();
+			}
+			$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage);
+		
 		}
+		
+	function choix(){
+		var liste, texte;
+		liste = document.getElementById("ChartChoice");
+		texte = liste.options[liste.selectedIndex].text;
+		console.log(texte);
+		
+		if(texte == 'Chart 1'){
+			document.getElementById('TournageReal').style.display='block';
+			document.getElementById('TournageArrdt').style.display='none';
+			document.getElementById('TypeTournage').style.display='none';
+		}
+		if(texte == 'Chart 2'){
+			document.getElementById('TournageArrdt').style.display='block';
+			document.getElementById('TournageReal').style.display='none';
+			document.getElementById('TypeTournage').style.display='none';
+		}
+		if(texte == 'Chart 3'){
+			document.getElementById('TypeTournage').style.display='block';
+			document.getElementById('TournageReal').style.display='none';
+			document.getElementById('TournageArrdt').style.display='none';
+		}
+	}
+	
+	
 	</script>
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
@@ -168,21 +191,26 @@
 
 	<h2><a href="http://localhost:444/" role="button"><i class="fas fa-arrow-circle-left"></i> &nbsp;Retour à la carte</a>
 	</h2>
-	<div class="row">
-		<div class="col">
-			<div id="chartContainer" style="height: 370px; width: 100%;"></div>
-		</div>
-		<div class="col">
-			<div id="chartContainer2" style="height: 370px; width: 100%;"></div>
-		</div>
-		<div class="col">
-			<div id="chartContainer3" style="height: 370px; width: 100%;"></div>
-		</div>
-		<div class="w-100"></div>
-		<div class="col">Column</div>
-		<div class="col">Column</div>
-		<div class="col">Column</div>
-
+	
+	
+	<form>
+	  <div class="form-group">
+		<h2><label for="ChartChoice">Quelles Chart voulez vous ?</label></h2>
+		<select class="form-control" id="ChartChoice">
+		  <option>Chart 1</option>
+		  <option>Chart 2</option>
+		  <option>Chart 3</option>
+		  <option disabled>Chart 4</option>
+		  <option disabled>Chart 5</option>
+		</select>
+	  </div>
+	  <button type="button" onclick="choix()" class="btn btn-primary">Valider</button>
+	</form>
+	
+	<div class="container" style="height: 700px; width: 100%;">
+	<div id="TournageReal" style="display:none;"></div>
+	<div id="TournageArrdt" style="display:none;"></div>
+	<div id="TypeTournage" style="display:none;"></div>
 	</div>
 
 

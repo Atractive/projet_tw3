@@ -69,7 +69,7 @@ app.get('/nombredeligne', function (req, res) {
 
 });
 
-// nombre de tournage par realisateurs
+// nombre de tournage par realisateur
 app.get('/tournagesparreal', function (req, res) {
 
     // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
@@ -81,6 +81,63 @@ app.get('/tournagesparreal', function (req, res) {
                 m[docs[i].properties.realisateur] = 1;
             } else {
                 m[docs[i].properties.realisateur] += 1;
+            }
+        }
+
+        res.send({ result: m, taille: Object.keys(m).length });
+    });
+});
+
+// nombre de tournage par arrondissement
+app.get('/tournagesparardt', function (req, res) {
+
+    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
+
+    var m = {};
+    db.find({}, { "properties.ardt": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            if (typeof m[docs[i].properties.ardt] == 'undefined') {
+                m[docs[i].properties.ardt] = 1;
+            } else {
+                m[docs[i].properties.ardt] += 1;
+            }
+        }
+
+        res.send({ result: m, taille: Object.keys(m).length });
+    });
+});
+
+// nombre de tournage par Organisme demandeur
+app.get('/tournagesparorga', function (req, res) {
+
+    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
+
+    var m = {};
+    db.find({}, { "properties.organisme_demandeur": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            if (typeof m[docs[i].properties.organisme_demandeur] == 'undefined') {
+                m[docs[i].properties.organisme_demandeur] = 1;
+            } else {
+                m[docs[i].properties.organisme_demandeur] += 1;
+            }
+        }
+
+        res.send({ result: m, taille: Object.keys(m).length });
+    });
+});
+
+// Nombre de chaque type de tournage
+app.get('/tournagespartype', function (req, res) {
+
+    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
+
+    var m = {};
+    db.find({}, { "properties.type_de_tournage": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            if (typeof m[docs[i].properties.type_de_tournage] == 'undefined') {
+                m[docs[i].properties.type_de_tournage] = 1;
+            } else {
+                m[docs[i].properties.type_de_tournage] += 1;
             }
         }
 
