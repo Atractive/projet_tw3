@@ -6,11 +6,11 @@ const Datastore = require('nedb');
 const bodyParser = require('body-parser');
 
 
-let geojson = require('./data_full.json');
+// let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
 
-var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
-// var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
+// var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
+var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
 // console.log(geojson.features.length);
 // for (var i = 0; i < geojson.features.length; i++) {
@@ -69,6 +69,47 @@ app.get('/nombredeligne', function (req, res) {
 
 });
 
+// nombre de tournage par realisateurs
+app.get('/tournagesparreal', function (req, res) {
+
+    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
+
+    var m = {};
+    db.find({}, { "properties.realisateur": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            if (typeof m[docs[i].properties.realisateur] == 'undefined') {
+                m[docs[i].properties.realisateur] = 1;
+            } else {
+                m[docs[i].properties.realisateur] += 1;
+            }
+        }
+
+        res.send({ result: m, taille: Object.keys(m).length });
+    });
+});
+
+// nombre de film par realisateurs
+app.get('/filmparreal', function (req, res) {
+    var m = {};
+    db.find({}, { "properties.realisateur": 1, "properties.titre": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            // console.log(docs[i].properties.titre);
+            if (typeof m[docs[i].properties.realisateur] == 'undefined') {
+                m[docs[i].properties.realisateur] = new Set();
+                m[docs[i].properties.realisateur].add(docs[i].properties.titre);
+            } else {
+                m[docs[i].properties.realisateur].add(docs[i].properties.titre);
+            }
+        }
+        for (const key in m) {
+            m[key] = Array.from(m[key]);
+        }
+        res.send({ result: m});
+    });
+});
+
+
+
 //////////////////////////////////////////////////////////////////////
 
 app.post('/userInput', function (req, res) {
@@ -99,8 +140,11 @@ app.post('/userInput', function (req, res) {
     };
 
     db.insert(temp, function (err, newDoc) {
+        if (err) res.send({ status: -1, message: 'Error has occured' });
+        else {
+            res.send({ status: 0, message: "Document created pour l'id " + req.body.id, data: temp });
+        }
     });
-    res.send({ ok: true });
 });
 
 app.post('/modifmarqueur', function (req, res) {
@@ -138,9 +182,17 @@ app.post('/removemarqueur', function (req, res) {
 });
 
 app.post('/loadFields', function (req, res) {
-
-    console.log(req.body.id, typeof req.body.id);
+    // console.log(req.body.id, typeof req.body.id);
+    res.send({ status: 0 });
 });
+
+
+app.post('/loadFields', function (req, res) {
+    // console.log(req.body.id, typeof req.body.id);
+    res.send({ status: 0 });
+});
+
+
 
 //////////////////////////////////////////////////////////////////////
 

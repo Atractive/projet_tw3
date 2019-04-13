@@ -352,7 +352,6 @@ BUG FIX:
 		);
 
 		function onPopupOpen() {
-			console.log("in")
 			clickedMarker = this;
 			var clickedMarkerID = clickedMarker._leaflet_id; // Getting Leaflet ID of this marker
 			$.ajax({
@@ -391,7 +390,6 @@ BUG FIX:
 					success: function (response) {
 						if (response.status == 0) {
 							console.log(response);
-
 
 						}
 					},
@@ -493,7 +491,7 @@ BUG FIX:
 				url: 'http://localhost:444/userInput',
 				data: { id: newid, x: lat, y: lng },
 				success: function (response) {
-					// addMarker(e); // ?
+					console.log(response.status);
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
