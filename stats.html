@@ -35,7 +35,9 @@
 			var dataTournageReal = [];
 			var dataTournageArdt = [];
 			var dataTypeTournage = [];
+			var dataTournageMois = [];
 			var line;
+			var mois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
 			
 			function numberLine(data){
 				line = data.nb;
@@ -71,7 +73,6 @@
 			var temp = (Object.getOwnPropertyNames(data.result))
 				for (var i = 0; i < data.taille; i++) {
 					dataTournageReal.push({
-						x : i*10,
 						y : data.result[temp[i]],
 						label : temp[i]
 					});
@@ -84,11 +85,11 @@
 			<!-- Idée de statistiques: -->
 				<!-- - Nombre de tournages par film --> Fait
 				<!-- - Nombre de tournages par réalisateur --> Fait
-				<!-- - Nombre de tournages par mois -->
+				<!-- - Nombre de tournages par mois --> Fait
 				<!-- - Nombre de tournages par arrondissement --> Fait
 				<!-- - Nombre de tournages par organisme demandeur --> Fait
-				<!-- - Nombre de tournages entre deux dates comprise -->
-				<!-- -  //Faire un bouton qui affiche un deuxieme bouton avec le deuxieme parametre 
+				<!-- Durée moyenne d'un tournage -->
+				
 				
 				-->
 
@@ -158,6 +159,36 @@
 			}
 			$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage);
 		
+		var TournageParMois = new CanvasJS.Chart("TournageMois", {
+			animationEnabled: true,
+			theme: "light2",
+			title:{
+				text: "Simple Line Chart"
+			},
+			axisY:{
+				includeZero: false
+			},
+			data: [{        
+				type: "line",       
+				dataPoints: dataTournageMois
+			}]
+		});
+		function DataTournageMois(data) {
+			var temp = (Object.getOwnPropertyNames(data.result))
+				for (var i = 0; i < 12; i++) {
+					dataTournageMois.push({
+						y: data.result[temp[i]],
+						label : mois[i]
+					});
+				}
+				TournageParMois.render();
+			}
+			$.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
+		
+		
+		
+		
+		// Fonctions permettant d'afficher le nombre de film, realisateur, organisme et de tournage
 		function NombreFilm(data){
 		   document.getElementById("NombreDeFilm").innerHTML=data.nb;
 		}
@@ -255,8 +286,8 @@
 <div id="TournageReal" style="height: 370px; width: 100%;"></div>
 <div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
 <div id="TypeTournage" style="height: 370px; width: 100%;"></div>
+<div id="TournageMois" style="height: 370px; width: 100%;"></div>
 </div>
-
 
 
 	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
