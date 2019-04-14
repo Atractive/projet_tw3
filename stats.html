@@ -8,6 +8,11 @@
 		integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
 		integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+		
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<style>
 		.bd-placeholder-img {
 			font-size: 1.125rem;
@@ -34,6 +39,7 @@
 			
 			function numberLine(data){
 				line = data.nb;
+				document.getElementById("NombreTournage").innerHTML=line;
 				
 			}
 			<!-- console.log(line); -->
@@ -42,22 +48,21 @@
 			
 			//Chart du nombre de tournage par Réalisateur
 			var TournageReal = new CanvasJS.Chart("TournageReal", {
-			animationEnabled: true,  
+			animationEnabled: true, 
+			zoomEnabled: true,
 			title:{
 				text: "Nombre de tournages par film"
 			},
 			axisY: {
 				title: "Nombre de tournage",
-				valueFormatString: "#0,,.",
-				suffix: "mn",
-				prefix: "$"
+				valueFormatString: "#",
 			},
 			data: [{
 				type: "splineArea",
 				color: "rgba(54,158,173,.7)",
 				markerSize: 5,
 				xValueFormatString: "YYYY",
-				yValueFormatString: "$#,##0.##",
+				yValueFormatString: "# tournages",
 				dataPoints: dataTournageReal
 			}]
 			});
@@ -91,7 +96,6 @@
 			//Nombre de tournages par arrondissement
 			var TournageArrdt = new CanvasJS.Chart("TournageArrdt", {
 				animationEnabled: true,
-				
 				title:{
 					text:"Nombre de tournages par arrondissement"
 				},
@@ -154,6 +158,21 @@
 			}
 			$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage);
 		
+		function NombreFilm(data){
+		   document.getElementById("NombreDeFilm").innerHTML=data.nb;
+		}
+		$.getJSON('http://localhost:444/allTitre',NombreFilm);
+		
+		function NombreOrga(data){
+		   document.getElementById("NombreOrganisme").innerHTML=data.nb;
+		}
+		$.getJSON('http://localhost:444/allorga',NombreOrga);
+		
+		function NombreReal(data){
+		   document.getElementById("NombreReal").innerHTML=data.nb;
+		}
+		$.getJSON('http://localhost:444/allreal',NombreReal);
+		
 		}
 		
 	function choix(){
@@ -162,17 +181,17 @@
 		texte = liste.options[liste.selectedIndex].text;
 		console.log(texte);
 		
-		if(texte == 'Chart 1'){
+		if(texte == 'Nombre de Tournage par Réalisateur'){
 			document.getElementById('TournageReal').style.display='block';
 			document.getElementById('TournageArrdt').style.display='none';
 			document.getElementById('TypeTournage').style.display='none';
 		}
-		if(texte == 'Chart 2'){
+		if(texte == 'Nombre de Tournage par Arrondissement'){
 			document.getElementById('TournageArrdt').style.display='block';
 			document.getElementById('TournageReal').style.display='none';
 			document.getElementById('TypeTournage').style.display='none';
 		}
-		if(texte == 'Chart 3'){
+		if(texte == 'Différents types de tournages'){
 			document.getElementById('TypeTournage').style.display='block';
 			document.getElementById('TournageReal').style.display='none';
 			document.getElementById('TournageArrdt').style.display='none';
@@ -187,31 +206,56 @@
 	<style data-styled-components=""></style>
 </head>
 
-<body>
-
+<body >
+<header>
 	<h2><a href="http://localhost:444/" role="button"><i class="fas fa-arrow-circle-left"></i> &nbsp;Retour à la carte</a>
 	</h2>
-	
-	
-	<form>
-	  <div class="form-group">
-		<h2><label for="ChartChoice">Quelles Chart voulez vous ?</label></h2>
-		<select class="form-control" id="ChartChoice">
-		  <option>Chart 1</option>
-		  <option>Chart 2</option>
-		  <option>Chart 3</option>
-		  <option disabled>Chart 4</option>
-		  <option disabled>Chart 5</option>
-		</select>
-	  </div>
-	  <button type="button" onclick="choix()" class="btn btn-primary">Valider</button>
-	</form>
-	
-	<div class="container" style="height: 700px; width: 100%;">
-	<div id="TournageReal" style="display:none;"></div>
-	<div id="TournageArrdt" style="display:none;"></div>
-	<div id="TypeTournage" style="display:none;"></div>
+	<h1 class="text-center"> Analyse des données sur les tournages à Paris en 2016 </h1>
+</header>	
+
+<div class="container fill">
+	<div class="row">
+		
+		<div class="col">
+			<div class="card text-center">
+			  <div class="card-body">
+				<h5 class="card-header">
+					Nombre de Tournage			
+					</h5>
+				<p class="card-text" id="NombreTournage"></p>
+			  </div>
+			</div>
+		</div>
+		<div class="col">
+			<div class="card text-center" >
+			  <div class="card-body">
+				<h5 class="card-header">Nombre de Réalisateur</h5>
+				<p class="card-text" id="NombreReal"></p>
+			  </div>
+			</div>
+		</div>
+		<div class="col">
+			<div class="card text-center">
+			  <div class="card-body">
+				<h5 class="card-header">Nombre d'Organisme Demandeur</h5>
+				<p class="card-text" id="NombreOrganisme"></p>
+			  </div>
+			</div>
+		</div>
+		<div class="col">
+			<div class="card text-center">
+			  <div class="card-body">
+				<h5 class="card-header">Nombre de Films</h5>
+				<p class="card-text" id="NombreDeFilm"></p>
+			  </div>
+			</div>
+		</div>
 	</div>
+
+<div id="TournageReal" style="height: 370px; width: 100%;"></div>
+<div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
+<div id="TypeTournage" style="height: 370px; width: 100%;"></div>
+</div>
 
 
 
