@@ -1,3 +1,5 @@
+// durée moyenne d'un tournage (différence entre la date_debut et la date_fin)
+
 var express = require('express');
 var app = express();
 const http = require('http');
@@ -110,8 +112,6 @@ app.get('/tournagesparardt', function (req, res) {
 // nombre de tournage par Organisme demandeur
 app.get('/tournagesparorga', function (req, res) {
 
-    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
-
     var m = {};
     db.find({}, { "properties.organisme_demandeur": 1 }, function (err, docs) {
         for (var i = 0; i < docs.length; i++) {
@@ -129,8 +129,6 @@ app.get('/tournagesparorga', function (req, res) {
 // Nombre de chaque type de tournage
 app.get('/tournagespartype', function (req, res) {
 
-    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
-
     var m = {};
     db.find({}, { "properties.type_de_tournage": 1 }, function (err, docs) {
         for (var i = 0; i < docs.length; i++) {
@@ -142,6 +140,39 @@ app.get('/tournagespartype', function (req, res) {
         }
 
         res.send({ result: m, taille: Object.keys(m).length });
+    });
+});
+
+// nombre de tournage EN COURS par Mois
+app.get('/tournagesparmois', function (req, res) {
+
+    var m = {};
+    // fill m
+    for (var i = 0; i < 12; i++) {
+        m[i] = 0;
+    }
+    console.log(m);
+
+    db.find({}, { "properties.date_debut": 1, "properties.date_fin": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            // console.log(parseInt(m[docs[i].properties.date_debut].split("-")[1]));
+            var mois_debut = docs[i].properties.date_debut.split("-")[1];
+            var mois_fin = docs[i].properties.date_fin.split("-")[1];
+            if (typeof date_debut != undefined && typeof date_fin != undefined) {
+                mois_debut = parseInt(mois_debut);
+                mois_fin = parseInt(mois_fin);
+                // console.log(mois_fin, mois_debut, mois_fin - mois_debut);
+                if (mois_fin - mois_debut == 0) {
+                    m[mois_debut - 1] += 1;
+                } else {
+                    for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+                        m[j - 1] += 1;
+                    }
+                }
+            }
+
+        }
+        res.send({ result: m });
     });
 });
 
@@ -161,7 +192,7 @@ app.get('/filmparreal', function (req, res) {
         for (const key in m) {
             m[key] = Array.from(m[key]);
         }
-        res.send({ result: m});
+        res.send({ result: m });
     });
 });
 
