@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 // let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
 
-// var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
+//var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
 var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
 // console.log(geojson.features.length);
@@ -175,6 +175,58 @@ app.get('/tournagesparmois', function (req, res) {
         res.send({ result: m });
     });
 });
+
+//durée de chaque tournage
+app.get('/dureepartournage', function (req, res) {
+
+    var m = {};
+
+    db.find({}, { "properties.date_debut": 1, "properties.date_fin": 1 }, function (err, docs) {
+		for (var i = 0; i < docs.length; i++) {
+			var debut = docs[i].properties.date_debut;
+            var fin = docs[i].properties.date_fin;
+			if (typeof date_debut != undefined && typeof date_fin != undefined) {
+				var diff = {}                           // Initialisation du retour
+				var tmp = new Date(fin) - new Date(debut);
+			 
+				tmp = Math.floor(tmp/1000);             // Nombre de secondes entre les 2 dates
+				diff.sec = tmp % 60;                    // Extraction du nombre de secondes
+			 
+				tmp = Math.floor((tmp-diff.sec)/60);    // Nombre de minutes (partie entière)
+				diff.min = tmp % 60;                    // Extraction du nombre de minutes
+			 
+				tmp = Math.floor((tmp-diff.min)/60);    // Nombre d'heures (entières)
+				diff.hour = tmp % 24;                   // Extraction du nombre d'heures
+				 
+				tmp = Math.floor((tmp-diff.hour)/24);   // Nombre de jours restants
+				diff.day = tmp+1;						
+				
+				// console.log(diff.day);
+				if (isNaN(diff.day) == false){
+				
+				    if (isNaN(m[diff.day])){
+							m[diff.day]=1;
+						}	
+						m[diff.day]++;
+										
+				}
+								
+				
+			}
+		}
+		l={}
+		for (const key in m) {
+			if (key >6){
+				l[6]=l[6]+m[key]
+			}
+			else{
+				l[key]=m[key]
+			}
+        }
+		res.send({result:l});
+	});
+});
+
 
 // nombre de film par realisateurs
 app.get('/filmparreal', function (req, res) {

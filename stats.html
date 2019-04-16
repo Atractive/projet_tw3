@@ -36,6 +36,7 @@
 			var dataTournageArdt = [];
 			var dataTypeTournage = [];
 			var dataTournageMois = [];
+			var dataDureeTournage = [];
 			var line;
 			var mois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
 			
@@ -53,14 +54,14 @@
 			animationEnabled: true, 
 			zoomEnabled: true,
 			title:{
-				text: "Nombre de tournages par film"
+				text: "Nombre de tournages par réalisateur"
 			},
 			axisY: {
 				title: "Nombre de tournage",
 				valueFormatString: "#",
 			},
 			data: [{
-				type: "splineArea",
+				type: "column",
 				color: "rgba(54,158,173,.7)",
 				markerSize: 5,
 				xValueFormatString: "YYYY",
@@ -163,13 +164,13 @@
 			animationEnabled: true,
 			theme: "light2",
 			title:{
-				text: "Simple Line Chart"
+				text: "Nombre de tournage par mois"
 			},
 			axisY:{
 				includeZero: false
 			},
 			data: [{        
-				type: "line",       
+				type: "splineArea",       
 				dataPoints: dataTournageMois
 			}]
 		});
@@ -186,7 +187,52 @@
 			$.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 		
 		
-		
+		var DureeTournage = new CanvasJS.Chart("TournageDuree", {
+			animationEnabled: true, 
+			zoomEnabled: true,
+			title:{
+				text: "Durée des tournages par nombre de jours"
+			},
+			axisY: {
+				title: "Nombre de tournage",
+				valueFormatString: "#",
+			},
+			axisX: {
+				title : "Nombre de Jours",
+				valueFormatString: "#",
+			},
+			data: [{
+				type: "column",
+				color: "rgba(54,158,173,.7)",
+				markerSize: 5,
+				xValueFormatString: "YYYY",
+				yValueFormatString: "# tournages",
+				dataPoints: dataDureeTournage
+			}]
+			});
+
+		function DataDureeTournage(data) {
+			console.log("data",data);
+			var temp = (Object.getOwnPropertyNames(data.result))
+				console.log("temp",temp);
+				for (var i = 0; i < temp.length; i++) {
+					if (temp[i]==6){
+						dataDureeTournage.push({
+							y : data.result[temp[i]],
+							label : temp[i]+"+"
+					});
+					}
+					else{
+						dataDureeTournage.push({
+							y : data.result[temp[i]],
+							label : temp[i]
+					});
+					}
+				}
+				console.log("dataT", dataDureeTournage);
+				DureeTournage.render();
+			}
+			$.getJSON('http://localhost:444/dureepartournage',DataDureeTournage);
 		
 		// Fonctions permettant d'afficher le nombre de film, realisateur, organisme et de tournage
 		function NombreFilm(data){
@@ -228,8 +274,7 @@
 			document.getElementById('TournageArrdt').style.display='none';
 		}
 	}
-	
-	
+
 	</script>
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
@@ -287,6 +332,7 @@
 <div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
 <div id="TypeTournage" style="height: 370px; width: 100%;"></div>
 <div id="TournageMois" style="height: 370px; width: 100%;"></div>
+<div id="TournageDuree" style="height: 370px; width: 100%;"></div>
 </div>
 
 
