@@ -318,27 +318,26 @@ BUG FIX:
 		var clickedMarker; // dernier marqueur sur lequel on clic
 
 
-		var Icon_red = L.icon({
+		var Icon_red = L.icon({ // telefilm
 			iconUrl: 'video_red.png',
-			iconSize: [35, 40],
-			iconAnchor: [0, 0],
-			popupAnchor: [17, 0]
+			iconSize: [26, 26],
+			iconAnchor: [15, 0],
+			popupAnchor: [0, 0]
 		});
 
 		var Icon_green = L.icon({
 			iconUrl: 'video_green.png',
-			iconSize: [35, 40],
-			iconAnchor: [0, 0],
-			popupAnchor: [17, 0]
+			iconSize: [26, 26],
+			iconAnchor: [15, 0],
+			popupAnchor: [0, 0]
 		});
 
 		var Icon_blue = L.icon({
 			iconUrl: 'video_blue.png',
-			iconSize: [35, 40],
-			iconAnchor: [0, 0],
-			popupAnchor: [17, 0]
+			iconSize: [26, 26],
+			iconAnchor: [15, 0],
+			popupAnchor: [0, 0]
 		});
-
 
 		var sidebar = L.control.sidebar('sidebar').addTo(map);
 		map = L.map('map').setView([48.866667, 2.333333], 12);
@@ -475,7 +474,7 @@ BUG FIX:
 					data: $(this).serialize(),
 					success: function (response) {
 						if (response.status == 0) {
-
+							loadMap();
 						}
 					},
 					error: function (jqXHR, text, error) {
@@ -483,13 +482,14 @@ BUG FIX:
 					}
 				});
 			} else if (btn_id == "suppr") {
+				console.log("in");
+				map.removeLayer(clickedMarker);
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost:444/removemarqueur',
 					data: { id: marqueur_id },
 					success: function (response) {
 						loadMap();
-
 					},
 					error: function (jqXHR, text, error) {
 						console.log(jqXHR, text, error);
@@ -499,11 +499,12 @@ BUG FIX:
 			}
 		});
 
+
 		$('#formLoaderFilter').submit(function (evt) {
 			evt.preventDefault();
 			loadMap();
-
 		});
+
 
 		//Creation d'un point dans la map et dans la db
 
