@@ -339,7 +339,7 @@ BUG FIX:
 				'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 			id: 'mapbox.streets'
 		}).addTo(map);
-
+		
 		var points;
 		var mapMarkers = [];
 
@@ -400,6 +400,7 @@ BUG FIX:
 			} else if (btn_id == "suppr") {
 				// console.log(marqueur_id);
 				map.removeLayer(clickedMarker);
+				document.getElementById('divFloat').style.display = 'none';
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost:444/removemarqueur',
@@ -413,7 +414,28 @@ BUG FIX:
 				flag = true;
 			}
 		});
-
+		
+		var Icon_red = L.icon({
+			iconUrl: 'video_red.png',
+			iconSize:     [30, 35], // size of the icon
+			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
+		
+		var Icon_green = L.icon({
+			iconUrl: 'video_green.png',
+			iconSize:     [30, 35], // size of the icon
+			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
+		
+		var Icon_blue = L.icon({
+			iconUrl: 'video_blue.png',
+			iconSize:     [30, 35], // size of the icon
+			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
+		
 		$('#formLoaderFilter').submit(function (evt) {
 
 			evt.preventDefault();
@@ -425,7 +447,17 @@ BUG FIX:
 				success: function (response) {
 					var markers = L.markerClusterGroup();
 					points = L.geoJSON(response, {
+						pointToLayer: function (feature, latlng) {
+							if (feature.properties.type_de_tournage == 'TELEFILM') {
+								return L.marker(latlng,{icon: Icon_red});
+							} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
+								return L.marker(latlng,{icon: Icon_green});
+							} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
+								return L.marker(latlng,{icon: Icon_blue});
+							}
+						},
 						onEachFeature: function (feature, layer) {
+							//L.marker([feature.properties.xy[0],feature.properties.xy[1]],{icon: Icon});
 							layer.bindPopup(
 								'<div>'
 								+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
@@ -433,9 +465,7 @@ BUG FIX:
 								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
 								+ '</div>'
 							);
-
 							layer.on("popupopen", onPopupOpen);
-
 							layer.on('click', function (evt) {
 								document.getElementById('divFloat').style.display = 'block';
 								document.getElementById('formAff__id').value = feature.properties.id;
@@ -466,16 +496,14 @@ BUG FIX:
 							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
 							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin == val_df); }
 							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
-						}
+						},
 					});
-
-
 					mapMarkers.push(markers);
 					for (var i = 0; i < mapMarkers.length; i++) {
 						map.removeLayer(mapMarkers[i]);
 					}
 					markers.addLayer(points);
-					map.addLayer(markers);
+					map.addLayer(markers);	
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
