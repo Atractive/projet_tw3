@@ -417,23 +417,23 @@ BUG FIX:
 		
 		var Icon_red = L.icon({
 			iconUrl: 'video_red.png',
-			iconSize:     [30, 35], // size of the icon
-			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+			iconSize:     [35, 40],
+			iconAnchor:   [0, 0],
+			popupAnchor:  [17, 0]
 		});
 		
 		var Icon_green = L.icon({
 			iconUrl: 'video_green.png',
-			iconSize:     [30, 35], // size of the icon
-			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+			iconSize:     [35, 40],
+			iconAnchor:   [0, 0],
+			popupAnchor:  [17, 0]
 		});
 		
 		var Icon_blue = L.icon({
 			iconUrl: 'video_blue.png',
-			iconSize:     [30, 35], // size of the icon
-			iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-			popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+			iconSize:     [35, 40],
+			iconAnchor:   [0, 0],
+			popupAnchor:  [17, 0]
 		});
 		
 		$('#formLoaderFilter').submit(function (evt) {
@@ -451,9 +451,9 @@ BUG FIX:
 							if (feature.properties.type_de_tournage == 'TELEFILM') {
 								return L.marker(latlng,{icon: Icon_red});
 							} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
-								return L.marker(latlng,{icon: Icon_green});
+								return L.marker(latlng,{icon: Icon_green,draggable: true});
 							} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
-								return L.marker(latlng,{icon: Icon_blue});
+								return L.marker(latlng,{icon: Icon_blue,draggable: true});
 							}
 						},
 						onEachFeature: function (feature, layer) {
