@@ -318,15 +318,27 @@ BUG FIX:
 		var clickedMarker; // dernier marqueur sur lequel on clic
 
 
-		// var lastdivFloatContent; 
-		// var lastTdt;
-		// var lasttitle;
-		// var lastreal;
-		// var lastorg;
-		// var lastadresse;
-		// var lastardt;
-		// var lastdebut;
-		// var lastfin;
+		var Icon_red = L.icon({
+			iconUrl: 'video_red.png',
+			iconSize: [30, 35], // size of the icon
+			iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+			popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
+
+		var Icon_green = L.icon({
+			iconUrl: 'video_green.png',
+			iconSize: [30, 35], // size of the icon
+			iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+			popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
+
+		var Icon_blue = L.icon({
+			iconUrl: 'video_blue.png',
+			iconSize: [30, 35], // size of the icon
+			iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+			popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
+
 
 		var sidebar = L.control.sidebar('sidebar').addTo(map);
 		map = L.map('map').setView([48.866667, 2.333333], 12);
@@ -379,10 +391,19 @@ BUG FIX:
 				url: 'http://localhost:444/geojson',
 				dataType: 'json',
 				success: function (response) {
-					// DO NOT DELETE var markerGroup = L.layerGroup().addTo(map); someMarker.addTo(someLayerGroup); https://gis.stackexchange.com/questions/201958/remove-leaflet-markers-leaflet-id DO NOT DELETE
+					//  var markerGroup = L.layerGroup().addTo(map); someMarker.addTo(someLayerGroup); https://gis.stackexchange.com/questions/201958/remove-leaflet-markers-leaflet-id DO NOT DELETE
 					var markers = L.markerClusterGroup();
 
 					points = L.geoJSON(response, {
+						// pointToLayer: function (feature, latlng) {
+						// 	if (feature.properties.type_de_tournage == 'TELEFILM') {
+						// 		return L.marker(latlng, { icon: Icon_red });
+						// 	} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
+						// 		return L.marker(latlng, { icon: Icon_green });
+						// 	} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
+						// 		return L.marker(latlng, { icon: Icon_blue });
+						// 	}
+						// },
 						onEachFeature: function (feature, layer) {
 							layer.bindPopup(
 								'<div>'
