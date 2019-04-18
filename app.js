@@ -11,8 +11,8 @@ const bodyParser = require('body-parser');
 // let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
 
-var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
-// var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
+//var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
+ var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
 // console.log(geojson.features.length);
 // for (var i = 0; i < geojson.features.length; i++) {
