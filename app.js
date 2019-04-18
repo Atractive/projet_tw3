@@ -302,7 +302,7 @@ app.post('/modifmarqueur', function (req, res) {
         "properties.date_debut": req.body.date_fin
     }
 
-    db.update({ "properties.id": req.body.id }, { $set: temp }, {}, function (err, num) {
+    db.update({ "properties.id": parseInt(req.body.id, 10) }, { $set: temp }, {}, function (err, num) {
         if (err) res.send({ status: -1, message: 'unknown question id' });
         else {
             console.log("nombre d'enregistrement dans la base MODIFIER : ", num);

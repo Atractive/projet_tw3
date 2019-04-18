@@ -320,23 +320,23 @@ BUG FIX:
 
 		var Icon_red = L.icon({
 			iconUrl: 'video_red.png',
-			iconSize:     [35, 40],
-			iconAnchor:   [0, 0],
-			popupAnchor:  [17, 0]
+			iconSize: [35, 40],
+			iconAnchor: [0, 0],
+			popupAnchor: [17, 0]
 		});
-		
+
 		var Icon_green = L.icon({
 			iconUrl: 'video_green.png',
-			iconSize:     [35, 40],
-			iconAnchor:   [0, 0],
-			popupAnchor:  [17, 0]
+			iconSize: [35, 40],
+			iconAnchor: [0, 0],
+			popupAnchor: [17, 0]
 		});
-		
+
 		var Icon_blue = L.icon({
 			iconUrl: 'video_blue.png',
-			iconSize:     [35, 40],
-			iconAnchor:   [0, 0],
-			popupAnchor:  [17, 0]
+			iconSize: [35, 40],
+			iconAnchor: [0, 0],
+			popupAnchor: [17, 0]
 		});
 
 
@@ -396,13 +396,13 @@ BUG FIX:
 
 					points = L.geoJSON(response, {
 						pointToLayer: function (feature, latlng) {
-                          if (feature.properties.type_de_tournage == 'TELEFILM') {
-                              	return L.marker(latlng, { icon: Icon_red });
-                          } if (feature.properties.type_de_tournage == 'LONG METRAGE') {
-                              	return L.marker(latlng, { icon: Icon_green });
-                          } if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
-                          		return L.marker(latlng, { icon: Icon_blue });
-                          }
+							if (feature.properties.type_de_tournage == 'TELEFILM') {
+								return L.marker(latlng, { icon: Icon_red });
+							} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
+								return L.marker(latlng, { icon: Icon_green });
+							} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
+								return L.marker(latlng, { icon: Icon_blue });
+							}
 						},
 						onEachFeature: function (feature, layer) {
 							layer.bindPopup(
