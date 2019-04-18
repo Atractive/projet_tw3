@@ -144,6 +144,72 @@ app.get('/tournagespartype', function (req, res) {
 });
 
 // nombre de tournage EN COURS par Mois
+
+app.get('/tournagesparmoispartype', function (req, res) {
+
+    var longm = {};
+	var telef = {};
+	var serie = {};
+	var sanstype = {}
+    // fill m
+    for (var i = 0; i < 12; i++) {
+        longm[i] = telef[i] = serie[i] = sanstype[i] = 0;
+    }
+    // console.log(longm,telef,serie);
+
+    db.find({}, { "properties.type_de_tournage": 1, "properties.date_debut": 1, "properties.date_fin": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            // console.log(parseInt(m[docs[i].properties.date_debut].split("-")[1]));
+			var type = docs[i].properties.type_de_tournage;
+            var mois_debut = docs[i].properties.date_debut.split("-")[1];
+            var mois_fin = docs[i].properties.date_fin.split("-")[1];
+            if (typeof date_debut != undefined && typeof date_fin != undefined && typeof type != undefined) {
+                mois_debut = parseInt(mois_debut);
+                mois_fin = parseInt(mois_fin);
+                // console.log(mois_fin, mois_debut, mois_fin - mois_debut);
+                if (type == "LONG METRAGE"){
+					if (mois_fin - mois_debut == 0) {
+						longm[mois_debut - 1] += 1;
+					} else {
+						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+							longm[j - 1] += 1;
+						}
+					}
+				}
+				else if (type == "SERIE TELEVISEE"){
+					if (mois_fin - mois_debut == 0) {
+						serie[mois_debut - 1] += 1;
+					} else {
+						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+							serie[j - 1] += 1;
+						}
+					}
+				}
+				else if (type == "TELEFILM"){
+					if (mois_fin - mois_debut == 0) {
+						telef[mois_debut - 1] += 1;
+					} else {
+						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+							telef[j - 1] += 1;
+						}
+					}
+				}
+				else{
+					if (mois_fin - mois_debut == 0) {
+						sanstype[mois_debut - 1] += 1;
+					} else {
+						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+							sanstype[j - 1] += 1;
+						}
+					}
+				}
+			}
+
+        }
+        res.send({ resultlongm: longm, resulttelef: telef, resultserie: serie, resultsanstype: sanstype});
+    });
+});
+
 app.get('/tournagesparmois', function (req, res) {
 
     var m = {};

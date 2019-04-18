@@ -28,6 +28,21 @@
 				font-size: 3.5rem;
 			}
 		}
+		
+		#test backButton {
+		border-radius: 4px;
+		padding: 8px;
+		border: none;
+		font-size: 16px;
+		background-color: #2eacd1;
+		color: white;
+		position: absolute;
+		cursor: pointer;
+	  }
+	  .invisible {
+		display: none;
+	  }
+		
 	</style>
 	<script>
 		window.onload = function() {
@@ -35,6 +50,7 @@
 			var dataTournageReal = [];
 			var dataTournageArdt = [];
 			var dataTypeTournage = [];
+			var dataTypeTournage2 = [];
 			var dataTournageMois = [];
 			var dataDureeTournage = [];
 			var line;
@@ -174,6 +190,7 @@
 				dataPoints: dataTournageMois
 			}]
 		});
+		
 		function DataTournageMois(data) {
 			var temp = (Object.getOwnPropertyNames(data.result))
 				for (var i = 0; i < 12; i++) {
@@ -250,7 +267,7 @@
 		}
 		$.getJSON('http://localhost:444/allreal',NombreReal);
 		
-		}
+		
 		
 	function choix(){
 		var liste, texte;
@@ -274,8 +291,156 @@
 			document.getElementById('TournageArrdt').style.display='none';
 		}
 	}
+	
+	function DataTypeTournage2(data) {
+			var temp = (Object.getOwnPropertyNames(data.result));
+				for (var i = 0; i < data.taille; i++) {
+					dataTypeTournage2.push({
+						y: (data.result[temp[i]]/line)*100,
+						label : temp[i]
+					});
+				}
+			chart.render();
+			}
+	$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage2);
+		
+	var dataLongm=[];
+	var dataTelef = [];
+	var dataSerie = [];
+	var dataSansType = [];
+	var dataT= [dataLongm,dataTelef,dataSerie,dataSansType];
+	
+	
+	function DataTypeParMois(data){
+		<!-- console.log("yayyaaaaa",data); -->
+		var temp = (Object.getOwnPropertyNames(data));
+		<!-- console.log("merci",temp); -->
+		for (var i=0;i<temp.length;i++){
+			<!-- console.log(temp[i]); -->
+			<!-- console.log(dataT[i]); -->
+			var result = temp[i];
+			var temp2 = (Object.getOwnPropertyNames(data[result]));
+			<!-- console.log("JC",temp2); -->
+			for (j=0;j<temp2.length;j++){
+				<!-- console.log(data[result][temp2[j]]); -->
+				dataT[i].push({
+					y:data[result][temp2[j]],
+					label: mois[j]
+					});
+			}
+			                       
+			}
+		
+		}
+	
+	$.getJSON('http://localhost:444/tournagesparmoispartype', DataTypeParMois)		
+			
+	var totalVisitors = 883000;
+	var visitorsData = {
+		"TournageType": [{
+			click: visitorsChartDrilldownHandler,
+			cursor: "pointer",
+			explodeOnClick: false,
+			innerRadius: "75%",
+			legendMarkerType: "square",
+			name: "Nombre de Tournage par Type",
+			radius: "100%",
+			showInLegend: true,
+			startAngle: 90,
+			type: "doughnut",
+			dataPoints: dataTypeTournage2
+		}],
+		"LONG METRAGE": [{
+			color: "#E7823A",
+			name: "LONG METRAGE",
+			type: "column",
+			dataPoints: dataLongm
+		}],
+		"SERIE TELEVISEE": [{
+			color: "#546BC1",
+			name: "SERIE TELEVISEE",
+			type: "column",
+			dataPoints: dataSerie
+		}],
+		"TELEFILM": [{
+			color: "#546BC1",
+			name: "TELEFILM",
+			type: "column",
+			dataPoints: dataTelef
+		}],
+		"": [{
+			color: "#546BC1",
+			name: "",
+			type: "column",
+			dataPoints: dataSansType
+		}]
+	};
 
+	var TypeTournageOptions = {
+		animationEnabled: true,
+		theme: "light2",
+		title: {
+			text: "Nombre de tournage par type"
+		},
+		subtitles: [{
+			text: "Click on Any Segment to Drilldown",
+			backgroundColor: "#2eacd1",
+			fontSize: 16,
+			fontColor: "white",
+			padding: 5
+		}],
+		legend: {
+			fontFamily: "calibri",
+			fontSize: 14,
+		},
+		data: []
+	};
+
+	var visitorsDrilldownedChartOptions = {
+		animationEnabled: true,
+		theme: "light2",
+		axisX: {
+			labelFontColor: "#717171",
+			lineColor: "#a2a2a2",
+			tickColor: "#a2a2a2"
+		},
+		axisY: {
+			gridThickness: 0,
+			includeZero: false,
+			labelFontColor: "#717171",
+			lineColor: "#a2a2a2",
+			tickColor: "#a2a2a2",
+			lineThickness: 1
+		},
+		data: []
+	};
+
+	var chart = new CanvasJS.Chart("chartContainer", TypeTournageOptions);
+	chart.options.data = visitorsData["TournageType"];
+	
+
+	function visitorsChartDrilldownHandler(e) {
+		console.log(e);
+		chart2 = new CanvasJS.Chart("chartContainer", visitorsDrilldownedChartOptions);
+		chart2.options.data = visitorsData[e.dataPoint.label];
+		console.log(e.name);
+		chart2.options.title = { text: e.dataPoint.label }
+		chart2.render();
+		$("#backButton").toggleClass("invisible");
+	}
+
+	$("#backButton").click(function() { 
+		$(this).toggleClass("invisible");
+		chart = new CanvasJS.Chart("chartContainer", TypeTournageOptions);
+		chart.options.data = visitorsData["TournageType"];
+		chart.render();
+	});
+
+	}
 	</script>
+	<style>
+	
+	</style>
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 
@@ -331,6 +496,12 @@
 <div id="TournageReal" style="height: 370px; width: 100%;"></div>
 <div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
 <div id="TypeTournage" style="height: 370px; width: 100%;"></div>
+
+<div id="test">
+<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
+<button class="btn invisible" id="backButton">< Back</button>
+</div>
+
 <div id="TournageMois" style="height: 370px; width: 100%;"></div>
 <div id="TournageDuree" style="height: 370px; width: 100%;"></div>
 </div>
