@@ -11,8 +11,8 @@ const bodyParser = require('body-parser');
 // let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
 
-//var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
-var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
+var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
+// var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
 // console.log(geojson.features.length);
 // for (var i = 0; i < geojson.features.length; i++) {
@@ -65,16 +65,22 @@ app.get('/allorga', function (request, response) {
 });
 
 app.get('/nombredeligne', function (req, res) {
-    db.find({}, function (err, docs) {
-        res.send({ nb: docs.length });
+    db.find({}, { "properties.id": 1 }, function (err, docs) {
+        var maxid = 0;
+        for (var i = 0; i < docs.length; i++) {
+            var current = parseInt(docs[i].properties.id, 10);
+            if (current > maxid) {
+                maxid = current;
+            }
+        }
+        console.log(maxid);
+        res.send({ nb: maxid + 1 });
     });
 
 });
 
 // nombre de tournage par realisateur
 app.get('/tournagesparreal', function (req, res) {
-
-    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
 
     var m = {};
     db.find({}, { "properties.realisateur": 1 }, function (err, docs) {
@@ -92,8 +98,6 @@ app.get('/tournagesparreal', function (req, res) {
 
 // nombre de tournage par arrondissement
 app.get('/tournagesparardt', function (req, res) {
-
-    // objs.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0)); 
 
     var m = {};
     db.find({}, { "properties.ardt": 1 }, function (err, docs) {
@@ -248,49 +252,49 @@ app.get('/dureepartournage', function (req, res) {
     var m = {};
 
     db.find({}, { "properties.date_debut": 1, "properties.date_fin": 1 }, function (err, docs) {
-		for (var i = 0; i < docs.length; i++) {
-			var debut = docs[i].properties.date_debut;
+        for (var i = 0; i < docs.length; i++) {
+            var debut = docs[i].properties.date_debut;
             var fin = docs[i].properties.date_fin;
-			if (typeof date_debut != undefined && typeof date_fin != undefined) {
-				var diff = {}                           // Initialisation du retour
-				var tmp = new Date(fin) - new Date(debut);
-			 
-				tmp = Math.floor(tmp/1000);             // Nombre de secondes entre les 2 dates
-				diff.sec = tmp % 60;                    // Extraction du nombre de secondes
-			 
-				tmp = Math.floor((tmp-diff.sec)/60);    // Nombre de minutes (partie entière)
-				diff.min = tmp % 60;                    // Extraction du nombre de minutes
-			 
-				tmp = Math.floor((tmp-diff.min)/60);    // Nombre d'heures (entières)
-				diff.hour = tmp % 24;                   // Extraction du nombre d'heures
-				 
-				tmp = Math.floor((tmp-diff.hour)/24);   // Nombre de jours restants
-				diff.day = tmp+1;						
-				
-				// console.log(diff.day);
-				if (isNaN(diff.day) == false){
-				
-				    if (isNaN(m[diff.day])){
-							m[diff.day]=1;
-						}	
-						m[diff.day]++;
-										
-				}
-								
-				
-			}
-		}
-		l={}
-		for (const key in m) {
-			if (key >6){
-				l[6]=l[6]+m[key]
-			}
-			else{
-				l[key]=m[key]
-			}
+            if (typeof date_debut != undefined && typeof date_fin != undefined) {
+                var diff = {}                           // Initialisation du retour
+                var tmp = new Date(fin) - new Date(debut);
+
+                tmp = Math.floor(tmp / 1000);             // Nombre de secondes entre les 2 dates
+                diff.sec = tmp % 60;                    // Extraction du nombre de secondes
+
+                tmp = Math.floor((tmp - diff.sec) / 60);    // Nombre de minutes (partie entière)
+                diff.min = tmp % 60;                    // Extraction du nombre de minutes
+
+                tmp = Math.floor((tmp - diff.min) / 60);    // Nombre d'heures (entières)
+                diff.hour = tmp % 24;                   // Extraction du nombre d'heures
+
+                tmp = Math.floor((tmp - diff.hour) / 24);   // Nombre de jours restants
+                diff.day = tmp + 1;
+
+                // console.log(diff.day);
+                if (isNaN(diff.day) == false) {
+
+                    if (isNaN(m[diff.day])) {
+                        m[diff.day] = 1;
+                    }
+                    m[diff.day]++;
+
+                }
+
+
+            }
         }
-		res.send({result:l});
-	});
+        l = {}
+        for (const key in m) {
+            if (key > 6) {
+                l[6] = l[6] + m[key]
+            }
+            else {
+                l[key] = m[key]
+            }
+        }
+        res.send({ result: l });
+    });
 });
 
 
@@ -341,10 +345,9 @@ app.post('/userInput', function (req, res) {
             "ardt": "",
             "titre": "",
             "date_debut": "",
-            "id": req.body.id
+            "id": parseInt(req.body.id, 10)
         },
     };
-
     db.insert(temp, function (err, newDoc) {
         if (err) res.send({ status: -1, message: 'Error has occured' });
         else {
@@ -365,7 +368,7 @@ app.post('/modifmarqueur', function (req, res) {
         "properties.date_debut": req.body.date_fin
     }
 
-    db.update({ "properties.id": req.body.id }, { $set: temp }, {}, function (err, num) {
+    db.update({ "properties.id": parseInt(req.body.id, 10) }, { $set: temp }, {}, function (err, num) {
         if (err) res.send({ status: -1, message: 'unknown question id' });
         else {
             console.log("nombre d'enregistrement dans la base MODIFIER : ", num);
@@ -375,13 +378,12 @@ app.post('/modifmarqueur', function (req, res) {
 
 });
 
-
 app.post('/removemarqueur', function (req, res) {
     // console.log(req.body.id, parseInt(req.body.id, 10));
     db.remove({ "properties.id": parseInt(req.body.id, 10) }, {}, function (err, num) {
         if (err) res.send({ status: -1, message: 'unknown question id' });
         else {
-            // console.log("nombre d'enregistrement dans la base RETIRE : ", num);
+            console.log("nombre d'enregistrement dans la base RETIRE : ", num);
             res.send({ status: 0, message: "Document removed pour l'id " + req.body.id });
         }
     });

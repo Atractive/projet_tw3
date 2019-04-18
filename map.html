@@ -318,16 +318,26 @@ BUG FIX:
 		var clickedMarker; // dernier marqueur sur lequel on clic
 
 
+		var Icon_red = L.icon({ // telefilm
+			iconUrl: 'video_red.png',
+			iconSize: [26, 26],
+			iconAnchor: [15, 0],
+			popupAnchor: [0, 0]
+		});
 
-		// var lastdivFloatContent; 
-		// var lastTdt;
-		// var lasttitle;
-		// var lastreal;
-		// var lastorg;
-		// var lastadresse;
-		// var lastardt;
-		// var lastdebut;
-		// var lastfin;
+		var Icon_green = L.icon({
+			iconUrl: 'video_green.png',
+			iconSize: [26, 26],
+			iconAnchor: [15, 0],
+			popupAnchor: [0, 0]
+		});
+
+		var Icon_blue = L.icon({
+			iconUrl: 'video_blue.png',
+			iconSize: [26, 26],
+			iconAnchor: [15, 0],
+			popupAnchor: [0, 0]
+		});
 
 		var sidebar = L.control.sidebar('sidebar').addTo(map);
 		map = L.map('map').setView([48.866667, 2.333333], 12);
@@ -353,18 +363,13 @@ BUG FIX:
 
 		function onPopupOpen() {
 			clickedMarker = this;
-			var clickedMarkerID = clickedMarker._leaflet_id; // Getting Leaflet ID of this marker
-			$.ajax({
-				type: "POST",
-				url: 'http://localhost:444/loadFields',
-				data: { id: $('#divFloat').find('input[name="id"]').val() },
-				success: function (response) {
-
-
-				}
-			});
-
-
+			// $.ajax({
+			// 	type: "POST",
+			// 	url: 'http://localhost:444/loadFields',
+			// 	data: { id: $('#divFloat').find('input[name="id"]').val() },
+			// 	success: function (response) {
+			// 	}
+			// });
 		}
 
 
@@ -378,53 +383,26 @@ BUG FIX:
 			}
 		}
 
-		$("#formAff").submit(function (event) {
-			var btn_id = $(document.activeElement).attr('id');
-			var marqueur_id = $("#formAff").find('input[name="id"]').val();
-			event.preventDefault();
-			if (btn_id == "mod") {
-				$.ajax({
-					type: 'POST',
-					url: 'http://localhost:444/modifmarqueur',
-					data: $(this).serialize(),
-					success: function (response) {
-						if (response.status == 0) {
-							console.log(response);
-
-						}
-					},
-					error: function (jqXHR, text, error) {
-						console.log(jqXHR, text, error);
-					}
-				});
-			} else if (btn_id == "suppr") {
-				// console.log(marqueur_id);
-				map.removeLayer(clickedMarker);
-				$.ajax({
-					type: 'POST',
-					url: 'http://localhost:444/removemarqueur',
-					data: { id: marqueur_id },
-					success: function (response) {
-					},
-					error: function (jqXHR, text, error) {
-						console.log(jqXHR, text, error);
-					}
-				});
-				flag = true;
-			}
-		});
-
-		$('#formLoaderFilter').submit(function (evt) {
-
-			evt.preventDefault();
+		function loadMap() {
 
 			$.ajax({
 				method: 'GET',
 				url: 'http://localhost:444/geojson',
 				dataType: 'json',
 				success: function (response) {
+					//  var markerGroup = L.layerGroup().addTo(map); someMarker.addTo(someLayerGroup); https://gis.stackexchange.com/questions/201958/remove-leaflet-markers-leaflet-id DO NOT DELETE
 					var markers = L.markerClusterGroup();
+
 					points = L.geoJSON(response, {
+						pointToLayer: function (feature, latlng) {
+							if (feature.properties.type_de_tournage == 'TELEFILM') {
+								return L.marker(latlng, { icon: Icon_red });
+							} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
+								return L.marker(latlng, { icon: Icon_green });
+							} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
+								return L.marker(latlng, { icon: Icon_blue });
+							}
+						},
 						onEachFeature: function (feature, layer) {
 							layer.bindPopup(
 								'<div>'
@@ -481,7 +459,52 @@ BUG FIX:
 					console.log(jqXHR, text, error);
 				}
 			});
+
+		}
+
+
+		$("#formAff").submit(function (event) {
+			var btn_id = $(document.activeElement).attr('id');
+			var marqueur_id = $("#formAff").find('input[name="id"]').val();
+			event.preventDefault();
+			if (btn_id == "mod") {
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:444/modifmarqueur',
+					data: $(this).serialize(),
+					success: function (response) {
+						if (response.status == 0) {
+							loadMap();
+						}
+					},
+					error: function (jqXHR, text, error) {
+						console.log(jqXHR, text, error);
+					}
+				});
+			} else if (btn_id == "suppr") {
+				console.log("in");
+				map.removeLayer(clickedMarker);
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost:444/removemarqueur',
+					data: { id: marqueur_id },
+					success: function (response) {
+						loadMap();
+					},
+					error: function (jqXHR, text, error) {
+						console.log(jqXHR, text, error);
+					}
+				});
+				flag = true;
+			}
 		});
+
+
+		$('#formLoaderFilter').submit(function (evt) {
+			evt.preventDefault();
+			loadMap();
+		});
+
 
 		//Creation d'un point dans la map et dans la db
 
