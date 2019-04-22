@@ -148,7 +148,48 @@ BUG FIX:
 			width: 15%;
 			z-index: 2;
 		}
+		
+		
+		.bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+
+		@media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			}
+		}
+		
+		#test backButton {
+		border-radius: 4px;
+		padding: 8px;
+		border: none;
+		font-size: 16px;
+		background-color: #2eacd1;
+		color: white;
+		position: absolute;
+		cursor: pointer;
+	  }
+	  .invisible {
+		display: none;
+	  }
 	</style>
+	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script type="text/javascript" src="stats.js"></script>
+	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
 
 </head>
 
@@ -160,6 +201,7 @@ BUG FIX:
 			<ul role="tablist">
 				<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
 				<li><a href="#formSelect" role="tab"><i class="fab fa-wpforms"></i></a></li>
+				<li><a href="#stats" role="tab"><i class="fas fa-chart-pie"></i></a></li>
 			</ul>
 
 			<ul role="tablist">
@@ -221,12 +263,12 @@ BUG FIX:
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__date_debut">Date de debut de tournage</label>
-							<input class="form-control" type="date" min="2016-01-01" max="2016-12-01"
+							<input class="form-control" type="date" min="2016-01-01" max="2016-12-31"
 								id="formLoaderFilter__date_debut">
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__date_fin">Date de fin de tournage</label>
-							<input class="form-control" type="date" min="2016-01-01" max="2016-12-01"
+							<input class="form-control" type="date" min="2016-01-01" max="2016-12-31"
 								id="formLoaderFilter__date_fin">
 						</div>
 						<button class="btn btn-primary" type="submit" id="sub">Valider</button>
@@ -234,7 +276,76 @@ BUG FIX:
 				</div>
 			</div>
 
+			<div class="sidebar-pane" id="stats">
+				<h1 class="sidebar-header">Statistiques générale<span class="sidebar-close"><i
+							class="fa fa-caret-left"></i></span></h1>
+				<div class="container ui-front" style="width:100%;">
+							<div class="card">
+								<div class="card text-center">
+								  <div class="card-body">
+									<h5 class="card-header">
+										Nombre de Tournage		
+										</h5>
+									<p class="card-text" id="NombreTournage"></p>
+								  </div>
+								</div>
+							</div>
 
+								<div class="card text-center" >
+								  <div class="card-body">
+									<h5 class="card-header">Nombre de Réalisateur</h5>
+									<p class="card-text" id="NombreReal"></p>
+								  </div>
+								</div>
+
+
+								<div class="card text-center">
+								  <div class="card-body">
+									<h5 class="card-header">Nombre d'Organisme Demandeur</h5>
+									<p class="card-text" id="NombreOrganisme"></p>
+								  </div>
+								</div>
+
+
+								<div class="card text-center">
+								  <div class="card-body">
+									<h5 class="card-header">Nombre de Films</h5>
+									<p class="card-text" id="NombreDeFilm"></p>
+								  </div>
+								</div>
+
+					
+
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+						  Le nombre de tournage par réalisateur
+						</button>
+
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2">
+						  Le nombre de tournage par arrondissement
+						</button>
+						
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3">
+						  Le nombre de tournage par type
+						</button>
+						
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal4">
+						  Drilldown
+						</button>
+
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal5">
+						  Nombre de tournage par mois
+						</button>
+
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal6">
+						  Nombre de tournage par durée
+						</button>						
+						
+							
+			</div>				
+			</div>
+
+							</div>			
+			
 			<div class="sidebar-pane" id="aboutus">
 				<h1 class="sidebar-header">Notre groupe<span class="sidebar-close"><i
 							class="fa fa-caret-left"></i></span></h1>
@@ -244,7 +355,127 @@ BUG FIX:
 			</div>
 		</div>
 	</div>
-
+	
+	
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div id="TournageReal" style="height: 370px; width: 100%;"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+		<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+		<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div id="TypeTournage" style="height: 370px; width: 100%;"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+		<div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div id="test">
+							<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
+							<button class="btn invisible" id="backButton">< Back</button>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+		<div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div id="TournageMois" style="height: 370px; width: 100%;"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+		<div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<div id="TournageDuree" style="height: 370px; width: 100%;"></div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+						
+						
 	<div id="map" class="sidebar-map"></div>
 
 	<div id="divFloat" class="sidebar-form">
@@ -288,12 +519,12 @@ BUG FIX:
 			</div>
 			<div class="form-group">
 				<label for="formAff__date_debut">Date de debut de tournage</label>
-				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_debut"
+				<input class="form-control" type="date" min="2016-01-01" max="2016-12-31" id="formAff__date_debut"
 					name="date_debut">
 			</div>
 			<div class="form-group">
 				<label for="formAff__date_fin">Date de fin de tournage</label>
-				<input class="form-control" type="date" min="2016-01-01" max="2016-12-01" id="formAff__date_fin"
+				<input class="form-control" type="date" min="2016-01-01" max="2016-12-31" id="formAff__date_fin"
 					name="date_fin">
 			</div>
 			<button class="btn btn-primary" id="mod" type="submit"
@@ -444,16 +675,19 @@ BUG FIX:
 							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
 							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin == val_df); }
 							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
+							
 						}
+						
 					});
 
-
+					
 					mapMarkers.push(markers);
 					for (var i = 0; i < mapMarkers.length; i++) {
 						map.removeLayer(mapMarkers[i]);
 					}
 					markers.addLayer(points);
 					map.addLayer(markers);
+					console.log(markers);
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
