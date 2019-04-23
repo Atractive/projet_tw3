@@ -172,8 +172,8 @@ window.onload = function() {
 		});
 		
 		function ClickMois(e){
-				console.log(e);
-				console.log(e.dataPoint.x + 1);
+				// console.log(e);
+				// console.log(e.dataPoint.x + 1);
 				var mois = e.dataPoint.x + 1;
 				var maxDay= new Date(2016,mois,0).getDate();
 				if (mois<10){
@@ -341,31 +341,55 @@ window.onload = function() {
 			dataPoints: dataTypeTournage2
 		}],
 		"LONG METRAGE": [{
+			click:testclick,
 			color: "#E7823A",
 			name: "LONG METRAGE",
 			type: "column",
 			dataPoints: dataLongm
 		}],
 		"SERIE TELEVISEE": [{
+			click:testclick,
 			color: "#546BC1",
 			name: "SERIE TELEVISEE",
 			type: "column",
 			dataPoints: dataSerie
 		}],
 		"TELEFILM": [{
+			click:testclick,
 			color: "#546BC1",
 			name: "TELEFILM",
 			type: "column",
 			dataPoints: dataTelef
 		}],
 		"": [{
+			click:testclick,
 			color: "#546BC1",
 			name: "",
 			type: "column",
 			dataPoints: dataSansType
 		}]
 	};
-
+	
+	function testclick(e){
+		console.log(e);
+		console.log("mois", e.dataPoint.label);
+		console.log("rubrique", e.dataSeries.name);
+		var mois = e.dataPoint.x + 1;
+		var maxDay= new Date(2016,mois,0).getDate();
+		if (mois<10){
+			var debut="2016-0"+mois+"-01";
+			var fin="2016-0"+mois+"-"+maxDay;
+		}
+		else{
+			var debut="2016-"+mois+"-01";
+			var fin="2016-"+mois+"-"+maxDay;
+		}
+		document.getElementById('formLoaderFilter').reset();
+		document.getElementById('formLoaderFilter__date_debut').value=debut;
+		document.getElementById('formLoaderFilter__date_fin').value=fin;
+		document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataSeries.name;
+		document.getElementById('sub').click();
+	}
 	var TypeTournageOptions = {
 		animationEnabled: true,
 		theme: "light2",

@@ -671,9 +671,9 @@ BUG FIX:
 							var val_ar = document.getElementById('formLoaderFilter__ardt').value;
 							if (val_ar == '') { var bool_ar = true; } else { bool_ar = (feature.properties.ardt == val_ar); }
 							var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
-							if (val_dd == '') { var bool_dd = true; } else { bool_dd = (feature.properties.date_debut == val_dd); }
+							if (val_dd == '') { var bool_dd = true; } else { bool_dd = (feature.properties.date_debut >= val_dd); }
 							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
-							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin == val_df); }
+							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin <= val_df); }
 							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
 							
 						}
