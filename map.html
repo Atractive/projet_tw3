@@ -228,7 +228,7 @@ BUG FIX:
 					<form id="formLoaderFilter" autocomplete="off">
 						<div class="form-group">
 							<label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
-							<select class="form-control" id="formLoaderFilter__type_de_tournage">
+							<select class="form-control" name ="type_de_tournage" id="formLoaderFilter__type_de_tournage">
 								<option>NON RENSEIGNE</option>
 								<option>TELEFILM</option>
 								<option>LONG METRAGE</option>
@@ -237,38 +237,38 @@ BUG FIX:
 						</div>
 						<div class="form-group" id="titre">
 							<label for="formLoaderFilter__titre">Titre</label>
-							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+							<input class="form-control" type="search" name="titre" onkeyup='this.value=this.value.toUpperCase()'
 								id="formLoaderFilter__titre">
 
 						</div>
 						<div class="form-group" id="real">
 							<label for="formLoaderFilter__realisateur">Realisateur</label>
-							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+							<input class="form-control" type="search" name="realisateur" onkeyup='this.value=this.value.toUpperCase()'
 								id="formLoaderFilter__realisateur">
 						</div>
 						<div class="form-group " id="orga">
 							<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
-							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+							<input class="form-control" type="search" name="organisme_demandeur" onkeyup='this.value=this.value.toUpperCase()'
 								id="formLoaderFilter__organisme_demandeur">
 
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__adresse">Adresse</label>
-							<input class="form-control" type="search" onkeyup='this.value=this.value.toUpperCase()'
+							<input class="form-control" type="search" name="adresse" onkeyup='this.value=this.value.toUpperCase()'
 								id="formLoaderFilter__adresse">
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__ardt">Arrondissement</label>
-							<input class="form-control" type="search" id="formLoaderFilter__ardt">
+							<input class="form-control" type="search" name="ardt" id="formLoaderFilter__ardt">
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__date_debut">Date de debut de tournage</label>
-							<input class="form-control" type="date" min="2016-01-01" max="2016-12-31"
+							<input class="form-control" type="date" name="date_debut" min="2016-01-01" max="2016-12-31"
 								id="formLoaderFilter__date_debut">
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__date_fin">Date de fin de tournage</label>
-							<input class="form-control" type="date" min="2016-01-01" max="2016-12-31"
+							<input class="form-control" type="date" name="date_fin" min="2016-01-01" max="2016-12-31"
 								id="formLoaderFilter__date_fin">
 						</div>
 						<button class="btn btn-primary" type="submit" id="sub">Valider</button>
@@ -592,6 +592,22 @@ BUG FIX:
 			}
 		);
 
+		$( "#formLoaderFilter" ).on( "submit", function( event ) {
+		  event.preventDefault();
+		  console.log("coucou")
+		  var reponse = $( this ).serialize() ;
+		  var l_rep=reponse.split("&");
+		  console.log(l_rep);
+		  $.ajax({
+			type: "GET"
+			url: //A définir par notre ami godie
+			data:l_rep //Sauf si j'ai mal compris le AJAX.
+			success:function(response){
+				//A implémenter
+			}
+		  });
+		});
+		
 		function onPopupOpen() {
 			clickedMarker = this;
 			// $.ajax({
