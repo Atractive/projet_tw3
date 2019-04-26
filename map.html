@@ -148,8 +148,8 @@ BUG FIX:
 			width: 15%;
 			z-index: 2;
 		}
-		
-		
+
+
 		.bd-placeholder-img {
 			font-size: 1.125rem;
 			text-anchor: middle;
@@ -164,25 +164,26 @@ BUG FIX:
 				font-size: 3.5rem;
 			}
 		}
-		
+
 		#test backButton {
-		border-radius: 4px;
-		padding: 8px;
-		border: none;
-		font-size: 16px;
-		background-color: #2eacd1;
-		color: white;
-		position: absolute;
-		cursor: pointer;
-	  }
-	  .invisible {
-		display: none;
-	  }
+			border-radius: 4px;
+			padding: 8px;
+			border: none;
+			font-size: 16px;
+			background-color: #2eacd1;
+			color: white;
+			position: absolute;
+			cursor: pointer;
+		}
+
+		.invisible {
+			display: none;
+		}
 	</style>
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	<script type="text/javascript" src="stats.js"></script>
 	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -228,7 +229,8 @@ BUG FIX:
 					<form id="formLoaderFilter" autocomplete="off">
 						<div class="form-group">
 							<label for="formLoaderFilter__type_de_tournage">Type de tournage</label>
-							<select class="form-control" name ="type_de_tournage" id="formLoaderFilter__type_de_tournage">
+							<select class="form-control" name="type_de_tournage"
+								id="formLoaderFilter__type_de_tournage">
 								<option>NON RENSEIGNE</option>
 								<option>TELEFILM</option>
 								<option>LONG METRAGE</option>
@@ -237,25 +239,26 @@ BUG FIX:
 						</div>
 						<div class="form-group" id="titre">
 							<label for="formLoaderFilter__titre">Titre</label>
-							<input class="form-control" type="search" name="titre" onkeyup='this.value=this.value.toUpperCase()'
-								id="formLoaderFilter__titre">
+							<input class="form-control" type="search" name="titre"
+								onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__titre">
 
 						</div>
 						<div class="form-group" id="real">
 							<label for="formLoaderFilter__realisateur">Realisateur</label>
-							<input class="form-control" type="search" name="realisateur" onkeyup='this.value=this.value.toUpperCase()'
-								id="formLoaderFilter__realisateur">
+							<input class="form-control" type="search" name="realisateur"
+								onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__realisateur">
 						</div>
 						<div class="form-group " id="orga">
 							<label for="formLoaderFilter__organisme_demandeur">Organisme demandeur</label>
-							<input class="form-control" type="search" name="organisme_demandeur" onkeyup='this.value=this.value.toUpperCase()'
+							<input class="form-control" type="search" name="organisme_demandeur"
+								onkeyup='this.value=this.value.toUpperCase()'
 								id="formLoaderFilter__organisme_demandeur">
 
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__adresse">Adresse</label>
-							<input class="form-control" type="search" name="adresse" onkeyup='this.value=this.value.toUpperCase()'
-								id="formLoaderFilter__adresse">
+							<input class="form-control" type="search" name="adresse"
+								onkeyup='this.value=this.value.toUpperCase()' id="formLoaderFilter__adresse">
 						</div>
 						<div class="form-group">
 							<label for="formLoaderFilter__ardt">Arrondissement</label>
@@ -280,142 +283,154 @@ BUG FIX:
 				<h1 class="sidebar-header">Statistiques générale<span class="sidebar-close"><i
 							class="fa fa-caret-left"></i></span></h1>
 				<div class="container ui-front" style="width:100%;">
-				
-				
-						<ul class="list-group">
-						  <li class="list-group-item">Nombre de Tournage <span class="badge badge-info" id="NombreTournage"></span></li>
-						  <li class="list-group-item">Nombre de Réalisateur<span class="badge badge-info" id="NombreReal"></span></li>
-						  <li class="list-group-item">Nombre d'Organisme Demandeur <span class="badge badge-info" id="NombreOrganisme"></span></li>
-						  <li class="list-group-item">Nombre de Films <span class="badge badge-info" id="NombreDeFilm"></span></li>
-						
-						  <button type="button" style="width:100%;" id="réal" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par réalisateur" data-target="#exampleModal">
-						  Le nombre de tournage par réalisateur
+
+
+					<ul class="list-group">
+						<li class="list-group-item">Nombre de Tournage <span class="badge badge-info"
+								id="NombreTournage"></span></li>
+						<li class="list-group-item">Nombre de Réalisateur<span class="badge badge-info"
+								id="NombreReal"></span></li>
+						<li class="list-group-item">Nombre d'Organisme Demandeur <span class="badge badge-info"
+								id="NombreOrganisme"></span></li>
+						<li class="list-group-item">Nombre de Films <span class="badge badge-info"
+								id="NombreDeFilm"></span></li>
+
+						<button type="button" style="width:100%;" id="réal" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par réalisateur" data-target="#exampleModal">
+							Le nombre de tournage par réalisateur
 						</button>
 
-						<button type="button" style="width:100%;" id="ardt" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par arrondissement" data-target="#exampleModal">
-						  Le nombre de tournage par arrondissement
-						</button>
-						
-						<button type="button" style="width:100%;" id="type" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par type" data-target="#exampleModal">
-						  Le nombre de tournage par type
-						</button>
-						
-						<button type="button" style="width:100%;" id="drill" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par efzfsqd" data-target="#exampleModal">
-						  Drilldown
+						<button type="button" style="width:100%;" id="ardt" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par arrondissement" data-target="#exampleModal">
+							Le nombre de tournage par arrondissement
 						</button>
 
-						<button type="button" style="width:100%;" id="mois" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par mois" data-target="#exampleModal">
-						  Nombre de tournage par mois
+						<button type="button" style="width:100%;" id="type" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par type" data-target="#exampleModal">
+							Le nombre de tournage par type
 						</button>
 
-						<button type="button" style="width:100%;" id="durée" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par durée" data-target="#exampleModal">
-						  Nombre de tournage par durée
-						</button>		
-						</ul>
-						
-						
-										
-						
-						
-			</div>				
-			</div>
+						<button type="button" style="width:100%;" id="drill" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par efzfsqd" data-target="#exampleModal">
+							Drilldown
+						</button>
 
-							</div>			
-			
-			<div class="sidebar-pane" id="aboutus">
-				<h1 class="sidebar-header">Notre groupe<span class="sidebar-close"><i
-							class="fa fa-caret-left"></i></span></h1>
-				<h2> <i class="fas fa-user-astronaut"></i> Pierre CRY </h2>
-				<h2> <i class="fas fa-user-secret"></i> Diego ORTIZ </h2>
-				<h2> <i class="fas fa-user-ninja"></i> Matthias AMBROISE </h2>
-			</div>
-		</div>
-	</div>
-	
-	
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">New message</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-				<div id="TournageReal" style="height: 370px; width: 100%; display:none;"></div>
-				<div id="TypeTournage" style="height: 370px; width: 100%; display:none;"></div>
-				<div id="TournageArrdt" style="height: 370px; width: 100%;display:none;"></div>
-				<div id="test" style="display:none;">
-					<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
-					<button class="btn invisible" id="backButton">< Back</button>
+						<button type="button" style="width:100%;" id="mois" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par mois" data-target="#exampleModal">
+							Nombre de tournage par mois
+						</button>
+
+						<button type="button" style="width:100%;" id="durée" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par durée" data-target="#exampleModal">
+							Nombre de tournage par durée
+						</button>
+					</ul>
+
+
+
+
+
 				</div>
-				<div id="TournageMois" style="height: 370px; width: 100%;display:none;"></div>
-				<div id="TournageDuree" style="height: 370px; width: 100%;display:none;"></div>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			<button type="button" class="btn btn-primary">Send message</button>
-		  </div>
+			</div>
+
 		</div>
-	  </div>
+
+		<div class="sidebar-pane" id="aboutus">
+			<h1 class="sidebar-header">Notre groupe<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+			</h1>
+			<h2> <i class="fas fa-user-astronaut"></i> Pierre CRY </h2>
+			<h2> <i class="fas fa-user-secret"></i> Diego ORTIZ </h2>
+			<h2> <i class="fas fa-user-ninja"></i> Matthias AMBROISE </h2>
+		</div>
+	</div>
 	</div>
 
-<script>
-function allHide(classname,id){
-  classobj = document.getElementsByClassName(classname);
-  for (var i=0; i<classobj["0"].children.length;i++){
-	if (id != classobj["0"].children[i].id){
-		classobj["0"].children[i].style.display="none";
-	}
-  }
-}
-$('#exampleModal').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  <!-- console.log(button); -->
-  var recipient = button.data('whatever'); // Extract info from data-* attributes
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-  var b_id = button.context.id;
-  <!-- console.log(b_id); -->
-  var modal = $(this);
-  
-  classobj = document.getElementsByClassName("modal-body");
-  console.log(classobj);
-  console.log(classobj["0"].children);
-  console.log(classobj["0"].children[0].id);
-  console.log(classobj["0"].children[0].style.display);
-  modal.find('.modal-title').text(recipient);
-  if (b_id=="réal"){
-	var id="TournageReal";
-	allHide("modal-body",id);
-  }
-  else if (b_id=="ardt"){
-	var id="TournageArrdt";
-	allHide("modal-body",id);
-  }
-  else if (b_id=="type"){
-	var id="TypeTournage";
-	allHide("modal-body",id);
-  }
-  else if (b_id=="drill"){
-	var id="test";
-	allHide("modal-body",id);
-	}
-  else if (b_id=="mois"){
-	var id="TournageMois";
-	allHide("modal-body",id);
- }
-  else if (b_id=="durée"){
-	var id="TournageDuree";
-	allHide("modal-body",id);
-  }
-  var obj = document.getElementById(id);
-	  console.log(obj);
-	  obj.style.display="block";
-  })
-</script>
-		
+
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">New message</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="TournageReal" style="height: 370px; width: 100%; display:none;"></div>
+					<div id="TypeTournage" style="height: 370px; width: 100%; display:none;"></div>
+					<div id="TournageArrdt" style="height: 370px; width: 100%;display:none;"></div>
+					<div id="test" style="display:none;">
+						<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
+						<button class="btn invisible" id="backButton">
+							< Back</button> </div> <div id="TournageMois"
+								style="height: 370px; width: 100%;display:none;">
+					</div>
+					<div id="TournageDuree" style="height: 370px; width: 100%;display:none;"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Send message</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function allHide(classname, id) {
+			classobj = document.getElementsByClassName(classname);
+			for (var i = 0; i < classobj["0"].children.length; i++) {
+				if (id != classobj["0"].children[i].id) {
+					classobj["0"].children[i].style.display = "none";
+				}
+			}
+		}
+		$('#exampleModal').on('show.bs.modal', function (event) {
+			var button = $(event.relatedTarget) // Button that triggered the modal
+			//   console.log(button);
+			var recipient = button.data('whatever'); // Extract info from data-* attributes
+			// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+			var b_id = button.context.id;
+			//   <!-- console.log(b_id); -->
+			var modal = $(this);
+
+			classobj = document.getElementsByClassName("modal-body");
+			console.log(classobj);
+			console.log(classobj["0"].children);
+			console.log(classobj["0"].children[0].id);
+			console.log(classobj["0"].children[0].style.display);
+			modal.find('.modal-title').text(recipient);
+			if (b_id == "réal") {
+				var id = "TournageReal";
+				allHide("modal-body", id);
+			}
+			else if (b_id == "ardt") {
+				var id = "TournageArrdt";
+				allHide("modal-body", id);
+			}
+			else if (b_id == "type") {
+				var id = "TypeTournage";
+				allHide("modal-body", id);
+			}
+			else if (b_id == "drill") {
+				var id = "test";
+				allHide("modal-body", id);
+			}
+			else if (b_id == "mois") {
+				var id = "TournageMois";
+				allHide("modal-body", id);
+			}
+			else if (b_id == "durée") {
+				var id = "TournageDuree";
+				allHide("modal-body", id);
+			}
+			var obj = document.getElementById(id);
+			console.log(obj);
+			obj.style.display = "block";
+		})
+	</script>
+
 	<div id="map" class="sidebar-map"></div>
 
 	<div id="divFloat" class="sidebar-form">
@@ -532,23 +547,27 @@ $('#exampleModal').on('show.bs.modal', function (event) {
 			}
 		);
 
-		$( "#formLoaderFilter" ).on( "submit", function( evt ) {
-		  evt.preventDefault();
-		  loadMap();
-		  console.log("coucou")
-		  var reponse = $( this ).serialize() ;
-		  var l_rep=reponse.split("&");
-		  console.log(l_rep);
-		  <!-- $.ajax({ -->
-			<!-- type: "GET" -->
-			<!-- url: //A définir par notre ami godie -->
-			<!-- data:l_rep //Sauf si j'ai mal compris le AJAX. -->
-			<!-- success:function(response){ -->
-				<!-- //A implémenter -->
-			<!-- } -->
-		  <!-- }); -->
+		$("#formLoaderFilter").on("submit", function (evt) {
+			evt.preventDefault();
+			loadMap();
+			var reponse = $(this).serialize();
+			var l_rep = reponse.split("&");
+			toSend = {}
+			for (var i = 0; i < l_rep.length; i++) {
+				var temp = l_rep[i].split("=");
+				toSend[temp[0]] = temp[1];
+			}
+			console.log(toSend);
+			$.ajax({
+				type: "POST",
+				url: 'http://localhost:444/filterform',
+				data: { data: toSend },
+				success: function (response) {
+					console.log("succes", response.data);
+				}
+			});
 		});
-		
+
 		function onPopupOpen() {
 			clickedMarker = this;
 			// $.ajax({
@@ -632,19 +651,19 @@ $('#exampleModal').on('show.bs.modal', function (event) {
 							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
 							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin <= val_df); }
 							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
-							
+
 						}
-						
+
 					});
 
-					
+
 					mapMarkers.push(markers);
 					for (var i = 0; i < mapMarkers.length; i++) {
 						map.removeLayer(mapMarkers[i]);
 					}
 					markers.addLayer(points);
 					map.addLayer(markers);
-					console.log(markers);
+					// console.log(markers);
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
@@ -691,7 +710,7 @@ $('#exampleModal').on('show.bs.modal', function (event) {
 		});
 
 
-		
+
 
 
 		//Creation d'un point dans la map et dans la db

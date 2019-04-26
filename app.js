@@ -11,8 +11,8 @@ const bodyParser = require('body-parser');
 // let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
 
-//var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
-var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
+var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
+// var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
 // console.log(geojson.features.length);
 // for (var i = 0; i < geojson.features.length; i++) {
@@ -73,7 +73,7 @@ app.get('/nombredeligne', function (req, res) {
                 maxid = current;
             }
         }
-        console.log(maxid);
+        // console.log(maxid);
         res.send({ nb: maxid + 1 });
     });
 
@@ -152,9 +152,9 @@ app.get('/tournagespartype', function (req, res) {
 app.get('/tournagesparmoispartype', function (req, res) {
 
     var longm = {};
-	var telef = {};
-	var serie = {};
-	var sanstype = {}
+    var telef = {};
+    var serie = {};
+    var sanstype = {}
     // fill m
     for (var i = 0; i < 12; i++) {
         longm[i] = telef[i] = serie[i] = sanstype[i] = 0;
@@ -164,53 +164,53 @@ app.get('/tournagesparmoispartype', function (req, res) {
     db.find({}, { "properties.type_de_tournage": 1, "properties.date_debut": 1, "properties.date_fin": 1 }, function (err, docs) {
         for (var i = 0; i < docs.length; i++) {
             // console.log(parseInt(m[docs[i].properties.date_debut].split("-")[1]));
-			var type = docs[i].properties.type_de_tournage;
+            var type = docs[i].properties.type_de_tournage;
             var mois_debut = docs[i].properties.date_debut.split("-")[1];
             var mois_fin = docs[i].properties.date_fin.split("-")[1];
             if (typeof date_debut != undefined && typeof date_fin != undefined && typeof type != undefined) {
                 mois_debut = parseInt(mois_debut);
                 mois_fin = parseInt(mois_fin);
                 // console.log(mois_fin, mois_debut, mois_fin - mois_debut);
-                if (type == "LONG METRAGE"){
-					if (mois_fin - mois_debut == 0) {
-						longm[mois_debut - 1] += 1;
-					} else {
-						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-							longm[j - 1] += 1;
-						}
-					}
-				}
-				else if (type == "SERIE TELEVISEE"){
-					if (mois_fin - mois_debut == 0) {
-						serie[mois_debut - 1] += 1;
-					} else {
-						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-							serie[j - 1] += 1;
-						}
-					}
-				}
-				else if (type == "TELEFILM"){
-					if (mois_fin - mois_debut == 0) {
-						telef[mois_debut - 1] += 1;
-					} else {
-						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-							telef[j - 1] += 1;
-						}
-					}
-				}
-				else{
-					if (mois_fin - mois_debut == 0) {
-						sanstype[mois_debut - 1] += 1;
-					} else {
-						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-							sanstype[j - 1] += 1;
-						}
-					}
-				}
-			}
+                if (type == "LONG METRAGE") {
+                    if (mois_fin - mois_debut == 0) {
+                        longm[mois_debut - 1] += 1;
+                    } else {
+                        for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+                            longm[j - 1] += 1;
+                        }
+                    }
+                }
+                else if (type == "SERIE TELEVISEE") {
+                    if (mois_fin - mois_debut == 0) {
+                        serie[mois_debut - 1] += 1;
+                    } else {
+                        for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+                            serie[j - 1] += 1;
+                        }
+                    }
+                }
+                else if (type == "TELEFILM") {
+                    if (mois_fin - mois_debut == 0) {
+                        telef[mois_debut - 1] += 1;
+                    } else {
+                        for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+                            telef[j - 1] += 1;
+                        }
+                    }
+                }
+                else {
+                    if (mois_fin - mois_debut == 0) {
+                        sanstype[mois_debut - 1] += 1;
+                    } else {
+                        for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+                            sanstype[j - 1] += 1;
+                        }
+                    }
+                }
+            }
 
         }
-        res.send({ resultlongm: longm, resulttelef: telef, resultserie: serie, resultsanstype: sanstype});
+        res.send({ resultlongm: longm, resulttelef: telef, resultserie: serie, resultsanstype: sanstype });
     });
 });
 
@@ -221,7 +221,7 @@ app.get('/tournagesparmois', function (req, res) {
     for (var i = 0; i < 12; i++) {
         m[i] = 0;
     }
-    console.log(m);
+    // console.log(m);
 
     db.find({}, { "properties.date_debut": 1, "properties.date_fin": 1 }, function (err, docs) {
         for (var i = 0; i < docs.length; i++) {
@@ -395,11 +395,39 @@ app.post('/loadFields', function (req, res) {
 });
 
 
-app.post('/loadFields', function (req, res) {
-    // console.log(req.body.id, typeof req.body.id);
-    res.send({ status: 0 });
-});
+app.post('/filterform', function (req, res) {
+    console.log("here", req.body.data);
+    var toCompare = {};
+    var dbString = {};
+    var reponse = []
 
+    for (var key in req.body.data) {
+        if (req.body.data[key]) {
+            dbString["properties." + key.toString()] = 1;
+            toCompare[key] = req.body.data[key].replace(/\+/g, ' ').trim();
+        }
+    }
+    db.find({}, {}, function (err, docs) {
+        if (err) res.send({ status: -1, message: 'error' });
+        for (var i = 0; i < docs.length; i++) {
+            // console.log(toCompare);
+            var flag = true;
+            for (var key in toCompare) {
+                if (docs[i].properties[key] !== toCompare[key]) {
+                    flag = false;
+                    break;
+                }
+                console.log("comp", docs[i].properties[key], "/", toCompare[key], docs[i].properties[key] == toCompare[key]);
+            }
+            if (flag) {
+                // console.log("i", docs[i]);
+                reponse.push(docs[i].properties);
+            }
+        }
+        // console.log(reponse);
+        res.send({ status: 0, data: reponse });
+    });
+});
 
 
 //////////////////////////////////////////////////////////////////////
