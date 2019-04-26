@@ -280,67 +280,43 @@ BUG FIX:
 				<h1 class="sidebar-header">Statistiques générale<span class="sidebar-close"><i
 							class="fa fa-caret-left"></i></span></h1>
 				<div class="container ui-front" style="width:100%;">
-							<div class="card">
-								<div class="card text-center">
-								  <div class="card-body">
-									<h5 class="card-header">
-										Nombre de Tournage		
-										</h5>
-									<p class="card-text" id="NombreTournage"></p>
-								  </div>
-								</div>
-							</div>
-
-								<div class="card text-center" >
-								  <div class="card-body">
-									<h5 class="card-header">Nombre de Réalisateur</h5>
-									<p class="card-text" id="NombreReal"></p>
-								  </div>
-								</div>
-
-
-								<div class="card text-center">
-								  <div class="card-body">
-									<h5 class="card-header">Nombre d'Organisme Demandeur</h5>
-									<p class="card-text" id="NombreOrganisme"></p>
-								  </div>
-								</div>
-
-
-								<div class="card text-center">
-								  <div class="card-body">
-									<h5 class="card-header">Nombre de Films</h5>
-									<p class="card-text" id="NombreDeFilm"></p>
-								  </div>
-								</div>
-
-					
-					<div class="container">
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+				
+				
+						<ul class="list-group">
+						  <li class="list-group-item">Nombre de Tournage <span class="badge badge-info" id="NombreTournage"></span></li>
+						  <li class="list-group-item">Nombre de Réalisateur<span class="badge badge-info" id="NombreReal"></span></li>
+						  <li class="list-group-item">Nombre d'Organisme Demandeur <span class="badge badge-info" id="NombreOrganisme"></span></li>
+						  <li class="list-group-item">Nombre de Films <span class="badge badge-info" id="NombreDeFilm"></span></li>
+						
+						  <button type="button" style="width:100%;" id="réal" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par réalisateur" data-target="#exampleModal">
 						  Le nombre de tournage par réalisateur
 						</button>
 
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2">
+						<button type="button" style="width:100%;" id="ardt" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par arrondissement" data-target="#exampleModal">
 						  Le nombre de tournage par arrondissement
 						</button>
 						
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3">
+						<button type="button" style="width:100%;" id="type" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par type" data-target="#exampleModal">
 						  Le nombre de tournage par type
 						</button>
 						
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal4">
+						<button type="button" style="width:100%;" id="drill" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par efzfsqd" data-target="#exampleModal">
 						  Drilldown
 						</button>
 
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal5">
+						<button type="button" style="width:100%;" id="mois" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par mois" data-target="#exampleModal">
 						  Nombre de tournage par mois
 						</button>
 
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal6">
+						<button type="button" style="width:100%;" id="durée" class="btn btn-primary" data-toggle="modal" data-whatever="Charts nombre de tournage par durée" data-target="#exampleModal">
 						  Nombre de tournage par durée
-						</button>						
-					</div>	
-							
+						</button>		
+						</ul>
+						
+						
+										
+						
+						
 			</div>				
 			</div>
 
@@ -357,125 +333,89 @@ BUG FIX:
 	</div>
 	
 	
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+			<h5 class="modal-title" id="exampleModalLabel">New message</h5>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span>
 			</button>
 		  </div>
 		  <div class="modal-body">
-			<div id="TournageReal" style="height: 370px; width: 100%;"></div>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-	
-		<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-	
-		<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div id="TypeTournage" style="height: 370px; width: 100%;"></div>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-	
-		<div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		  <div class="modal-dialog" role="document">
-			<div class="modal-content">
-			  <div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				  <span aria-hidden="true">&times;</span>
-				</button>
-			  </div>
-			  <div class="modal-body">
-				<div id="test">
-								<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
-								<button class="btn invisible" id="backButton">< Back</button>
+				<div id="TournageReal" style="height: 370px; width: 100%; display:none;"></div>
+				<div id="TypeTournage" style="height: 370px; width: 100%; display:none;"></div>
+				<div id="TournageArrdt" style="height: 370px; width: 100%;display:none;"></div>
+				<div id="test" style="display:none;">
+					<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
+					<button class="btn invisible" id="backButton">< Back</button>
 				</div>
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			  </div>
-			</div>
-		  </div>
-		</div>
-	
-	<div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div id="TournageMois" style="height: 370px; width: 100%;"></div>
+				<div id="TournageMois" style="height: 370px; width: 100%;display:none;"></div>
+				<div id="TournageDuree" style="height: 370px; width: 100%;display:none;"></div>
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Send message</button>
 		  </div>
 		</div>
 	  </div>
 	</div>
-	
-	<div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div id="TournageDuree" style="height: 370px; width: 100%;"></div>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-						
-						
+
+<script>
+function allHide(classname,id){
+  classobj = document.getElementsByClassName(classname);
+  for (var i=0; i<classobj["0"].children.length;i++){
+	if (id != classobj["0"].children[i].id){
+		classobj["0"].children[i].style.display="none";
+	}
+  }
+}
+$('#exampleModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  <!-- console.log(button); -->
+  var recipient = button.data('whatever'); // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var b_id = button.context.id;
+  <!-- console.log(b_id); -->
+  var modal = $(this);
+  
+  classobj = document.getElementsByClassName("modal-body");
+  console.log(classobj);
+  console.log(classobj["0"].children);
+  console.log(classobj["0"].children[0].id);
+  console.log(classobj["0"].children[0].style.display);
+  modal.find('.modal-title').text(recipient);
+  if (b_id=="réal"){
+	var id="TournageReal";
+	allHide("modal-body",id);
+  }
+  else if (b_id=="ardt"){
+	var id="TournageArrdt";
+	allHide("modal-body",id);
+  }
+  else if (b_id=="type"){
+	var id="TypeTournage";
+	allHide("modal-body",id);
+  }
+  else if (b_id=="drill"){
+	var id="test";
+	allHide("modal-body",id);
+	}
+  else if (b_id=="mois"){
+	var id="TournageMois";
+	allHide("modal-body",id);
+ }
+  else if (b_id=="durée"){
+	var id="TournageDuree";
+	allHide("modal-body",id);
+  }
+  var obj = document.getElementById(id);
+	  console.log(obj);
+	  obj.style.display="block";
+  })
+</script>
+		
 	<div id="map" class="sidebar-map"></div>
 
 	<div id="divFloat" class="sidebar-form">
