@@ -396,7 +396,7 @@ app.post('/loadFields', function (req, res) {
 
 
 app.post('/filterform', function (req, res) {
-    // console.log("here", req.body.data);
+    console.log("here", req.body.data);
     var toCompare = {};
     var dbString = {};
     var reponse = []
@@ -418,7 +418,14 @@ app.post('/filterform', function (req, res) {
                     // console.log(docs[i]);
                     flag = true;
                 }
+                else if (key == "date_debut" || key == "date_fin") {
+                    if (docs[i].properties[key].split("-")[1] !== toCompare[key].split("-")[1]) {
+                        flag = false;
+                        break;
+                    }
+                }
                 else if (docs[i].properties[key] !== toCompare[key]) {
+                    // console.log(docs[i].properties[key], toCompare[key]);
                     flag = false;
                     break;
                 }

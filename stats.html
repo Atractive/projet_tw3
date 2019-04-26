@@ -3,25 +3,32 @@
 
 <head>
 	<meta charset="utf-8">
-        
+
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 		integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
 		integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-		
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
 	<style>
-		
-		
+
+
 	</style>
 	<script>
-		
+
 	</script>
 	<style>
-	
+
 	</style>
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	<script type="text/javascript" src="stats.js"></script>
@@ -29,68 +36,69 @@
 	<style data-styled-components=""></style>
 </head>
 
-<body >
-<header>
-	<h2><a href="http://localhost:444/" role="button"><i class="fas fa-arrow-circle-left"></i> &nbsp;Retour à la carte</a>
-	</h2>
-	<h1 class="text-center"> Analyse des données sur les tournages à Paris en 2016 </h1>
-</header>	
+<body>
+	<header>
+		<h2><a href="http://localhost:444/" role="button"><i class="fas fa-arrow-circle-left"></i> &nbsp;Retour à la
+				carte</a>
+		</h2>
+		<h1 class="text-center"> Analyse des données sur les tournages à Paris en 2016 </h1>
+	</header>
 
-<div class="container fill">
-	<div class="row">
-		
-		<div class="col">
-			<div class="card text-center">
-			  <div class="card-body">
-				<h5 class="card-header">
-					Nombre de Tournage			
-					</h5>
-				<p class="card-text" id="NombreTournage"></p>
-			  </div>
+	<div class="container fill">
+		<div class="row">
+
+			<div class="col">
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-header">
+							Nombre de Tournage
+						</h5>
+						<p class="card-text" id="NombreTournage"></p>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-header">Nombre de Réalisateur</h5>
+						<p class="card-text" id="NombreReal"></p>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-header">Nombre d'Organisme Demandeur</h5>
+						<p class="card-text" id="NombreOrganisme"></p>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card text-center">
+					<div class="card-body">
+						<h5 class="card-header">Nombre de Films</h5>
+						<p class="card-text" id="NombreDeFilm"></p>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="col">
-			<div class="card text-center" >
-			  <div class="card-body">
-				<h5 class="card-header">Nombre de Réalisateur</h5>
-				<p class="card-text" id="NombreReal"></p>
-			  </div>
-			</div>
+
+		<div id="TournageReal" style="height: 370px; width: 100%;"></div>
+		<div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
+		<div id="TypeTournage" style="height: 370px; width: 100%;"></div>
+
+		<div id="test">
+			<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
+			<button class="btn invisible" id="backButton"> Back</button>
 		</div>
-		<div class="col">
-			<div class="card text-center">
-			  <div class="card-body">
-				<h5 class="card-header">Nombre d'Organisme Demandeur</h5>
-				<p class="card-text" id="NombreOrganisme"></p>
-			  </div>
-			</div>
-		</div>
-		<div class="col">
-			<div class="card text-center">
-			  <div class="card-body">
-				<h5 class="card-header">Nombre de Films</h5>
-				<p class="card-text" id="NombreDeFilm"></p>
-			  </div>
-			</div>
-		</div>
+
+		<div id="TournageMois" style="height: 370px; width: 100%;"></div>
+		<div id="TournageDuree" style="height: 370px; width: 100%;"></div>
 	</div>
-
-<div id="TournageReal" style="height: 370px; width: 100%;"></div>
-<div id="TournageArrdt" style="height: 370px; width: 100%;"></div>
-<div id="TypeTournage" style="height: 370px; width: 100%;"></div>
-
-<div id="test">
-<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
-<button class="btn invisible" id="backButton">< Back</button>
-</div>
-
-<div id="TournageMois" style="height: 370px; width: 100%;"></div>
-<div id="TournageDuree" style="height: 370px; width: 100%;"></div>
-</div>
 
 
 	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
 		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
