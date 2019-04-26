@@ -315,7 +315,7 @@ BUG FIX:
 								</div>
 
 					
-
+					<div class="container">
 						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
 						  Le nombre de tournage par réalisateur
 						</button>
@@ -339,7 +339,7 @@ BUG FIX:
 						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal6">
 						  Nombre de tournage par durée
 						</button>						
-						
+					</div>	
 							
 			</div>				
 			</div>
@@ -416,28 +416,28 @@ BUG FIX:
 	</div>
 	
 		<div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<div id="test">
-							<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
-							<button class="btn invisible" id="backButton">< Back</button>
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Tournage par Réalisateur</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				</button>
+			  </div>
+			  <div class="modal-body">
+				<div id="test">
+								<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
+								<button class="btn invisible" id="backButton">< Back</button>
+				</div>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			  </div>
 			</div>
 		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		  </div>
 		</div>
-	  </div>
-	</div>
 	
-		<div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
 		  <div class="modal-header">
@@ -456,7 +456,7 @@ BUG FIX:
 	  </div>
 	</div>
 	
-		<div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
 		  <div class="modal-header">
@@ -592,20 +592,21 @@ BUG FIX:
 			}
 		);
 
-		$( "#formLoaderFilter" ).on( "submit", function( event ) {
-		  event.preventDefault();
+		$( "#formLoaderFilter" ).on( "submit", function( evt ) {
+		  evt.preventDefault();
+		  loadMap();
 		  console.log("coucou")
 		  var reponse = $( this ).serialize() ;
 		  var l_rep=reponse.split("&");
 		  console.log(l_rep);
-		  $.ajax({
-			type: "GET"
-			url: //A définir par notre ami godie
-			data:l_rep //Sauf si j'ai mal compris le AJAX.
-			success:function(response){
-				//A implémenter
-			}
-		  });
+		  <!-- $.ajax({ -->
+			<!-- type: "GET" -->
+			<!-- url: //A définir par notre ami godie -->
+			<!-- data:l_rep //Sauf si j'ai mal compris le AJAX. -->
+			<!-- success:function(response){ -->
+				<!-- //A implémenter -->
+			<!-- } -->
+		  <!-- }); -->
 		});
 		
 		function onPopupOpen() {
@@ -750,10 +751,7 @@ BUG FIX:
 		});
 
 
-		$('#formLoaderFilter').submit(function (evt) {
-			evt.preventDefault();
-			loadMap();
-		});
+		
 
 
 		//Creation d'un point dans la map et dans la db
