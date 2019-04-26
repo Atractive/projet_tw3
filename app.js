@@ -413,10 +413,15 @@ app.post('/filterform', function (req, res) {
             // console.log(toCompare);
             var flag = true;
             for (var key in toCompare) {
-                if (docs[i].properties[key] !== toCompare[key]) {
+                console.log(key);
+                if (key == "type_de_tournage" && toCompare[key] == "NON RENSEIGNE") {
+                    console.log(docs[i]);
+                }
+                else if (docs[i].properties[key] !== toCompare[key]) {
                     flag = false;
                     break;
                 }
+
                 console.log("comp", docs[i].properties[key], "/", toCompare[key], docs[i].properties[key] == toCompare[key]);
             }
             if (flag) {
