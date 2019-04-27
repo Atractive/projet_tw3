@@ -278,9 +278,9 @@ app.get('/dureepartournage', function (req, res) {
                     if (isNaN(m[diff.day])) {
                         m[diff.day] = 1;
                     }
-					else{
-						m[diff.day]++;
-					}
+                    else {
+                        m[diff.day]++;
+                    }
                 }
 
 
@@ -410,29 +410,50 @@ app.post('/filterform', function (req, res) {
             }
         }
     }
+
+    // console.log(toCompare);
+
     db.find({}, {}, function (err, docs) {
         if (err) res.send({ status: -1, message: 'error' });
         for (var i = 0; i < docs.length; i++) {
-            // console.log(toCompare);
             var flag = true;
             for (var key in toCompare) {
                 // console.log(key);
-                if (key == "type_de_tournage" && toCompare[key] == "NON RENSEIGNE") {
-                    // console.log(docs[i]);
-                    flag = true;
-                }
-                else if (key == "date_debut" || key == "date_fin") {
-                    if (docs[i].properties[key].split("-")[1] !== toCompare[key].split("-")[1]) {
+                // console.log("comp", docs[i].properties[key], "/", toCompare[key], docs[i].properties[key] == toCompare[key]);
+                if (key == "date_debut" || key == "date_fin") {
+                    if (typeof toCompare["date_debut"] == "undefined") {
+                        var datedebutUser = Date.parse("2016-01-01");
+                    } else {
+                        var datedebutUser = Date.parse(toCompare["date_debut"]);
+                    }
+
+                    if (typeof toCompare["date_fin"] == "undefined") {
+                        var datefinUser = Date.parse("2016-12-31");
+                    } else {
+                        var datefinUser = Date.parse(toCompare["date_fin"]);
+                    }
+                    var datedebutDB = Date.parse(docs[i].properties["date_debut"]);
+                    var datefinDB = Date.parse(docs[i].properties["date_fin"]);
+                    // console.log(toCompare["date_debut"], toCompare["date_fin"], docs[i].properties["date_debut"], docs[i].properties["date_fin"])
+                    // console.log(datedebutUser, datefinUser, datedebutDB, datefinDB);
+                    // console.log("-------------------------------------------------------");
+
+
+                    if (datedebutDB >= datedebutUser && datedebutDB <= datefinUser && datefinDB >= datedebutUser && datefinDB <= datefinUser) {
+                        flag = true;
+                    } else {
                         flag = false;
                         break;
                     }
+                }
+                else if (key == "type_de_tournage" && toCompare[key] == "NON RENSEIGNE") {
+                    flag = true;
                 }
                 else if (docs[i].properties[key] !== toCompare[key]) {
                     // console.log(docs[i].properties[key], toCompare[key]);
                     flag = false;
                     break;
                 }
-                // console.log("comp", docs[i].properties[key], "/", toCompare[key], docs[i].properties[key] == toCompare[key]);
             }
             if (flag) {
                 // console.log("i", docs[i]);
