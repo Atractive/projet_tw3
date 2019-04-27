@@ -278,8 +278,9 @@ app.get('/dureepartournage', function (req, res) {
                     if (isNaN(m[diff.day])) {
                         m[diff.day] = 1;
                     }
-                    m[diff.day]++;
-
+					else{
+						m[diff.day]++;
+					}
                 }
 
 

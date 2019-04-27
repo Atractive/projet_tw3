@@ -6,6 +6,7 @@ window.onload = function() {
 			var dataTypeTournage2 = [];
 			var dataTournageMois = [];
 			var dataDureeTournage = [];
+			var dataTournageOrga = [];
 			var line;
 			var mois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
 			
@@ -246,6 +247,52 @@ window.onload = function() {
 				DureeTournage.render();
 			}
 			$.getJSON('http://localhost:444/dureepartournage',DataDureeTournage);
+			
+		var TournageOrga = new CanvasJS.Chart("TournageOrgaDemandeur", {
+		animationEnabled: true, 
+		zoomEnabled: true,
+		title:{
+			text: "Durée des tournages par nombre de jours"
+		},
+		axisY: {
+			title: "Nombre de tournage",
+			valueFormatString: "#",
+		},
+		axisX: {
+			title : "Nombre de Jours",
+			valueFormatString: "#",
+		},
+		data: [{
+			click : clickOrga,
+			type: "column",
+			color: "rgba(54,158,173,.7)",
+			markerSize: 5,
+			xValueFormatString: "YYYY",
+			yValueFormatString: "# tournages",
+			dataPoints: dataTournageOrga
+		}]
+		});
+
+		function clickOrga(e){
+			console.log(e);
+			console.log(e.dataPoint.label);
+			document.getElementById('formLoaderFilter').reset();
+			document.getElementById('formLoaderFilter__organisme_demandeur').value=e.dataPoint.label;
+			document.getElementById('sub').click();
+		}
+		
+		function DataTournageOrga(data) {
+			var temp = (Object.getOwnPropertyNames(data.result))
+				for (var i = 0; i < temp.length; i++) {
+						dataTournageOrga.push({
+							y : data.result[temp[i]],
+							label : temp[i]
+					});
+					
+				}
+				TournageOrga.render();
+			}
+			$.getJSON('http://localhost:444/tournagesparorga',DataTournageOrga);
 		
 		// Fonctions permettant d'afficher le nombre de film, realisateur, organisme et de tournage
 		function NombreFilm(data){
