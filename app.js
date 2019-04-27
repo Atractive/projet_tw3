@@ -8,16 +8,16 @@ const Datastore = require('nedb');
 const bodyParser = require('body-parser');
 
 
-// let geojson = require('./data_full.json');
+let geojson = require('./data_full.json');
 // let geojson = require('./data.json');
 
 // var db = new Datastore({ filename: 'smalldata.db', autoload: true, corruptAlertThreshold: 1 });
 var db = new Datastore({ filename: 'data.db', autoload: true, corruptAlertThreshold: 1 });
 
 // console.log(geojson.features.length);
-// for (var i = 0; i < geojson.features.length; i++) {
-//     db.insert(geojson.features[i]);
-// }
+for (var i = 0; i < geojson.features.length; i++) {
+    db.insert(geojson.features[i]);
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -64,6 +64,7 @@ app.get('/allorga', function (request, response) {
     });
 });
 
+// cette fonction permet de donner le prochain ID lorsqu'on ajoute un nouveau marqueur dans la carte et donc dans la base
 app.get('/nombredeligne', function (req, res) {
     db.find({}, { "properties.id": 1 }, function (err, docs) {
         var maxid = 0;
@@ -318,8 +319,6 @@ app.get('/filmparreal', function (req, res) {
     });
 });
 
-
-
 //////////////////////////////////////////////////////////////////////
 
 app.post('/userInput', function (req, res) {
@@ -394,9 +393,8 @@ app.post('/loadFields', function (req, res) {
     res.send({ status: 0 });
 });
 
-
 app.post('/filterform', function (req, res) {
-    console.log("here", req.body.data);
+    // console.log("here", req.body.data);
     var toCompare = {};
     var dbString = {};
     var reponse = []
@@ -404,7 +402,11 @@ app.post('/filterform', function (req, res) {
     for (var key in req.body.data) {
         if (req.body.data[key]) {
             dbString["properties." + key.toString()] = 1;
-            toCompare[key] = req.body.data[key].replace(/\+/g, ' ').trim();
+            if (key !== "ardt") {
+                toCompare[key] = req.body.data[key].replace(/\+/g, ' ').trim();
+            } else {
+                toCompare[key] = parseInt(req.body.data[key].replace(/\+/g, ' ').trim(), 10);
+            }
         }
     }
     db.find({}, {}, function (err, docs) {

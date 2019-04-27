@@ -8,6 +8,12 @@ TODO :
 - Changer la couleur des marqueurs (notamment mettre en rouge le dernier a avoir été ajouté ? (dans le cas ou il serait vide ))
 - Pop up (pierre)
 - ne pas laisser cliquer l'utilisateur si il n'a pas rempli totalement (tout les champs) du div bar a droite
+
+
+- il faut ferme le panneau de droite après avoir cliqué sur modifier ou supprimer ($(#id_du_formulaire).hide()) et donc louvrir au clic sur la carte ($(#id_du_formulaire).show())
+- en stats : nombre de tournages par films 
+- BUG sur le nombre de tournages (pourquoi 2806 ??)
+- BUG : @MATTHIAS : http://prntscr.com/nhforb
 -->
 
 
@@ -286,13 +292,13 @@ BUG FIX:
 
 
 					<ul class="list-group">
-						<li class="list-group-item">Nombre de Tournage <span class="badge badge-info"
+						<li class="list-group-item">Nombre de tournage <span class="badge badge-info"
 								id="NombreTournage"></span></li>
-						<li class="list-group-item">Nombre de Réalisateur<span class="badge badge-info"
+						<li class="list-group-item">Nombre de réalisateur<span class="badge badge-info"
 								id="NombreReal"></span></li>
-						<li class="list-group-item">Nombre d'Organisme Demandeur <span class="badge badge-info"
+						<li class="list-group-item">Nombre d'organisme demandeur <span class="badge badge-info"
 								id="NombreOrganisme"></span></li>
-						<li class="list-group-item">Nombre de Films <span class="badge badge-info"
+						<li class="list-group-item">Nombre de films <span class="badge badge-info"
 								id="NombreDeFilm"></span></li>
 
 						<button type="button" style="width:100%;" id="réal" class="btn btn-primary" data-toggle="modal"
@@ -326,6 +332,26 @@ BUG FIX:
 						</button>
 					</ul>
 
+
+
+					<br>
+					<h2>Statistiques temporaires</h2>
+					<ul class="list-group">
+						<li class="list-group-item">Nombre de tournage <span class="badge badge-info"
+								id="NombreTournageTemp">0</span></li>
+						<li class="list-group-item">Nombre de réalisateurs <span class="badge badge-info"
+								id="NombreRealTemp">0</span></li>
+						<li class="list-group-item">Nombre d'organisme demandeur <span class="badge badge-info"
+								id="NombreOrgTemp">0</span></li>
+						<li class="list-group-item">Nombre de films <span class="badge badge-info"
+								id="NombreFilmTemp">0</span></li>
+
+						<button type="button" style="width:100%;" id="réalTemp" class="btn btn-primary"
+							data-toggle="modal" data-whatever="Charts nombre de tournage par réalisateur"
+							data-target="#exampleModalTemp">
+							Le nombre de tournage par réalisateur
+						</button>
+					</ul>
 
 
 
@@ -363,8 +389,9 @@ BUG FIX:
 					<div id="test" style="display:none;">
 						<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
 						<button class="btn invisible" id="backButton">
-							< Back</button> </div> <div id="TournageMois"
-								style="height: 370px; width: 100%;display:none;">
+							Back</button>
+					</div>
+					<div id="TournageMois" style="height: 370px; width: 100%;display:none;">
 					</div>
 					<div id="TournageDuree" style="height: 370px; width: 100%;display:none;"></div>
 				</div>
@@ -437,7 +464,7 @@ BUG FIX:
 		<form id="formAff">
 			<div class="form-group">
 				<label for="formAff__id">ID</label>
-				<input class="form-control" type="text" id="formAff__id" name="id" readonly="readonly>
+				<input class="form-control" type="text" id="formAff__id" name="id" readonly="readonly">
 			</div>
 			<div class=" form-group">
 				<label for="formAff__type_de_tournage">Type de tournage</label>
@@ -538,6 +565,7 @@ BUG FIX:
 
 		var points;
 		var mapMarkers = [];
+		var mapMarkersTemp = [];
 
 		$(document).ready(
 			function () {
@@ -557,16 +585,64 @@ BUG FIX:
 				var temp = l_rep[i].split("=");
 				toSend[temp[0]] = temp[1];
 			}
-			console.log(toSend);
 			$.ajax({
 				type: "POST",
 				url: 'http://localhost:444/filterform',
 				data: { data: toSend },
 				success: function (response) {
+					mapMarkersTemp = response.data;
 					console.log("succes", response.data);
+					$("#NombreTournageTemp").text(response.data.length.toString());
+
+					// calcul et update du nombre de realisateurs présent a l'écran
+					var s = new Set();
+					for (var i = 0; i < response.data.length; i++) {
+						// console.log(response.data)
+						s.add(response.data[i].realisateur);
+					}
+					// console.log({ nb: s.size, info: Array.from(s) });
+					$("#NombreRealTemp").text(s.size.toString());
+
+					// calcul et update du nombre d'ogr demandeur présent a l'écran
+					var s = new Set();
+					for (var i = 0; i < response.data.length; i++) {
+						s.add(response.data[i].organisme_demandeur);
+					}
+					// console.log({ nb: s.size, info: Array.from(s) });
+					$("#NombreOrgTemp").text(s.size.toString());
+
+					// calcul et update du nombre de films présent a l'écran
+					var s = new Set();
+					for (var i = 0; i < response.data.length; i++) {
+						s.add(response.data[i].titre);
+					}
+					// console.log({ nb: s.size, info: Array.from(s) });
+					$("#NombreFilmTemp").text(s.size.toString());
+
+
+
+					$("#réalTemp").on("click", function () {
+						// @ Matthias, soit on déclange au click sur le boutton dans l'onglet des stats comme là, soit on charge tout au submit du formulaire (comme pour "Nombre de tournage" "nombre de réal" "nombre d'organisme demendeur" et "nombre de films")
+						// nombre de tournage par réalisateurs
+
+						var m = {};
+						for (var i = 0; i < response.data.length; i++) {
+							if (typeof m[response.data[i].realisateur] == 'undefined') {
+								m[response.data[i].realisateur] = 1;
+							} else {
+								m[response.data[i].realisateur] += 1;
+							}
+						}
+						console.log("POUR TOI MATTHIAS", { result: m, taille: Object.keys(m).length });
+					});
+
 				}
 			});
 		});
+
+
+
+
 
 		function onPopupOpen() {
 			clickedMarker = this;
