@@ -624,6 +624,10 @@ TODO :
 				allorgaRecup();
 			}
 		);
+		
+		function compareNombres(a, b) {
+			return a[0] - b[0];
+		}
 
 		$("#formLoaderFilter").on("submit", function (evt) {
 			$("#statstemp_li").removeClass("disabled");
@@ -689,12 +693,15 @@ TODO :
 						var data = { result: m, taille: Object.keys(m).length };
 						console.log("POUR TOI MATTHIAS", { result: m, taille: Object.keys(m).length });
 
-						var temp = (Object.getOwnPropertyNames(data.result));
-						console.log("les données", temp);
-						for (var i = 0; i < data.taille; i++) {
+						var result = Object.keys(data.result).map(function(key) { 
+							return [data.result[key],(key)]; });
+
+						var tab = result.sort(compareNombres);
+						<!-- console.log(tab); -->
+							for (var i = 0; i < tab.length; i++) {
 							dataTemp.push({
-								y: data.result[temp[i]],
-								label: temp[i]
+								y : tab[i][0],
+								label : tab[i][1]
 							});
 						}
 
@@ -709,6 +716,7 @@ TODO :
 								valueFormatString: "#",
 							},
 							data: [{
+								<!-- click:ClickRealTemp, -->
 								type: "column",
 								color: "rgba(54,158,173,.7)",
 								markerSize: 5,
@@ -717,6 +725,13 @@ TODO :
 								dataPoints: dataTemp
 							}]
 						});
+						
+						<!-- function ClickRealTemp(e){ -->
+							<!-- console.log(e); -->
+							<!-- console.log(e.dataPoint.label); -->
+							<!-- document.getElementById('formLoaderFilter__realisateur').value=e.dataPoint.label; -->
+							<!-- document.getElementById('sub').click(); -->
+						<!-- } -->
 						TournageRealTemp.render();
 					});
 
@@ -733,11 +748,15 @@ TODO :
 						}
 						var data = { result: m, taille: Object.keys(m).length };
 
-						var temp = (Object.getOwnPropertyNames(data.result))
-						for (var i = 0; i < data.taille; i++) {
+						var result = Object.keys(data.result).map(function(key) { 
+							return [data.result[key],(key)]; });
+
+						var tab = result.sort(compareNombres);
+						<!-- console.log(tab); -->
+							for (var i = 0; i < tab.length; i++) {
 							dataTemp.push({
-								y: data.result[temp[i]],
-								label: temp[i]
+								y : tab[i][0],
+								label : tab[i][1]
 							});
 						}
 
@@ -779,11 +798,15 @@ TODO :
 						}
 						var data = { result: m, taille: Object.keys(m).length };
 
-						var temp = (Object.getOwnPropertyNames(data.result))
-						for (var i = 0; i < data.taille; i++) {
+						var result = Object.keys(data.result).map(function(key) { 
+							return [data.result[key],(key)]; });
+
+						var tab = result.sort(compareNombres);
+						<!-- console.log(tab); -->
+							for (var i = 0; i < tab.length; i++) {
 							dataTemp.push({
-								y: data.result[temp[i]],
-								label: temp[i]
+								y : tab[i][0],
+								label : tab[i][1]
 							});
 						}
 
@@ -1097,7 +1120,7 @@ TODO :
 
 					});
 
-
+					console.log("markers", markers);
 					mapMarkers.push(markers);
 					for (var i = 0; i < mapMarkers.length; i++) {
 						map.removeLayer(mapMarkers[i]);

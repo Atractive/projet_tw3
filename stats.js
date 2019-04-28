@@ -48,16 +48,24 @@ window.onload = function() {
 			document.getElementById('formLoaderFilter__realisateur').value=e.dataPoint.label;
 			document.getElementById('sub').click();
 		}
-
+		
+		function compareNombres(a, b) {
+			return a[0] - b[0];
+		}
+		 
 		function DataTournageReal(data) {
-			var temp = (Object.getOwnPropertyNames(data.result))
-				for (var i = 0; i < data.taille; i++) {
-					dataTournageReal.push({
-						y : data.result[temp[i]],
-						label : temp[i]
-					});
-				}
-				TournageReal.render();
+			var result = Object.keys(data.result).map(function(key) { 
+				return [data.result[key],(key)]; });
+
+			var tab = result.sort(compareNombres);
+			// console.log(tab);
+			for (var i = 0; i < tab.length; i++) {
+				dataTournageReal.push({
+					y : tab[i][0],
+					label : tab[i][1]
+				});
+			}
+			TournageReal.render();
 			}
 			$.getJSON('http://localhost:444/tournagesparreal',DataTournageReal);
 			
@@ -106,13 +114,17 @@ window.onload = function() {
 			}
 		
 			function DataTournageArdt(data) {
-			var temp = (Object.getOwnPropertyNames(data.result))
-				for (var i = 0; i < data.taille; i++) {
-					dataTournageArdt.push({
-						y: data.result[temp[i]],
-						label : temp[i]
-					});
-				}
+			var result = Object.keys(data.result).map(function(key) { 
+				return [data.result[key],(key)]; });
+
+			var tab = result.sort(compareNombres);
+			// console.log(tab);
+				for (var i = 0; i < tab.length; i++) {
+				dataTournageArdt.push({
+					y : tab[i][0],
+					label : tab[i][1]
+				});
+			}
 				TournageArrdt.render();
 			}
 			$.getJSON('http://localhost:444/tournagesparardt',DataTournageArdt);
@@ -219,6 +231,7 @@ window.onload = function() {
 				valueFormatString: "#",
 			},
 			data: [{
+				click:ClickDuree,
 				type: "column",
 				color: "rgba(54,158,173,.7)",
 				markerSize: 5,
@@ -228,7 +241,83 @@ window.onload = function() {
 			}]
 			});
 
-		function DataDureeTournage(data) {
+			var dataDuree2=[];	
+			
+			function ClickDuree(e){
+				//console.log(e);
+				var response = (dataDuree2[e.dataPoint.x]);
+				console.log(response);
+				var markers = L.markerClusterGroup();
+
+					points = L.geoJSON(response, {
+						pointToLayer: function (feature, latlng) {
+							if (feature.properties.type_de_tournage == 'TELEFILM') {
+								return L.marker(latlng, { icon: Icon_red });
+							} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
+								return L.marker(latlng, { icon: Icon_green });
+							} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
+								return L.marker(latlng, { icon: Icon_blue });
+							}
+						},
+						onEachFeature: function (feature, layer) {
+							layer.bindPopup(
+								'<div>'
+								+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
+								+ '</br>'
+								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
+								+ '</div>'
+							);
+
+							layer.on("popupopen", onPopupOpen);
+
+							layer.on('click', function (evt) {
+								document.getElementById('divFloat').style.display = 'block';
+								document.getElementById('formAff__id').value = feature.properties.id;
+								document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
+								document.getElementById('formAff__titre').value = feature.properties.titre;
+								document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
+								document.getElementById('formAff__organisme_demandeur').value = feature.properties.organisme_demandeur;
+								document.getElementById('formAff__adresse').value = feature.properties.adresse;
+								document.getElementById('formAff__ardt').value = feature.properties.ardt;
+								document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
+								document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
+							});
+						}, filter: function (feature, layer) {
+							var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
+							if (val_tdt == 'NON RENSEIGNE') { var bool_tdp = true; } else { bool_tdp = (feature.properties.type_de_tournage == val_tdt); }
+							var val_t = document.getElementById('formLoaderFilter__titre').value;
+							if (val_t == '') { var bool_t = true; } else { bool_t = (feature.properties.titre == val_t); }
+							var val_r = document.getElementById('formLoaderFilter__realisateur').value;
+							if (val_r == '') { var bool_r = true; } else { bool_r = (feature.properties.realisateur == val_r); }
+							var val_od = document.getElementById('formLoaderFilter__organisme_demandeur').value;
+							if (val_od == '') { var bool_od = true; } else { bool_od = (feature.properties.organisme_demandeur == val_od); }
+							var val_ad = document.getElementById('formLoaderFilter__adresse').value;
+							if (val_ad == '') { var bool_ad = true; } else { bool_ad = (feature.properties.adresse == val_ad); }
+							var val_ar = document.getElementById('formLoaderFilter__ardt').value;
+							if (val_ar == '') { var bool_ar = true; } else { bool_ar = (feature.properties.ardt == val_ar); }
+							var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
+							if (val_dd == '') { var bool_dd = true; } else { bool_dd = (feature.properties.date_debut >= val_dd); }
+							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
+							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin <= val_df); }
+							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
+
+						}
+
+					});
+
+					console.log("markers", markers);
+					mapMarkers.push(markers);
+					for (var i = 0; i < mapMarkers.length; i++) {
+						map.removeLayer(mapMarkers[i]);
+					}
+					markers.addLayer(points);
+					map.addLayer(markers);
+					// console.log(markers);
+					
+
+			}
+
+			function DataDureeTournage(data) {
 			var temp = (Object.getOwnPropertyNames(data.result))
 				for (var i = 0; i < temp.length; i++) {
 					if (temp[i]==6){
@@ -248,6 +337,16 @@ window.onload = function() {
 			}
 			$.getJSON('http://localhost:444/dureepartournage',DataDureeTournage);
 			
+			function DataDureeTournage2(data) {
+			var temp = (Object.getOwnPropertyNames(data.listTournage));
+				console.log(temp);
+				console.log(data.listTournage[5]);
+				for(var i = 0; i< data.listTournage.length;i++){
+					dataDuree2.push(data.listTournage[i]);;
+				}
+			}
+			$.getJSON('http://localhost:444/dureepartournage2',DataDureeTournage2);
+			
 		var TournageOrga = new CanvasJS.Chart("TournageOrgaDemandeur", {
 		animationEnabled: true, 
 		zoomEnabled: true,
@@ -256,10 +355,6 @@ window.onload = function() {
 		},
 		axisY: {
 			title: "Nombre de tournage",
-			valueFormatString: "#",
-		},
-		axisX: {
-			title : "Nombre de Jours",
 			valueFormatString: "#",
 		},
 		data: [{
@@ -282,14 +377,17 @@ window.onload = function() {
 		}
 		
 		function DataTournageOrga(data) {
-			var temp = (Object.getOwnPropertyNames(data.result))
-				for (var i = 0; i < temp.length; i++) {
-						dataTournageOrga.push({
-							y : data.result[temp[i]],
-							label : temp[i]
-					});
-					
-				}
+			var result = Object.keys(data.result).map(function(key) { 
+				return [data.result[key],(key)]; });
+
+			var tab = result.sort(compareNombres);
+			// console.log(tab);
+				for (var i = 0; i < tab.length; i++) {
+				dataTournageOrga.push({
+					y : tab[i][0],
+					label : tab[i][1]
+				});
+			}
 				TournageOrga.render();
 			}
 			$.getJSON('http://localhost:444/tournagesparorga',DataTournageOrga);

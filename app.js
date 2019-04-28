@@ -92,6 +92,7 @@ app.get('/tournagesparreal', function (req, res) {
                 m[docs[i].properties.realisateur] += 1;
             }
         }
+		
 
         res.send({ result: m, taille: Object.keys(m).length });
     });
@@ -247,6 +248,60 @@ app.get('/tournagesparmois', function (req, res) {
     });
 });
 
+//durée de chaque tournage2
+app.get('/dureepartournage2', function (req, res) {
+	var j1 = [];
+	var j2 = [];
+	var j3 = [];
+	var j4 = [];
+	var j5 = [];
+	var j6 = [];
+	
+	var t = [j1,j2,j3,j4,j5,j6];
+    db.find({}, function (err, docs) {
+		console.log("coucou");
+		console.log("coucou");
+        for (var i = 0; i < docs.length; i++) {
+            var debut = docs[i].properties.date_debut;
+            var fin = docs[i].properties.date_fin;
+            if (typeof date_debut != undefined && typeof date_fin != undefined) {
+                var diff = {}                           // Initialisation du retour
+                var tmp = new Date(fin) - new Date(debut);
+
+                tmp = Math.floor(tmp / 1000);             // Nombre de secondes entre les 2 dates
+                diff.sec = tmp % 60;                    // Extraction du nombre de secondes
+
+                tmp = Math.floor((tmp - diff.sec) / 60);    // Nombre de minutes (partie entière)
+                diff.min = tmp % 60;                    // Extraction du nombre de minutes
+
+                tmp = Math.floor((tmp - diff.min) / 60);    // Nombre d'heures (entières)
+                diff.hour = tmp % 24;                   // Extraction du nombre d'heures
+
+                tmp = Math.floor((tmp - diff.hour) / 24);   // Nombre de jours restants
+                diff.day = tmp + 1;
+
+                // console.log(diff.day);
+				
+				// console.log("j"+diff.day);
+				if (diff.day>=6){
+					day = 5
+				}
+				else{
+					day=diff.day-1
+				}
+				var tab = t[day];
+				// console.log(tab);
+                if (isNaN(diff.day) == false) {
+					// console.log(docs[i]);
+                    tab.push(docs[i]);
+                }
+            }
+        }
+
+        res.send({listTournage : t});
+    });
+});
+
 //durée de chaque tournage
 app.get('/dureepartournage', function (req, res) {
 
@@ -277,7 +332,7 @@ app.get('/dureepartournage', function (req, res) {
 
                     if (isNaN(m[diff.day])) {
                         m[diff.day] = 1;
-                    }
+					}
                     else {
                         m[diff.day]++;
                     }
@@ -286,16 +341,18 @@ app.get('/dureepartournage', function (req, res) {
 
             }
         }
+
         l = {}
         for (const key in m) {
             if (key > 6) {
-                l[6] = l[6] + m[key]
-            }
+                l[6] = l[6] + m[key];
+			}
             else {
-                l[key] = m[key]
+                l[key] = m[key];
             }
         }
-        res.send({ result: l });
+		// console.log(t2);
+        res.send({ result: l});
     });
 });
 
