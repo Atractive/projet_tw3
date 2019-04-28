@@ -259,8 +259,6 @@ app.get('/dureepartournage2', function (req, res) {
 	
 	var t = [j1,j2,j3,j4,j5,j6];
     db.find({}, function (err, docs) {
-		console.log("coucou");
-		console.log("coucou");
         for (var i = 0; i < docs.length; i++) {
             var debut = docs[i].properties.date_debut;
             var fin = docs[i].properties.date_fin;
