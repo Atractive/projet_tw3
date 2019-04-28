@@ -1049,15 +1049,12 @@ TODO :
 		}
 
 		function loadMap() {
-
 			$.ajax({
 				method: 'GET',
 				url: 'http://localhost:444/geojson',
 				dataType: 'json',
 				success: function (response) {
-					//  var markerGroup = L.layerGroup().addTo(map); someMarker.addTo(someLayerGroup); https://gis.stackexchange.com/questions/201958/remove-leaflet-markers-leaflet-id DO NOT DELETE
 					var markers = L.markerClusterGroup();
-
 					points = L.geoJSON(response, {
 						pointToLayer: function (feature, latlng) {
 							if (feature.properties.type_de_tournage == 'TELEFILM') {
@@ -1076,9 +1073,7 @@ TODO :
 								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
 								+ '</div>'
 							);
-
 							layer.on("popupopen", onPopupOpen);
-
 							layer.on('click', function (evt) {
 								document.getElementById('divFloat').style.display = 'block';
 								document.getElementById('formAff__id').value = feature.properties.id;
@@ -1109,27 +1104,23 @@ TODO :
 							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
 							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin <= val_df); }
 							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
-
 						}
-
 					});
-
-
 					mapMarkers.push(markers);
 					for (var i = 0; i < mapMarkers.length; i++) {
 						map.removeLayer(mapMarkers[i]);
 					}
 					markers.addLayer(points);
 					map.addLayer(markers);
-					// console.log(markers);
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
 				}
 			});
-
 		}
-
+		
+		/////////////////////////////////////////////////////////////////////////////
+		//Modification et suppression des points//
 
 		$("#formAff").submit(function (event) {
 			var btn_id = $(document.activeElement).attr('id');
@@ -1149,6 +1140,7 @@ TODO :
 						console.log(jqXHR, text, error);
 					}
 				});
+				document.getElementById('divFloat').style.display = 'none';
 			} else if (btn_id == "suppr") {
 				console.log("in");
 				map.removeLayer(clickedMarker);
@@ -1164,14 +1156,12 @@ TODO :
 					}
 				});
 				flag = true;
+				document.getElementById('divFloat').style.display = 'none';
 			}
 		});
 
-
-
-
-
-		//Creation d'un point dans la map et dans la db
+		/////////////////////////////////////////////////////////////////////////////
+		//Creation d'un point dans la map et dans la db//
 
 		function addMarker(lat, lng, newid) {
 			$.ajax({
@@ -1186,6 +1176,7 @@ TODO :
 				}
 			});
 		}
+		
 		map.on('click', function (e) {
 			if (!flag) { return; }
 			$.ajax({
@@ -1218,10 +1209,9 @@ TODO :
 						document.getElementById('formAff__date_debut').value = "";
 						document.getElementById('formAff__date_fin').value = "";
 					});
-					// console.log(newMarker);
 					map.addLayer(newMarker);
 					addMarker(lat, lng, newid);
-					flag = false;	//Pour créer un nouveau markers, il faut cliquer sur modif
+					flag = false;
 					newMarkerId = newid;
 				},
 				error: function (jqXHR, text, error) {
@@ -1229,8 +1219,10 @@ TODO :
 				}
 			});
 		});
-
-
+		
+		/////////////////////////////////////////////////////////////////////////////
+		//Récupération des infos pour l'autocomplete//
+		
 		function alltitreRecup() {
 			var data = [];
 			$.ajax({
@@ -1243,8 +1235,6 @@ TODO :
 						source: response.info,
 						appendTo: "#titre"
 					});
-
-
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
@@ -1288,7 +1278,6 @@ TODO :
 				}
 			});
 		}
-
 
 	</script>
 </body>
