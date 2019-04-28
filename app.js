@@ -92,7 +92,6 @@ app.get('/tournagesparreal', function (req, res) {
                 m[docs[i].properties.realisateur] += 1;
             }
         }
-		
 
         res.send({ result: m, taille: Object.keys(m).length });
     });
@@ -248,7 +247,6 @@ app.get('/tournagesparmois', function (req, res) {
     });
 });
 
-//durée de chaque tournage2
 app.get('/dureepartournage2', function (req, res) {
 	var j1 = [];
 	var j2 = [];
@@ -330,7 +328,7 @@ app.get('/dureepartournage', function (req, res) {
 
                     if (isNaN(m[diff.day])) {
                         m[diff.day] = 1;
-					}
+                    }
                     else {
                         m[diff.day]++;
                     }
@@ -339,18 +337,16 @@ app.get('/dureepartournage', function (req, res) {
 
             }
         }
-
         l = {}
         for (const key in m) {
             if (key > 6) {
-                l[6] = l[6] + m[key];
-			}
+                l[6] = l[6] + m[key]
+            }
             else {
-                l[key] = m[key];
+                l[key] = m[key]
             }
         }
-		// console.log(t2);
-        res.send({ result: l});
+        res.send({ result: l });
     });
 });
 

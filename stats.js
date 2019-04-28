@@ -114,19 +114,19 @@ window.onload = function() {
 			}
 		
 			function DataTournageArdt(data) {
-			var result = Object.keys(data.result).map(function(key) { 
-				return [data.result[key],(key)]; });
+				var result = Object.keys(data.result).map(function(key) { 
+					return [data.result[key],(key)]; });
 
-			var tab = result.sort(compareNombres);
-			// console.log(tab);
-				for (var i = 0; i < tab.length; i++) {
-				dataTournageArdt.push({
-					y : tab[i][0],
-					label : tab[i][1]
-				});
-			}
-				TournageArrdt.render();
-			}
+				var tab = result.sort(compareNombres);
+				// console.log(tab);
+					for (var i = 0; i < tab.length; i++) {
+					dataTournageArdt.push({
+						y : tab[i][0],
+						label : tab[i][1]
+					});
+				}
+					TournageArrdt.render();
+				}
 			$.getJSON('http://localhost:444/tournagesparardt',DataTournageArdt);
 
 		
@@ -214,7 +214,6 @@ window.onload = function() {
 				TournageParMois.render();
 			}
 			$.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
-		
 		
 		var DureeTournage = new CanvasJS.Chart("TournageDuree", {
 			animationEnabled: true, 
@@ -346,7 +345,9 @@ window.onload = function() {
 				}
 			}
 			$.getJSON('http://localhost:444/dureepartournage2',DataDureeTournage2);
-			
+		
+		
+		
 		var TournageOrga = new CanvasJS.Chart("TournageOrgaDemandeur", {
 		animationEnabled: true, 
 		zoomEnabled: true,
@@ -355,6 +356,10 @@ window.onload = function() {
 		},
 		axisY: {
 			title: "Nombre de tournage",
+			valueFormatString: "#",
+		},
+		axisX: {
+			title : "Nombre de Jours",
 			valueFormatString: "#",
 		},
 		data: [{
