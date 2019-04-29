@@ -97,6 +97,24 @@ app.get('/tournagesparreal', function (req, res) {
     });
 });
 
+
+// nombre de tournage par production
+app.get('/tournagesparprod', function (req, res) {
+
+    var m = {};
+    db.find({}, { "properties.titre": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            if (typeof m[docs[i].properties.titre] == 'undefined') {
+                m[docs[i].properties.titre] = 1;
+            } else {
+                m[docs[i].properties.titre] += 1;
+            }
+        }
+
+        res.send({ result: m, taille: Object.keys(m).length });
+    });
+});
+
 // nombre de tournage par arrondissement
 app.get('/tournagesparardt', function (req, res) {
 

@@ -175,7 +175,7 @@ TODO :
 		}
 	</style>
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-	<script type="text/javascript" src="stats.js"></script>
+	
 	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
@@ -300,6 +300,11 @@ TODO :
 							data-whatever="Charts nombre de tournage par arrondissement" data-target="#exampleModal">
 							Le nombre de tournage par arrondissement
 						</button>
+						
+						<button type="button" style="width:100%;" id="prod" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par productions" data-target="#exampleModal">
+							Le nombre de tournage par productions
+						</button>
 
 						<button type="button" style="width:100%;" id="type" class="btn btn-primary" data-toggle="modal"
 							data-whatever="Charts nombre de tournage par type" data-target="#exampleModal">
@@ -354,6 +359,12 @@ TODO :
 							data-toggle="modal" data-whatever="Charts nombre de tournage par arrondissement"
 							data-target="#exampleModalTemp">
 							Le nombre de tournage par arrondissement
+						</button>
+						
+						<button type="button" style="width:100%;" id="prodTemp" class="btn btn-primary"
+							data-toggle="modal" data-whatever="Charts nombre de tournage par productions"
+							data-target="#exampleModalTemp">
+							Le nombre de tournage par productions
 						</button>
 
 						<button type="button" style="width:100%;" id="typeTemp" class="btn btn-primary"
@@ -414,6 +425,7 @@ TODO :
 					<div id="TournageReal" style="height: 370px; width: 100%; display:none;"></div>
 					<div id="TypeTournage" style="height: 370px; width: 100%; display:none;"></div>
 					<div id="TournageArrdt" style="height: 370px; width: 100%;display:none;"></div>
+					<div id="TournageParProd" style="height: 370px; width: 100%;display:none;"></div>
 					<div id="TournageOrgaDemandeur" style="height: 370px; width: 100%;display:none;"></div>
 					<div id="test" style="display:none;">
 						<div id="chartContainer" style="height: 370px; width: 100%;"> </div>
@@ -479,6 +491,10 @@ TODO :
 			}
 			else if (b_id == "durée") {
 				var id = "TournageDuree";
+				allHide("modal-body", id);
+			}
+			else if (b_id == "prod") {
+				var id = "TournageParProd";
 				allHide("modal-body", id);
 			}
 			else if (b_id == "orga") {
@@ -571,7 +587,7 @@ TODO :
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+	<script type="text/javascript" src="stats.js"></script>
 	<script>
 
 		var map;
@@ -627,6 +643,67 @@ TODO :
 
 		function compareNombres(a, b) {
 			return a[0] - b[0];
+		}
+		
+				function loadPoint(response){	
+			var markers = L.markerClusterGroup();
+					points = L.geoJSON(response, {
+						pointToLayer: function (feature, latlng) {
+							if (feature.properties.type_de_tournage == 'TELEFILM') {
+								return L.marker(latlng, { icon: Icon_red });
+							} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
+								return L.marker(latlng, { icon: Icon_green });
+							} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
+								return L.marker(latlng, { icon: Icon_blue });
+							}
+						},
+						onEachFeature: function (feature, layer) {
+							layer.bindPopup(
+								'<div>'
+								+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
+								+ '</br>'
+								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
+								+ '</div>'
+							);
+							layer.on("popupopen", onPopupOpen);
+							layer.on('click', function (evt) {
+								document.getElementById('divFloat').style.display = 'block';
+								document.getElementById('formAff__id').value = feature.properties.id;
+								document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
+								document.getElementById('formAff__titre').value = feature.properties.titre;
+								document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
+								document.getElementById('formAff__organisme_demandeur').value = feature.properties.organisme_demandeur;
+								document.getElementById('formAff__adresse').value = feature.properties.adresse;
+								document.getElementById('formAff__ardt').value = feature.properties.ardt;
+								document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
+								document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
+							});
+						}, filter: function (feature, layer) {
+							var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
+							if (val_tdt == 'NON RENSEIGNE') { var bool_tdp = true; } else { bool_tdp = (feature.properties.type_de_tournage == val_tdt); }
+							var val_t = document.getElementById('formLoaderFilter__titre').value;
+							if (val_t == '') { var bool_t = true; } else { bool_t = (feature.properties.titre == val_t); }
+							var val_r = document.getElementById('formLoaderFilter__realisateur').value;
+							if (val_r == '') { var bool_r = true; } else { bool_r = (feature.properties.realisateur == val_r); }
+							var val_od = document.getElementById('formLoaderFilter__organisme_demandeur').value;
+							if (val_od == '') { var bool_od = true; } else { bool_od = (feature.properties.organisme_demandeur == val_od); }
+							var val_ad = document.getElementById('formLoaderFilter__adresse').value;
+							if (val_ad == '') { var bool_ad = true; } else { bool_ad = (feature.properties.adresse == val_ad); }
+							var val_ar = document.getElementById('formLoaderFilter__ardt').value;
+							if (val_ar == '') { var bool_ar = true; } else { bool_ar = (feature.properties.ardt == val_ar); }
+							var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
+							if (val_dd == '') { var bool_dd = true; } else { bool_dd = (feature.properties.date_debut >= val_dd); }
+							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
+							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin <= val_df); }
+							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
+						}
+					});
+					mapMarkers.push(markers);
+					for (var i = 0; i < mapMarkers.length; i++) {
+						map.removeLayer(mapMarkers[i]);
+					}
+					markers.addLayer(points);
+					map.addLayer(markers);
 		}
 		
 		$("#formLoaderFilter").on("submit", function (evt) {
@@ -712,7 +789,7 @@ TODO :
 								valueFormatString: "#",
 							},
 							data: [{
-								<!-- click:ClickRealTemp, -->
+								click:ClickRealTemp,
 								type: "column",
 								color: "rgba(54,158,173,.7)",
 								markerSize: 5,
@@ -722,15 +799,71 @@ TODO :
 							}]
 						});
 						
-						<!-- function ClickRealTemp(e){ -->
-							<!-- console.log(e); -->
-							<!-- console.log(e.dataPoint.label); -->
-							<!-- document.getElementById('formLoaderFilter__realisateur').value=e.dataPoint.label; -->
-							<!-- document.getElementById('sub').click(); -->
-						<!-- } -->
+						function ClickRealTemp(e){
+							console.log(e);
+							console.log(e.dataPoint.label);
+							document.getElementById('formLoaderFilter__realisateur').value=e.dataPoint.label;
+							document.getElementById('sub').click();
+						}
 						TournageRealTemp.render();
 						});
+						
+						$("#prodTemp").on("click", function () {
+							// @ Matthias, soit on déclange au click sur le boutton dans l'onglet des stats comme là, soit on charge tout au submit du formulaire (comme pour "Nombre de tournage" "nombre de réal" "nombre d'organisme demendeur" et "nombre de films")
+							// nombre de tournage par réalisateurs
+							var dataTemp = [];
+							var m = {};
+							console.log(response.data);
+							for (var i = 0; i < response.data.length; i++) {
+								if (typeof m[response.data[i].titre] == 'undefined') {
+									m[response.data[i].titre] = 1;
+								} else {
+									m[response.data[i].titre] += 1;
+								}
+							}
+							var data = { result: m, taille: Object.keys(m).length };
+							var result = Object.keys(data.result).map(function(key) { 
+								return [data.result[key],(key)]; });
 
+							var tab = result.sort(compareNombres);
+							<!-- console.log(tab); -->
+							for (var i = 0; i < tab.length; i++) {
+								dataTemp.push({
+									y : tab[i][0],
+									label : tab[i][1]
+								});
+							}
+
+						var TournageProdTemp = new CanvasJS.Chart("chartTemp", {
+							animationEnabled: true,
+							zoomEnabled: true,
+							title: {
+								text: "Nombre de tournages par réalisateur"
+							},
+							axisY: {
+								title: "Nombre de tournage",
+								valueFormatString: "#",
+							},
+							data: [{
+								click:ClickProdTemp,
+								type: "column",
+								color: "rgba(54,158,173,.7)",
+								markerSize: 5,
+								xValueFormatString: "YYYY",
+								yValueFormatString: "# tournages",
+								dataPoints: dataTemp
+							}]
+						});
+						
+						function ClickProdTemp(e){
+							console.log(e);
+							console.log(e.dataPoint.label);
+							document.getElementById('formLoaderFilter__titre').value=e.dataPoint.label;
+							document.getElementById('sub').click();
+						}
+						TournageProdTemp.render();
+						});
+					
 						$("#ardtTemp").on("click", function () {
 							var dataTemp = [];
 							var m = {};
@@ -769,6 +902,7 @@ TODO :
 									title: "Nombre de tournages"
 								},
 								data: [{
+									click : clickTempArrdt,
 									type: "bar",
 									name: "Arrondissement",
 									axisYType: "secondary",
@@ -776,7 +910,13 @@ TODO :
 									dataPoints: dataTemp
 								}]
 							});
-
+							
+							function clickTempArrdt(e){
+							console.log(e);
+							console.log(e.dataPoint.label);
+							document.getElementById('formLoaderFilter__ardt').value=e.dataPoint.label;
+							document.getElementById('sub').click();
+						}
 							TournageArrdtTemp.render();
 						});
 
@@ -816,6 +956,7 @@ TODO :
 									title: "Nombre de tournages"
 								},
 								data: [{
+									click: clickTempOrga,
 									type: "column",
 									color: "rgba(54,158,173,.7)",
 									markerSize: 5,
@@ -825,6 +966,12 @@ TODO :
 								}]
 							});
 
+							function clickTempOrga(e){
+								console.log(e);
+								console.log(e.dataPoint.label);
+								document.getElementById('formLoaderFilter__organisme_demandeur').value=e.dataPoint.label;
+								document.getElementById('sub').click();
+							}
 							TournageOrgaTemp.render();
 						});
 
@@ -856,6 +1003,7 @@ TODO :
 									text: "Type de Tournage"
 								},
 								data: [{
+									click : clickTempType,
 									type: "pie",
 									startAngle: 240,
 									yValueFormatString: "##0.00\"%\"",
@@ -863,7 +1011,14 @@ TODO :
 									dataPoints: dataTemp
 								}]
 							});
-
+							
+							function clickTempType(e){
+								console.log(e);
+								console.log(e.dataPoint.label);
+								document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataPoint.label;
+								document.getElementById('sub').click();
+							}
+							
 							TournageTypeTemp.render();
 						});
 
@@ -916,18 +1071,46 @@ TODO :
 									includeZero: false
 								},
 								data: [{
+									click:clickMoisTemp,
 									type: "splineArea",
 									dataPoints: dataTemp
 								}]
 							});
+							
+							function clickMoisTemp(e){
+								// console.log(e);
+								// console.log(e.dataPoint.x + 1);
+								var mois = e.dataPoint.x + 1;
+								var maxDay= new Date(2016,mois,0).getDate();
+								if (mois<10){
+									var debut="2016-0"+mois+"-01";
+									var fin="2016-0"+mois+"-"+maxDay;
+								}
+								else{
+									var debut="2016-"+mois+"-01";
+									var fin="2016-"+mois+"-"+maxDay;
+								}
+								document.getElementById('formLoaderFilter__date_debut').value=debut;
+								document.getElementById('formLoaderFilter__date_fin').value=fin;
+								document.getElementById('sub').click();
+							}
 
 							TournageMoisTemp.render();
 						});
 
 						$("#duréeTemp").on("click", function () {
 							var dataTemp = [];
+							var dataDuree2 = [];
 							var m = {};
-
+							var j1 = [];
+							var j2 = [];
+							var j3 = [];
+							var j4 = [];
+							var j5 = [];
+							var j6 = [];
+							
+							var t = [j1,j2,j3,j4,j5,j6];
+							
 							for (var i = 0; i < response.data.length; i++) {
 								// <!-- console.log(response.data[i]); -->
 								var debut = response.data[i].date_debut;
@@ -957,6 +1140,16 @@ TODO :
 										else {
 											m[diff.day] = m[diff.day] + 1;
 										}
+									}
+									if (diff.day>=6){
+										day = 5
+									}
+									else{
+										day=diff.day-1
+									}
+									var tab = t[day];
+									if (isNaN(diff.day) == false) {
+										tab.push(response.data[i]);
 									}
 								}
 							}
@@ -989,7 +1182,11 @@ TODO :
 									});
 								}
 							}
-
+							
+							for(var i = 0; i< t.length;i++){
+								dataDuree2.push(t[i]);;
+							}
+						
 							var TournageDureeTemp = new CanvasJS.Chart("chartTemp", {
 								animationEnabled: true,
 								zoomEnabled: true,
@@ -1005,6 +1202,7 @@ TODO :
 									valueFormatString: "#",
 								},
 								data: [{
+									<!-- click:clickDureeTemp, -->
 									type: "column",
 									color: "rgba(54,158,173,.7)",
 									markerSize: 5,
@@ -1014,6 +1212,12 @@ TODO :
 								}]
 							});
 
+							<!-- function clickDureeTemp(e){ -->
+								<!-- //console.log(e); -->
+								<!-- var response = (dataDuree2[e.dataPoint.x]); -->
+								<!-- console.log(response); -->
+								<!-- loadPoint(response); -->
+							<!-- } -->
 							TournageDureeTemp.render();
 						});
 
@@ -1054,64 +1258,7 @@ TODO :
 				url: 'http://localhost:444/geojson',
 				dataType: 'json',
 				success: function (response) {
-					var markers = L.markerClusterGroup();
-					points = L.geoJSON(response, {
-						pointToLayer: function (feature, latlng) {
-							if (feature.properties.type_de_tournage == 'TELEFILM') {
-								return L.marker(latlng, { icon: Icon_red });
-							} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
-								return L.marker(latlng, { icon: Icon_green });
-							} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
-								return L.marker(latlng, { icon: Icon_blue });
-							}
-						},
-						onEachFeature: function (feature, layer) {
-							layer.bindPopup(
-								'<div>'
-								+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
-								+ '</br>'
-								+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
-								+ '</div>'
-							);
-							layer.on("popupopen", onPopupOpen);
-							layer.on('click', function (evt) {
-								document.getElementById('divFloat').style.display = 'block';
-								document.getElementById('formAff__id').value = feature.properties.id;
-								document.getElementById('formAff__type_de_tournage').value = feature.properties.type_de_tournage;
-								document.getElementById('formAff__titre').value = feature.properties.titre;
-								document.getElementById('formAff__realisateur').value = feature.properties.realisateur;
-								document.getElementById('formAff__organisme_demandeur').value = feature.properties.organisme_demandeur;
-								document.getElementById('formAff__adresse').value = feature.properties.adresse;
-								document.getElementById('formAff__ardt').value = feature.properties.ardt;
-								document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
-								document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
-							});
-						}, filter: function (feature, layer) {
-							var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
-							if (val_tdt == 'NON RENSEIGNE') { var bool_tdp = true; } else { bool_tdp = (feature.properties.type_de_tournage == val_tdt); }
-							var val_t = document.getElementById('formLoaderFilter__titre').value;
-							if (val_t == '') { var bool_t = true; } else { bool_t = (feature.properties.titre == val_t); }
-							var val_r = document.getElementById('formLoaderFilter__realisateur').value;
-							if (val_r == '') { var bool_r = true; } else { bool_r = (feature.properties.realisateur == val_r); }
-							var val_od = document.getElementById('formLoaderFilter__organisme_demandeur').value;
-							if (val_od == '') { var bool_od = true; } else { bool_od = (feature.properties.organisme_demandeur == val_od); }
-							var val_ad = document.getElementById('formLoaderFilter__adresse').value;
-							if (val_ad == '') { var bool_ad = true; } else { bool_ad = (feature.properties.adresse == val_ad); }
-							var val_ar = document.getElementById('formLoaderFilter__ardt').value;
-							if (val_ar == '') { var bool_ar = true; } else { bool_ar = (feature.properties.ardt == val_ar); }
-							var val_dd = document.getElementById('formLoaderFilter__date_debut').value;
-							if (val_dd == '') { var bool_dd = true; } else { bool_dd = (feature.properties.date_debut >= val_dd); }
-							var val_df = document.getElementById('formLoaderFilter__date_fin').value;
-							if (val_df == '') { var bool_df = true; } else { bool_df = (feature.properties.date_fin <= val_df); }
-							return (bool_tdp && bool_t && bool_r && bool_od && bool_ad && bool_ar && bool_dd && bool_df);
-						}
-					});
-					mapMarkers.push(markers);
-					for (var i = 0; i < mapMarkers.length; i++) {
-						map.removeLayer(mapMarkers[i]);
-					}
-					markers.addLayer(points);
-					map.addLayer(markers);
+					loadPoint(response);
 				},
 				error: function (jqXHR, text, error) {
 					console.log(jqXHR, text, error);
