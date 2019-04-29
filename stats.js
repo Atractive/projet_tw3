@@ -1,9 +1,7 @@
 window.onload = function() {
 
 	//TODO : 
-	// Remplacer la chart par mois par le type Stacked Column Chart (On montrera chaque type de tournages)
 	// Remplacer la chart par mois par nombre de film par mois !
-	// Remplacer la chart par arrondissement avec le type Multi Series Bar Chart (On montrera aussi chaque type de tournage)
 
 			var dataTournageReal = [];
 			var dataTournageArdt = [];
@@ -15,7 +13,16 @@ window.onload = function() {
 			var dataTournageProd = [];
 			var line;
 			var mois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
-			
+			var dataLongm=[];
+			var dataTelef = [];
+			var dataSerie = [];
+			var dataSansType = [];
+			var dataT= [dataLongm,dataTelef,dataSerie,dataSansType];
+			var dataArdtLongM = [];
+			var dataArdtSerie = [];
+			var dataArdtTelef = [];
+			var dataA= [dataArdtTelef,dataArdtSerie,dataArdtLongM]
+	
 			function numberLine(data){
 				line = data.nb;
 				document.getElementById("NombreTournage").innerHTML=line;
@@ -74,19 +81,7 @@ window.onload = function() {
 			TournageReal.render();
 			}
 			$.getJSON('http://localhost:444/tournagesparreal',DataTournageReal);
-			
-			
-			//  Idée de statistiques: 
-			// 	 - Nombre de tournages par film  Fait
-			// 	 - Nombre de tournages par réalisateur  Fait
-			// 	 - Nombre de tournages par mois  Fait
-			// 	 - Nombre de tournages par arrondissement  Fait
-			// 	 - Nombre de tournages par organisme demandeur  Fait
-			// 	 Durée moyenne d'un tournage 
-				
-				
-
-			
+					
 			//Nombre de tournages par arrondissement
 			var TournageArrdt = new CanvasJS.Chart("TournageArrdt", {
 				animationEnabled: true,
@@ -180,19 +175,47 @@ window.onload = function() {
 			title:{
 				text: "Nombre de tournage par mois"
 			},
+			axisX: {
+				interval: 1,
+				intervalType: "month"
+				},
 			axisY:{
 				includeZero: false
 			},
-			data: [{      
-				click:ClickMois,
-				type: "splineArea",       
-				dataPoints: dataTournageMois
-			}]
+			toolTip: {
+				shared: true,
+				content: toolTipContent
+			},
+			data: [{
+				click: ClickMois, 
+				type: "stackedColumn",
+				showInLegend: true,
+				color: "green",
+				name: "LONG METRAGE",
+				dataPoints: dataLongm
+				},
+				{        
+					click: ClickMois,
+					type: "stackedColumn",
+					showInLegend: true,
+					name: "TELEFILM",
+					color: "red",
+					dataPoints: dataTelef
+				},
+				{        
+					click: ClickMois,
+					type: "stackedColumn",
+					showInLegend: true,
+					name: "SERIE TELEVISEE",
+					color: "blue",
+					dataPoints: dataSerie
+				}]
 		});
-		
+
 		function ClickMois(e){
-				// console.log(e);
-				// console.log(e.dataPoint.x + 1);
+				console.log(e);
+				console.log(e.dataPoint.label);
+				console.log(e.dataSeries.name);
 				var mois = e.dataPoint.x + 1;
 				var maxDay= new Date(2016,mois,0).getDate();
 				if (mois<10){
@@ -204,12 +227,29 @@ window.onload = function() {
 					var fin="2016-"+mois+"-"+maxDay;
 				}
 				document.getElementById('formLoaderFilter').reset();
+				document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataSeries.name;
 				document.getElementById('formLoaderFilter__date_debut').value=debut;
 				document.getElementById('formLoaderFilter__date_fin').value=fin;
 				document.getElementById('sub').click();
 			}
 			
-		function DataTournageMois(data) {
+		function toolTipContent(e) {
+			var str = "";
+			var total = 0;
+			var str2, str3;
+			for (var i = 0; i < e.entries.length; i++){
+				var  str1 = "<span style= \"color:"+e.entries[i].dataSeries.color + "\"> "+e.entries[i].dataSeries.name+"</span>: <strong>"+e.entries[i].dataPoint.y+"</strong> Tournages <br/>";
+				total = e.entries[i].dataPoint.y + total;
+				str = str.concat(str1);
+			}
+			str2 = "<span style = \"color:DodgerBlue;\"><strong>"+mois[e.entries[0].dataPoint.x]+"</strong></span><br/>";
+			total = Math.round(total * 100) / 100;
+			str3 = "<span style = \"color:Tomato\">Total:</span><strong>"+total+"</strong> Tournages<br/>";
+			return (str2.concat(str)).concat(str3);
+		}
+	
+
+	function DataTournageMois(data) {
 			var temp = (Object.getOwnPropertyNames(data.result))
 				for (var i = 0; i < 12; i++) {
 					dataTournageMois.push({
@@ -217,7 +257,7 @@ window.onload = function() {
 						label : mois[i]
 					});
 				}
-				TournageParMois.render();
+				
 			}
 			$.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 		
@@ -439,12 +479,6 @@ window.onload = function() {
 			}
 	$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage2);
 		
-	var dataLongm=[];
-	var dataTelef = [];
-	var dataSerie = [];
-	var dataSansType = [];
-	var dataT= [dataLongm,dataTelef,dataSerie,dataSansType];
-	
 	
 	function DataTypeParMois(data){
 		var temp = (Object.getOwnPropertyNames(data));
@@ -459,7 +493,7 @@ window.onload = function() {
 			}
 			                       
 			}
-		
+		TournageParMois.render();
 		}
 	
 	$.getJSON('http://localhost:444/tournagesparmoispartype', DataTypeParMois)		
@@ -589,4 +623,106 @@ window.onload = function() {
 		chart.render();
 	});
 
+	
+	
+	
+var ArdtParType = new CanvasJS.Chart("TournageArdtParType", {
+	animationEnabled: true,
+	zoomEnabled: true,
+	title:{
+		text: "Nombre de tournage par arrondissement par type"
+	},
+	axisY: {
+		title: "Nombre de tournage"
+	},
+	legend: {
+		cursor:"pointer",
+		itemclick : toggleDataSeries
+	},
+	toolTip: {
+		shared: true,
+		content: toolTipFormatter
+	},
+	data: [{
+		click:ClickArdt,
+		type: "bar",
+		showInLegend: true,
+		name: "LONG METRAGE",
+		color: "green",
+		dataPoints: dataArdtLongM
+	},
+	{
+		click:ClickArdt,
+		type: "bar",
+		showInLegend: true,
+		name: "TELEFILM",
+		color: "red",
+		dataPoints: dataArdtTelef
+	},
+	{
+		click:ClickArdt,
+		type: "bar",
+		showInLegend: true,
+		name: "SERIE TELEVISEE",
+		color: "blue",
+		dataPoints: dataArdtSerie
+	}]
+});
+
+function ClickArdt(e){
+		document.getElementById('formLoaderFilter').reset();
+		document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataSeries.name;
+		document.getElementById('formLoaderFilter__ardt').value=e.dataPoint.label;
+		document.getElementById('sub').click();
 	}
+
+function DataTypeParArdt(data){
+		var temp = (Object.getOwnPropertyNames(data.result));
+		console.log("temp1",temp);
+		var temp2 = (Object.getOwnPropertyNames(data.result["75001"]))
+		console.log(temp2);
+		for (var i = 0 ; i<temp.length;i++){
+			// var result = temp[i];
+			// var temp2 = (Object.getOwnPropertyNames(data[result]));
+			// console.log("temp2",temp2);
+			for (j=0;j<temp2.length;j++){
+				dataA[j].push({
+					y:data.result[temp[i]][temp2[j]],
+					label: temp[i]
+					 });
+			 }
+			                       
+		 }
+		//console.log(dataA);
+		ArdtParType.render();
+		}
+	
+	$.getJSON('http://localhost:444/tournagespararrdtpartype', DataTypeParArdt)	
+
+function toolTipFormatter(e) {
+	var str = "";
+	var total = 0 ;
+	var str3;
+	var str2 ;
+	for (var i = 0; i < e.entries.length; i++){
+		var str1 = "<span style= \"color:"+e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>"+  e.entries[i].dataPoint.y + "</strong> <br/>" ;
+		total = e.entries[i].dataPoint.y + total;
+		str = str.concat(str1);
+	}
+	str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br/>";
+	str3 = "<span style = \"color:Tomato\">Total: </span><strong>" + total + "</strong><br/>";
+	return (str2.concat(str)).concat(str3);
+}
+
+function toggleDataSeries(e) {
+	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;
+	}
+	else {
+		e.dataSeries.visible = true;
+	}
+	ArdtParType.render();
+}
+	
+	
+}

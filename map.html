@@ -342,6 +342,11 @@ TODO :
 							Le nombre de tournage par arrondissement
 						</button>
 						
+						<button type="button" style="width:100%;" id="ardt2" class="btn btn-primary" data-toggle="modal"
+							data-whatever="Charts nombre de tournage par arrondissement" data-target="#exampleModal">
+							Le nombre de tournage par arrondissement par type
+						</button>
+						
 						<button type="button" style="width:100%;" id="prod" class="btn btn-primary" data-toggle="modal"
 							data-whatever="Charts nombre de tournage par productions" data-target="#exampleModal">
 							Le nombre de tournage par productions
@@ -359,7 +364,7 @@ TODO :
 
 						<button type="button" style="width:100%;" id="mois" class="btn btn-primary" data-toggle="modal"
 							data-whatever="Charts nombre de tournage par mois" data-target="#exampleModal">
-							Nombre de tournage par mois
+							Nombre de tournage par mois par type
 						</button>
 
 						<button type="button" style="width:100%;" id="orga" class="btn btn-primary" data-toggle="modal"
@@ -466,6 +471,7 @@ TODO :
 					<div id="TournageReal" style="height: 370px; width: 100%; display:none;"></div>
 					<div id="TypeTournage" style="height: 370px; width: 100%; display:none;"></div>
 					<div id="TournageArrdt" style="height: 370px; width: 100%;display:none;"></div>
+					<div id="TournageArdtParType" style="height: 370px; width: 100%;display:none;"></div>
 					<div id="TournageParProd" style="height: 370px; width: 100%;display:none;"></div>
 					<div id="TournageOrgaDemandeur" style="height: 370px; width: 100%;display:none;"></div>
 					<div id="test" style="display:none;">
@@ -516,6 +522,10 @@ TODO :
 			}
 			else if (b_id == "ardt") {
 				var id = "TournageArrdt";
+				allHide("modal-body", id);
+			}
+			else if (b_id == "ardt2") {
+				var id = "TournageArdtParType";
 				allHide("modal-body", id);
 			}
 			else if (b_id == "type") {

@@ -149,6 +149,29 @@ app.get('/tournagesparorga', function (req, res) {
     });
 });
 
+app.get('/tournagespararrdtpartype', function (req, res) {
+
+	m = {};
+	
+    db.find({}, { "properties.type_de_tournage": 1, "properties.ardt": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            var type = docs[i].properties.type_de_tournage;
+			var ardt = docs[i].properties.ardt;
+			// console.log(type);
+            if (typeof m[ardt] == 'undefined' && type != "" && ardt != "" ) {
+                m[ardt]={"TELEFILM":0,"SERIE TELEVISEE":0,"LONG METRAGE":0};
+				m[ardt][type]= 1;
+			}
+			else if (type != "" && ardt != ""){
+				m[ardt][type]= m[ardt][type]+1;
+				
+			} 
+        }
+ 
+        res.send({ result : m });
+    });
+});
+
 // Nombre de chaque type de tournage
 app.get('/tournagespartype', function (req, res) {
 
