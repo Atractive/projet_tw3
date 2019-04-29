@@ -129,19 +129,28 @@ TODO :
 		.ui-autocomplete {
 			position: relative;
 		}
+		
+		@-webkit-keyframes mleft {
+			0% { left: 400px; }
+			100% { left: 0px; }
+		}
 
 		#divFloat {
 			display: none;
 			position: absolute;
-			background-color: white;
+			background: #2c3e50;
+			color: #fff;
 			margin-left: 80%;
 			margin-top: 2%;
 			padding: 10px;
 			width: 15%;
 			z-index: 2;
+			border-radius: 15px;
+			-webkit-animation: mleft 2s 1;
+			-moz-animation: mleft 2s 1;
+			animation: mleft 2s 1;
 		}
-
-
+		
 		.bd-placeholder-img {
 			font-size: 1.125rem;
 			text-anchor: middle;
@@ -167,9 +176,29 @@ TODO :
 			position: absolute;
 			cursor: pointer;
 		}
-
+		
 		.invisible {
 			display: none;
+		}
+		
+		.custom-popup .leaflet-popup-content-wrapper {
+			background:#2c3e50;
+			color:#fff;
+			font-size:16px;
+			line-height:24px;
+			border-radius: 0px;
+		}
+		.custom-popup .leaflet-popup-content-wrapper a {
+			color:rgba(255,255,255,0.1);
+		}
+		.custom-popup .leaflet-popup-tip-container {
+			width:30px;
+			height:15px;
+		}
+		.custom-popup .leaflet-popup-tip {
+			background: transparent;
+			border: none;
+			box-shadow: none;
 		}
 		
 		.labelClass {
@@ -668,7 +697,8 @@ TODO :
 						+ '<label>Longitude: ' + feature.properties.xy[0] + '</label>'
 						+ '</br>'
 						+ '<label>Latitude: ' + feature.properties.xy[1] + '</label>'
-						+ '</div>'
+						+ '</div>',
+						{'className': 'custom-popup'}
 					);
 					layer.on("popupopen", onPopupOpen);
 					layer.on('click', function (evt) {
