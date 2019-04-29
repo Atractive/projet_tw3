@@ -1,5 +1,10 @@
 window.onload = function() {
 
+	//TODO : 
+	// Remplacer la chart par mois par le type Stacked Column Chart (On montrera chaque type de tournages)
+	// Remplacer la chart par mois par nombre de film par mois !
+	// Remplacer la chart par arrondissement avec le type Multi Series Bar Chart (On montrera aussi chaque type de tournage)
+
 			var dataTournageReal = [];
 			var dataTournageArdt = [];
 			var dataTypeTournage = [];
