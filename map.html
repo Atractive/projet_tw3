@@ -202,13 +202,19 @@ TODO :
 		}
 		
 		.labelClass {
-			white-space:nowrap;
-			text-shadow: 0 0 0.1em black, 0 0 0.1em white,0 0 0.1em white,0 0 0.1em white,0 0 0.1em;
-			color: red;
-			font-size: 15px;
+			white-space: nowrap;
+			text-shadow: 0 0 0.1em white, 0 0 0.1em white,0 0 0.1em white,0 0 0.1em white,0 0 0.1em;
+			color: #2c3e50;
+			font-size: 25px;
+			font-family: bold;
+		}
+		
+		.labelClass button {
+			margin: 5px;
 		}
 		
 	</style>
+	
 	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	
 	<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
@@ -684,11 +690,11 @@ TODO :
 			points = L.geoJSON(response, {
 				pointToLayer: function (feature, latlng) {
 					if (feature.properties.type_de_tournage == 'TELEFILM') {
-						return L.marker(latlng, { icon: Icon_red });
+						return L.marker(latlng, { icon: Icon_red, draggable: true });
 					} if (feature.properties.type_de_tournage == 'LONG METRAGE') {
-						return L.marker(latlng, { icon: Icon_green });
+						return L.marker(latlng, { icon: Icon_green, draggable: true });
 					} if (feature.properties.type_de_tournage == 'SERIE TELEVISEE') {
-						return L.marker(latlng, { icon: Icon_blue });
+						return L.marker(latlng, { icon: Icon_blue, draggable: true });
 					}
 				},
 				onEachFeature: function (feature, layer) {
@@ -712,6 +718,21 @@ TODO :
 						document.getElementById('formAff__ardt').value = feature.properties.ardt;
 						document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
 						document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
+					});
+					layer.on('drag', function (e) {
+						$.ajax({
+							type: 'POST',
+							url: 'http://localhost:444/modiflatlng',
+							data: { id: feature.properties.id, x: e.latlng.lat, y: e.latlng.lng },
+							success: function (response) {
+								if (response.status == 0) {
+									loadMap();
+								}
+							},
+							error: function (jqXHR, text, error) {
+								console.log(jqXHR, text, error);
+							}
+						});
 					});
 				}, filter: function (feature, layer) {
 					var val_tdt = document.getElementById('formLoaderFilter__type_de_tournage').value;
@@ -1371,7 +1392,8 @@ TODO :
 						+ '<label>Longitude: ' + lng + '</label>'
 						+ '</br>'
 						+ '<label>Latitude: ' + lat + '</label>'
-						+ '</div>'
+						+ '</div>',
+						{'className': 'custom-popup'}
 					);
 					newMarker.on("popupopen", onPopupOpen);
 					newMarker.on('click', function (evt) {
