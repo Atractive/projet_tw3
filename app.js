@@ -447,22 +447,17 @@ app.post('/modifmarqueur', function (req, res) {
 
 });
 
-// app.post('/modiflatlng', function (req, res) {
-	
-	// var temp = {
-		// "geometry.coordinates":  [parseFloat(req.body.y).toFixed(14),parseFloat(req.body.y).toFixed(14)]
-		// "properties.xy": [parseFloat(req.body.x).toFixed(14),parseFloat(req.body.y).toFixed(14)]
-	// }
-	
-	// db.update({ "properties.id": parseInt(req.body.id, 10) }, { $set: temp }, {}, function (err, num) {
-        // if (err) res.send({ status: -1, message: 'unknown question id' });
-        // else {
-            // console.log("nombre d'enregistrement dans la base MODIFIER - LATLNG : ", num);
-            // res.send({ status: 0, message: "Document updated pour l'id " + req.body.id, data: temp });
-        // }
-    // })
-	
-// });
+app.post('/modiflatlng', function (req, res) {
+    console.log(req.body.id);
+    var temp = {
+        "coordinates": [parseFloat(req.body.y), parseFloat(req.body.x)],
+        "xy": [parseFloat(req.body.x), parseFloat(req.body.y)]
+    }
+    db.update({ "properties.id": parseInt(req.body.id, 10) }, { $set: { "properties.xy": temp.xy, "geometry.coordinates": temp.coordinates } }, {}, function (err, numReplaced) {
+        console.log(numReplaced);
+    });
+    res.send({ status: 0, message: "all good" });
+});
 
 app.post('/removemarqueur', function (req, res) {
     // console.log(req.body.id, parseInt(req.body.id, 10));

@@ -719,11 +719,14 @@ TODO :
 						document.getElementById('formAff__date_debut').value = feature.properties.date_debut;
 						document.getElementById('formAff__date_fin').value = feature.properties.date_fin;
 					});
-					layer.on('drag', function (e) {
+					layer.on('dragend', function (e) {
+						console.log("ok");
+						lat = layer.getLatLng().lat;
+						lng = layer.getLatLng().lng;
 						$.ajax({
 							type: 'POST',
 							url: 'http://localhost:444/modiflatlng',
-							data: { id: feature.properties.id, x: e.latlng.lat, y: e.latlng.lng },
+							data: { id: feature.properties.id, x: lat, y: lng },
 							success: function (response) {
 								if (response.status == 0) {
 									loadMap();
