@@ -189,6 +189,49 @@ app.get('/tournagespartype', function (req, res) {
     });
 });
 
+app.get('/tournagesparmoisparprod', function (req, res) {
+
+	var m= {};
+	
+	for (var i = 0; i < 12; i++) {
+        m[i] = 0;
+    }
+	
+	var l= {0:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[]};
+	
+    db.find({}, { "properties.titre": 1, "properties.date_debut": 1, "properties.date_fin": 1 }, function (err, docs) {
+        for (var i = 0; i < docs.length; i++) {
+            var prod = docs[i].properties.titre;
+            var mois_debut = docs[i].properties.date_debut.split("-")[1];
+            var mois_fin = docs[i].properties.date_fin.split("-")[1];
+            if (typeof date_debut != undefined && typeof date_fin != undefined && typeof prod != undefined) {
+                mois_debut = parseInt(mois_debut);
+                mois_fin = parseInt(mois_fin);
+				var b = false;
+				for (var k = 0; k < mois_fin-mois_debut+1;k++){
+					for (var j=0;j<l[mois_debut-1].length;j++){
+						if (l[mois_debut-1][j]==prod){
+						b=true;
+						break;
+					}
+				}
+					if (b == false){
+						l[mois_debut - 1].push(prod);
+					} 
+				}
+				
+			}
+        }
+            
+
+		for (key in l){
+			m[key]=l[key].length;
+		}
+	res.send({ result : m});
+    });
+});
+
+
 // nombre de tournage EN COURS par Mois
 
 app.get('/tournagesparmoispartype', function (req, res) {
