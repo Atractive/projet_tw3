@@ -15,7 +15,7 @@ window.onload = function() {
 			var dataTournageOrga = [];
 			var dataTournageProd = [];
 			var line;
-			var mois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
+			var moisS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
 			var dataLongm=[];
 			var dataTelef = [];
 			var dataSerie = [];
@@ -70,7 +70,14 @@ function toolTipContent(e) {
 		total = e.entries[i].dataPoint.y + total;
 		str = str.concat(str1);
 	}
-	str2 = "<span style = \"color:DodgerBlue;\"><strong>"+mois[e.entries[0].dataPoint.x]+"</strong></span><br/>";
+	var id = e.chart._containerId;
+	if (id=="TournageMois" || e.chart.options.name == "TournageParMois2"){
+		var title = moisS[e.entries[0].dataPoint.x];
+	}
+	else{
+		var title = e.entries[0].dataPoint.label;
+	}
+	str2 = "<span style = \"color:DodgerBlue;\"><strong>"+title+"</strong></span><br/>"; //mois[e.entries[0].dataPoint.x]
 	total = Math.round(total * 100) / 100;
 	str3 = "<span style = \"color:Tomato\">Total:</span><strong>"+total+"</strong> Tournages<br/>";
 	return (str2.concat(str)).concat(str3);
@@ -150,6 +157,13 @@ var ChartPieOptions = {
 			}
 			document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataPoint.label;
 			document.getElementById('sub').click();
+			if (id!="chartTemp"){
+				$("#close").click();
+		}
+		else{
+				$("#closeTemp").click();
+			
+		}
 		}
 		
 		function DataTypeTournage(data) {
@@ -245,6 +259,13 @@ function ClickMois(e){
 	document.getElementById('formLoaderFilter__date_debut').value=debut;
 	document.getElementById('formLoaderFilter__date_fin').value=fin;
 	document.getElementById('sub').click();
+	if (id!="chartTemp"){
+			$("#close").click();
+	}
+	else{
+			$("#closeTemp").click();
+		
+	}
 }
 		
 function ClickArrdt(e){
@@ -254,6 +275,13 @@ function ClickArrdt(e){
 	}
 	document.getElementById('formLoaderFilter__ardt').value=e.dataPoint.label;
 	document.getElementById('sub').click();
+	if (id!="chartTemp"){
+			$("#close").click();
+	}
+	else{
+			$("#closeTemp").click();
+		
+	}
 }
 		
 function clickOrga(e){
@@ -263,6 +291,13 @@ function clickOrga(e){
 	}
 	document.getElementById('formLoaderFilter__organisme_demandeur').value=e.dataPoint.label;
 	document.getElementById('sub').click();
+	if (id!="chartTemp"){
+				$("#close").click();
+		}
+		else{
+				$("#closeTemp").click();
+			
+		}
 }
 	
 function clickProd(e){
@@ -272,6 +307,13 @@ function clickProd(e){
 	}
 	document.getElementById('formLoaderFilter__titre').value=e.dataPoint.label;
 	document.getElementById('sub').click();
+	if (id!="chartTemp"){
+				$("#close").click();
+		}
+		else{
+				$("#closeTemp").click();
+			
+		}
 }
 
 function ClickReal(e){
@@ -281,6 +323,13 @@ function ClickReal(e){
 	}
 	document.getElementById('formLoaderFilter__realisateur').value=e.dataPoint.label;
 	document.getElementById('sub').click();
+	if (id!="chartTemp"){
+				$("#close").click();
+		}
+		else{
+				$("#closeTemp").click();
+			
+		}
 }
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,7 +366,7 @@ var dataDuree2=[];
 function ClickDuree(e){
 	//console.log(e);
 	var response = (dataDuree2[e.dataPoint.x]);
-	console.log(response);
+	// console.log(response);
 	loadPoint(response);
 	}
 
@@ -402,10 +451,9 @@ function DataTournageMois(data) {
 			for (var i = 0; i < 12; i++) {
 				dataTournageMois.push({
 					y: data.result[temp[i]],
-					label : mois[i]
+					label : moisS[i]
 				});
 			}
-			chart.render();
 		}
 $.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 			
@@ -493,6 +541,8 @@ $.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 			color: "#546BC1",
 			name: "",
 			type: "column",
+			xValueFormatString: "#",
+			yValueFormatString: "# tournages",
 			dataPoints: dataTournageMois
 		}],
 		"Arrondissement":[{
@@ -501,6 +551,8 @@ $.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 			name: "Arrondissement",
 			axisYType: "secondary",
 			color: "#014D65",
+			xValueFormatString: "YYYY",
+			yValueFormatString: "# tournages",
 			dataPoints: dataTournageArdt
 	}]};
 
@@ -628,7 +680,8 @@ ArdtParType.options.data=[{
 	}];
 
 var ArdtParType2 = new CanvasJS.Chart("chartTemp", OptionArdtParType);
-	
+
+
 function ClickArdt(e){
 		var id = e.chart._containerId;
 		if (id!="chartTemp"){
@@ -637,6 +690,13 @@ function ClickArdt(e){
 		document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataSeries.name;
 		document.getElementById('formLoaderFilter__ardt').value=e.dataPoint.label;
 		document.getElementById('sub').click();
+		if (id!="chartTemp"){
+				$("#close").click();
+		}
+		else{
+				$("#closeTemp").click();
+			
+		}
 	}
 
 function DataTypeParArdt(data){
@@ -1002,9 +1062,14 @@ $("#formLoaderFilter").on("submit", function (evt) {
 													   
 								}
 								
-							var TournageParMois = new CanvasJS.Chart("chartTemp", ChartOptions);
-							TournageParMois.options.title={text:"Nombre de Tournage par mois"};
-							TournageParMois.options.data=[{
+							var TournageParMois2 = new CanvasJS.Chart("chartTemp", ChartOptions);
+							TournageParMois2.options.title={text:"Nombre de Tournage par mois"};
+							TournageParMois2.options.name="TournageParMois2";
+							TournageParMois2.options.legend = {
+											cursor:"pointer",
+											itemclick : toggleDataSeries2
+										};
+							TournageParMois2.options.data=[{
 									click: ClickMois, 
 									type: "stackedColumn",
 									showInLegend: true,
@@ -1028,8 +1093,16 @@ $("#formLoaderFilter").on("submit", function (evt) {
 										color: "blue",
 										dataPoints: dataSerie
 									}];
-							TournageParMois.render();
-						
+							TournageParMois2.render();
+							function toggleDataSeries2(e) {
+								if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+									e.dataSeries.visible = false;
+								}
+								else {
+									e.dataSeries.visible = true;
+								}
+								TournageParMois2.render();
+							}
 						});
 						
 						$("#typeTemp").on("click", function () {
@@ -1090,6 +1163,10 @@ $("#formLoaderFilter").on("submit", function (evt) {
 						
 						var ArdtParType2 = new CanvasJS.Chart("chartTemp", OptionArdtParType);
 						ArdtParType2.options.name="ArdtParType2";
+						ArdtParType2.options.legend = {
+											cursor:"pointer",
+											itemclick : toggleDataSeries2
+										};
 						ArdtParType2.options.data=[{
 							click:ClickArdt,
 							type: "bar",
@@ -1134,13 +1211,20 @@ $("#formLoaderFilter").on("submit", function (evt) {
 						
 						console.log(dataATemp);
 						ArdtParType2.render();
-
-						
+						function toggleDataSeries2(e) {
+							if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+								e.dataSeries.visible = false;
+							}
+							else {
+								e.dataSeries.visible = true;
+							}
+							ArdtParType2.render();
+						}
 						});
 						
 						$("#duréeTemp").on("click", function () {
 							var dataTemp = [];
-							var dataDuree2 = [];
+							var dataDuree2Temp = [];
 							var m = {};
 							var j1 = [];
 							var j2 = [];
@@ -1161,7 +1245,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 
 									// console.log(diff.day);
 									if (isNaN(day) == false) {
-										console.log(day);
+										// console.log(day);
 										if (isNaN(m[day])) {
 											m[day] = 1;
 										}
@@ -1210,30 +1294,30 @@ $("#formLoaderFilter").on("submit", function (evt) {
 									});
 								}
 							}
-							
+							console.log("ttttt",t);
 							for(var i = 0; i< t.length;i++){
-								dataDuree2.push(t[i]);;
+								dataDuree2Temp.push(t[i]);;
 							}
 						
 							var TournageDureeTemp = new CanvasJS.Chart("chartTemp", ChartOptions);
 							TournageDureeTemp.options.title= { text:"Tournage par durée"};
 							TournageDureeTemp.options.data = [{
-											// click:ClickDuree, 
+											click:clickDureeTemp, 
 											type: "column",
 											color: "rgba(54,158,173,.7)",
 											markerSize: 5,
-											xValueFormatString: "YYYY",
 											yValueFormatString: "# tournages",
 											dataPoints: dataTemp
 										}];
 							
 							
-							// function clickDureeTemp(e){ 
-								// //console.log(e); -->
-								// var response = (dataDuree2[e.dataPoint.x]); 
-								// console.log(response); 
-								// loadPoint(response); 
-							 // }
+							function clickDureeTemp(e){ 
+								//console.log(e); -->
+								console.log(e.dataPoint.label);
+								var response = (dataDuree2Temp[e.dataPoint.label-1]); 
+								console.log(response); 
+								loadPoint2(response); 
+							 }
 							TournageDureeTemp.render();
 						});
 
