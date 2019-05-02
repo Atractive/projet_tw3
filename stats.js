@@ -151,6 +151,7 @@ var ChartPieOptions = {
 			}];
 		
 		function ClickType(e){
+			if (document.title=="Carte"){
 			var id = e.chart._containerId;
 			if (id!="chartTemp"){
 				document.getElementById('formLoaderFilter').reset();
@@ -165,7 +166,7 @@ var ChartPieOptions = {
 			
 		}
 		}
-		
+		}
 		function DataTypeTournage(data) {
 			var temp = (Object.getOwnPropertyNames(data.result));
 				for (var i = 0; i < data.taille; i++) {
@@ -238,6 +239,7 @@ var ChartPieOptions = {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Fonction permettant de clicker sur les charts
 function ClickMois(e){
+	if (document.title=="Carte"){
 	var mois = e.dataPoint.x + 1;
 	var maxDay= new Date(2016,mois,0).getDate();
 	if (mois<10){
@@ -267,8 +269,9 @@ function ClickMois(e){
 		
 	}
 }
-		
+}		
 function ClickArrdt(e){
+	if (document.title=="Carte"){
 	var id = e.chart._containerId;
 	if (id!="chartTemp"){
 		document.getElementById('formLoaderFilter').reset();
@@ -283,8 +286,9 @@ function ClickArrdt(e){
 		
 	}
 }
-		
+}		
 function clickOrga(e){
+	if (document.title=="Carte"){
 	var id = e.chart._containerId;
 	if (id!="chartTemp"){
 		document.getElementById('formLoaderFilter').reset();
@@ -299,9 +303,13 @@ function clickOrga(e){
 			
 		}
 }
+}
 	
 function clickProd(e){
+	if (document.title=="Carte"){
+	
 	var id = e.chart._containerId;
+	console.log(e);
 	if (id!="chartTemp"){
 		document.getElementById('formLoaderFilter').reset();
 	}
@@ -315,8 +323,10 @@ function clickProd(e){
 			
 		}
 }
+}
 
 function ClickReal(e){
+	if (document.title=="Carte"){
 	var id = e.chart._containerId;
 	if (id!="chartTemp"){
 		document.getElementById('formLoaderFilter').reset();
@@ -331,7 +341,7 @@ function ClickReal(e){
 			
 		}
 }
-	
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Partie correspondant au chart de la durée des tournages
 var DureeTournage = new CanvasJS.Chart("TournageDuree", {
@@ -362,14 +372,23 @@ var DureeTournage = new CanvasJS.Chart("TournageDuree", {
 });
 
 var dataDuree2=[];	
+var dataDuree2Temp = [];
 
 function ClickDuree(e){
+	if (document.title=="Carte"){
+	var id = e.chart._containerId;
 	//console.log(e);
-	var response = (dataDuree2[e.dataPoint.x]);
+	var response=[];
+	if (id=="chartTemp"){
+		response=(dataDuree2Temp[e.dataPoint.x]);
+	}
+	else{
+		response = (dataDuree2[e.dataPoint.x]);
+	}
 	// console.log(response);
 	loadPoint(response);
 	}
-
+}
 function DataDureeTournage(data) {
 	var temp = (Object.getOwnPropertyNames(data.result))
 	for (var i = 0; i < temp.length; i++) {
@@ -1224,7 +1243,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 						
 						$("#duréeTemp").on("click", function () {
 							var dataTemp = [];
-							var dataDuree2Temp = [];
+							
 							var m = {};
 							var j1 = [];
 							var j2 = [];
@@ -1295,14 +1314,14 @@ $("#formLoaderFilter").on("submit", function (evt) {
 								}
 							}
 							console.log("ttttt",t);
-							for(var i = 0; i< t.length;i++){
+							for(var i = 0; i< 6;i++){
 								dataDuree2Temp.push(t[i]);;
 							}
 						
 							var TournageDureeTemp = new CanvasJS.Chart("chartTemp", ChartOptions);
 							TournageDureeTemp.options.title= { text:"Tournage par durée"};
 							TournageDureeTemp.options.data = [{
-											click:clickDureeTemp, 
+											click:ClickDuree, 
 											type: "column",
 											color: "rgba(54,158,173,.7)",
 											markerSize: 5,
@@ -1311,13 +1330,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 										}];
 							
 							
-							function clickDureeTemp(e){ 
-								//console.log(e); -->
-								console.log(e.dataPoint.label);
-								var response = (dataDuree2Temp[e.dataPoint.label-1]); 
-								console.log(response); 
-								loadPoint2(response); 
-							 }
+							
 							TournageDureeTemp.render();
 						});
 

@@ -249,11 +249,11 @@ TODO :
 				<li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
 				<li><a href="#formSelect" role="tab"><i class="fab fa-wpforms"></i></a></li>
 				<li><a href="#stats" role="tab"><i class="fas fa-chart-pie"></i></a></li>
-				<li class="disabled" id="statstemp_li"><a href="#statstemp" role="tab"><i
-							class="fas fa-chart-pie"></i></a></li>
+				<li class="disabled" id="statstemp_li"><a href="#statstemp" role="tab"><i class="fas fa-chart-line"></i></a></li>
 			</ul>
 
 			<ul role="tablist">
+				<li><a href="#help" role="tab"><i class="fas fa-question"></i></a></li>
 				<li><a href="#aboutus" role="tab"><i class="fas fa-users"></i></a></li>
 			</ul>
 		</div>
@@ -264,6 +264,7 @@ TODO :
 					Menu Site Web
 					<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
 				</h1>
+				<h2><a href="home_page" role="button"><i class="fas fa-home"></i></i> Page d'accueil</a></h2>
 				<h2><a href="" role="button"><i class="fas fa-globe-europe"></i> La carte</a></h2>
 				<h2><a href="stats" role="button"><i class="far fa-chart-bar"></i> Les stats</a></h2>
 
@@ -424,6 +425,39 @@ TODO :
 				</div>
 			</div>
 
+	
+		
+		<div class="sidebar-pane" id="help">
+			<h1 class="sidebar-header">Aide<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+			</h1>
+			<div class="container" style="width:100%;">
+			<div>
+			<h3><i class="fa fa-bars"></i> Onglet Navigation</h3> 
+				Cet onglet vous ramène à la liste des différentes pages du site
+			</div>
+			
+			<div>
+			<h3><i class="fab fa-wpforms"></i> </i> Onglet Recherche</h3> 
+				Cet onglet vous permettra de faire votre propre recherche sur les tournages dans la ville de Paris en 2016.
+			</div>
+			<div>
+			<h3><i class="fas fa-chart-pie"></i> Onglet Stats générale</h3> 
+			 Cet onglet vous montrera des statistiques par rapport à la totalité des tournages dans la ville de Paris.
+			</div>
+			
+			<div>
+			<h3><i class="fas fa-chart-line"></i> Onglet Stats Temporaire</h3> 
+				<div class="alert alert-danger" role="alert"> Cet onglet ne s'activera qu'après avoir fait une recherche.</div>  
+					Il vous permettra de montrer des statistiques identique que l'onglet précédent mais sur la
+							totalité des tournages affiché après votre recherche.
+			</div>
+			</div>
+		</div>
+		
+			
+
+		
+		
 		</div>
 
 		<div class="sidebar-pane" id="aboutus">
@@ -535,7 +569,7 @@ TODO :
 			</div>
 		</div>
 	</div>
-	</div>
+	
 
 	<div id="map" class="sidebar-map"></div>
 
