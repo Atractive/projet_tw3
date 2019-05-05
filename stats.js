@@ -35,6 +35,7 @@ window.onload = function() {
 			var dataTempOrga=[];
 			var dataTempProd=[];
 			var dataTempReal=[];
+			var color = {"SERIE TELEVISEE": "blue", "LONG METRAGE": "green", "TELEFILM":"red" };
 			
 //Fonction utilisant lors du traitement de données
 	
@@ -172,7 +173,8 @@ var ChartPieOptions = {
 				for (var i = 0; i < data.taille; i++) {
 					dataTypeTournage.push({
 						y: (data.result[temp[i]]/line)*100,
-						label : temp[i]
+						label : temp[i],
+						color: color[temp[i]]
 					});
 				}
 				console.log("VEFRR",dataTypeTournage);
@@ -365,7 +367,7 @@ var DureeTournage = new CanvasJS.Chart("TournageDuree", {
 		type: "column",
 		color: "rgba(54,158,173,.7)",
 		markerSize: 5,
-		xValueFormatString: "YYYY",
+		xValueFormatString: "# jour(s)",
 		yValueFormatString: "# tournages",
 		dataPoints: dataDureeTournage
 	}]
@@ -376,17 +378,13 @@ var dataDuree2Temp = [];
 
 function ClickDuree(e){
 	if (document.title=="Carte"){
-	var id = e.chart._containerId;
-	//console.log(e);
-	var response=[];
-	if (id=="chartTemp"){
-		response=(dataDuree2Temp[e.dataPoint.x]);
-	}
-	else{
+		var id = e.chart._containerId;
+		//console.log(e);
+		var response=[];
 		response = (dataDuree2[e.dataPoint.x]);
-	}
-	// console.log(response);
-	loadPoint(response);
+		
+		// console.log(response);
+		loadPoint(response);
 	}
 }
 function DataDureeTournage(data) {
@@ -521,11 +519,11 @@ $.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 			showInLegend: true,
 			startAngle: 90,
 			type: "doughnut",
-			dataPoints: [{ y: 20.00, label : "Arrondissement" },
-						{y: 20.00, label : "Organisme"},
-						{y: 20.00, label : "Production"},
-						{y: 20.00, label : "Réalisateur"},
-						{y: 20.00, label : "Mois"}]
+			dataPoints: [{ y: 20.00, name : "Arrondissement" },
+						{y: 20.00, name : "Organisme"},
+						{y: 20.00, name : "Production"},
+						{y: 20.00, name : "Réalisateur"},
+						{y: 20.00, name : "Mois"}]
 		}],
 		"Réalisateur": [{
 			click:ClickReal,
@@ -632,9 +630,9 @@ function ChangementCharts(e) {
 	console.log(e);
 	var id = e.chart._containerId;		
 	chart2 = new CanvasJS.Chart(id, secondChartsOptions);
-	chart2.options.data = PieChoix[e.dataPoint.label];
+	chart2.options.data = PieChoix[e.dataPoint.name];
 	//console.log(e.name);
-	chart2.options.title = { text: e.dataPoint.label }
+	chart2.options.title = { text: "Nombre de tournage par " + e.dataPoint.name }
 	$("#backButton").toggleClass("invisible");
 	chart2.render();
 }
@@ -938,11 +936,11 @@ $("#formLoaderFilter").on("submit", function (evt) {
 											showInLegend: true,
 											startAngle: 90,
 											type: "doughnut",
-											dataPoints: [{ y: 20.00, label : "Arrondissement" },
-														{y: 20.00, label : "Organisme"},
-														{y: 20.00, label : "Production"},
-														{y: 20.00, label : "Réalisateur"},
-														{y: 20.00, label : "Mois"}]
+											dataPoints: [{ y: 20.00, name : "Arrondissement" },
+														{y: 20.00, name : "Organisme"},
+														{y: 20.00, name : "Production"},
+														{y: 20.00, name : "Réalisateur"},
+														{y: 20.00, name : "Mois"}]
 										}],
 										"RéalisateurTemp": [{
 											click:ClickReal,
@@ -998,9 +996,9 @@ $("#formLoaderFilter").on("submit", function (evt) {
 								console.log(e);
 								var id = e.chart._containerId;
 								chart2 = new CanvasJS.Chart(id, secondChartsOptions);
-								chart2.options.data = PieChoixTemp[e.dataPoint.label+"Temp"];
+								chart2.options.data = PieChoixTemp[e.dataPoint.name+"Temp"];
 								//console.log(e.name);
-								chart2.options.title = { text: e.dataPoint.label }
+								chart2.options.title = { text: "Nombre de tournage par "+ e.dataPoint.name }
 								$("#backButton2").toggleClass("invisible");
 								chart2.render();
 								
@@ -1141,7 +1139,8 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							for (var i = 0; i < data.taille; i++) {
 								dataTemp.push({
 									y: (data.result[temp[i]] / response.data.length) * 100,
-									label: temp[i]
+									label: temp[i],
+									color : color[temp[i]]
 								});
 							}
 
@@ -1321,7 +1320,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							var TournageDureeTemp = new CanvasJS.Chart("chartTemp", ChartOptions);
 							TournageDureeTemp.options.title= { text:"Tournage par durée"};
 							TournageDureeTemp.options.data = [{
-											click:ClickDuree, 
+											// click:ClickDuree, 
 											type: "column",
 											color: "rgba(54,158,173,.7)",
 											markerSize: 5,
