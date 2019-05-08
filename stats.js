@@ -1,44 +1,40 @@
 window.onload = function() {
-
-	//TODO : 
-	// Régler le bug des charts à choix, pourquoi les données s'affiche pas (Fait mais code de 600 ligne pour sens formulaire -> chart, pas ouf..)
-	// Finir les dernières fonctions clics. Régler le bug du clic durée.
-	// Rendre fonctionnel le toggleDataSeries.
-	// Réorganiser le code
-
-			var dataTournageReal = [];
-			var dataTournageArdt = [];
-			var dataTypeTournage = [];
-			var dataTypeTournage2 = [];
-			var dataTournageMois = [];
-			var dataDureeTournage = [];
-			var dataTournageOrga = [];
-			var dataTournageProd = [];
-			var line;
-			var moisS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
-			var dataLongm=[];
-			var dataTelef = [];
-			var dataSerie = [];
-			var dataSansType = [];
-			var dataT= [dataLongm,dataTelef,dataSerie,dataSansType];
-			var dataArdtLongM = [];
-			var dataArdtSerie = [];
-			var dataArdtTelef = [];
-			var dataA= [dataArdtTelef,dataArdtSerie,dataArdtLongM];			
-			var real = {};
-			var orga = {};
-			var mois = {};
-			var ardt = {};
-			var prod = {};
-			var dataTempArdt=[];
-			var dataTempMois=[];
-			var dataTempOrga=[];
-			var dataTempProd=[];
-			var dataTempReal=[];
-			var color = {"SERIE TELEVISEE": "blue", "LONG METRAGE": "green", "TELEFILM":"red" };
+	//Variables dont on aura besoin
+	var dataTournageReal = [];
+	var dataTournageArdt = [];
+	var dataTypeTournage = [];
+	var dataTypeTournage2 = [];
+	var dataTournageMois = [];
+	var dataDureeTournage = [];
+	var dataTournageOrga = [];
+	var dataTournageProd = [];
+	var line;
+	var moisS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre"];
+	var dataLongm=[];
+	var dataTelef = [];
+	var dataSerie = [];
+	var dataSansType = [];
+	var dataT= [dataLongm,dataTelef,dataSerie,dataSansType];
+	var dataArdtLongM = [];
+	var dataArdtSerie = [];
+	var dataArdtTelef = [];
+	var dataA= [dataArdtTelef,dataArdtSerie,dataArdtLongM];			
+	var real = {};
+	var orga = {};
+	var mois = {};
+	var ardt = {};
+	var prod = {};
+	var dataTempArdt=[];
+	var dataTempMois=[];
+	var dataTempOrga=[];
+	var dataTempProd=[];
+	var dataTempReal=[];
+	var color = {"SERIE TELEVISEE": "blue", "LONG METRAGE": "green", "TELEFILM":"red" };
+	var dataDuree2=[];	
+	var dataDuree2Temp = [];
 			
-//Fonction utilisant lors du traitement de données
-	
+//Fonction utilisé lors du traitement de données
+//Savoir le nombre de jours entre deux dates
 function NumberDay(debut,fin){
 	var diff = {};
 	var tmp = new Date(fin) - new Date(debut);
@@ -57,11 +53,13 @@ function NumberDay(debut,fin){
 	
 	return diff.day;
 }
-	
+
+//Fonction utilisé pour mettre dans un ordre les différents tableau
 function compareNombres(a, b) {
 		return a[0] - b[0];
 	}
-
+	
+//Fonction permettant d'avoir une popup qui s'affiche quand la souris est sur la données
 function toolTipContent(e) {
 	var str = "";
 	var total = 0;
@@ -141,105 +139,105 @@ var ChartPieOptions = {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Pourcentage de chaque type de tournage		
-		var TypeTournage = new CanvasJS.Chart("TypeTournage", ChartPieOptions);
-		TypeTournage.options.data=[{
-				click: ClickType,
-				type: "pie",
-				startAngle: 240,
-				yValueFormatString: "##0.00\"%\"",
-				indexLabel: "{label} {y}",
-				dataPoints: dataTypeTournage
-			}];
-		
-		function ClickType(e){
-			// console.log(e);
-			if (document.title=="Carte"){
-			var id = e.chart._containerId;
-			if (id!="chartTemp"){
-				document.getElementById('formLoaderFilter').reset();
-			}
-			document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataPoint.label;
-			document.getElementById('sub').click();
-			if (id!="chartTemp"){
-				$("#close").click();
+var TypeTournage = new CanvasJS.Chart("TypeTournage", ChartPieOptions);
+TypeTournage.options.data=[{
+		click: ClickType,
+		type: "pie",
+		startAngle: 240,
+		yValueFormatString: "##0.00\"%\"",
+		indexLabel: "{label} {y}",
+		dataPoints: dataTypeTournage
+	}];
+
+//Fonction de click pour les charts de TypeTournage
+function ClickType(e){
+	if (document.title=="Carte"){
+		var id = e.chart._containerId;
+		if (id!="chartTemp"){
+			document.getElementById('formLoaderFilter').reset();
+		}
+		document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataPoint.label;
+		document.getElementById('sub').click();
+		if (id!="chartTemp"){
+			$("#close").click();
 		}
 		else{
-				$("#closeTemp").click();
-			
+			$("#closeTemp").click();
 		}
+	}
+}
+//Fonction récupérant des données des tournages par type du serveur et les ajoute dans un tableau
+function DataTypeTournage(data) {
+	var temp = (Object.getOwnPropertyNames(data.result));
+		for (var i = 0; i < data.taille; i++) {
+			dataTypeTournage.push({
+				y: (data.result[temp[i]]/line)*100,
+				label : temp[i],
+				color: color[temp[i]]
+			});
 		}
-		}
-		function DataTypeTournage(data) {
-			var temp = (Object.getOwnPropertyNames(data.result));
-				for (var i = 0; i < data.taille; i++) {
-					dataTypeTournage.push({
-						y: (data.result[temp[i]]/line)*100,
-						label : temp[i],
-						color: color[temp[i]]
-					});
-				}
-				TypeTournage.render();	
-			}
-		$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage);
+		TypeTournage.render();	
+	}
+$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage);
 	
 //Partie correspondant à la chart Tournage par mois par les stackedColumn
-		var TournageParMois = new CanvasJS.Chart("TournageMois", ChartOptions);
-		TournageParMois.options.title={text:"Nombre de Tournage par mois"};
-		TournageParMois.options.name="TournageParMois";
-		TournageParMois.options.legend = {
-		cursor:"pointer",
-		itemclick : toggleDataSeries
-	};
-		TournageParMois.options.toolTip = {
-		shared: true,
-		content: toolTipContent
-	};
-		TournageParMois.options.data = [{
-				click: ClickMois, 
-				type: "stackedColumn",
-				showInLegend: true,
-				color: "green",
-				name: "LONG METRAGE",
-				dataPoints: dataLongm
-				},
-				{        
-					click: ClickMois,
-					type: "stackedColumn",
-					showInLegend: true,
-					name: "TELEFILM",
-					color: "red",
-					dataPoints: dataTelef
-				},
-				{        
-					click: ClickMois,
-					type: "stackedColumn",
-					showInLegend: true,
-					name: "SERIE TELEVISEE",
-					color: "blue",
-					dataPoints: dataSerie
-				}];
+var TournageParMois = new CanvasJS.Chart("TournageMois", ChartOptions);
+TournageParMois.options.title={text:"Nombre de Tournage par mois"};
+TournageParMois.options.name="TournageParMois";
+TournageParMois.options.legend = {
+	cursor:"pointer",
+	itemclick : toggleDataSeries
+};
+TournageParMois.options.toolTip = {
+	shared: true,
+	content: toolTipContent
+};
+TournageParMois.options.data = [{
+	click: ClickMois, 
+	type: "stackedColumn",
+	showInLegend: true,
+	color: "green",
+	name: "LONG METRAGE",
+	dataPoints: dataLongm
+	},
+	{        
+	click: ClickMois,
+	type: "stackedColumn",
+	showInLegend: true,
+	name: "TELEFILM",
+	color: "red",
+	dataPoints: dataTelef
+	},
+	{        
+	click: ClickMois,
+	type: "stackedColumn",
+	showInLegend: true,
+	name: "SERIE TELEVISEE",
+	color: "blue",
+	dataPoints: dataSerie
+	}];
 
 //Récupération des données pour la chart Tournage par mois par type	
-	function DataTypeParMois(data){
-		var temp = (Object.getOwnPropertyNames(data));
-		for (var i=0;i<temp.length;i++){
-			var result = temp[i];
-			var temp2 = (Object.getOwnPropertyNames(data[result]));
-			for (j=0;j<temp2.length;j++){
-				dataT[i].push({
-					y:data[result][temp2[j]],
-					label: mois[j]
-					});
-			}
-			                       
-			}
-		TournageParMois.render();
-		}
-	
-	$.getJSON('http://localhost:444/tournagesparmoispartype', DataTypeParMois)	
+function DataTypeParMois(data){
+	var temp = (Object.getOwnPropertyNames(data));
+	for (var i=0;i<temp.length;i++){
+		var result = temp[i];
+		var temp2 = (Object.getOwnPropertyNames(data[result]));
+		for (j=0;j<temp2.length;j++){
+			dataT[i].push({
+				y:data[result][temp2[j]],
+				label: mois[j]
+				});
+		}				   
+	}
+	TournageParMois.render();
+	}
+
+$.getJSON('http://localhost:444/tournagesparmoispartype', DataTypeParMois)	
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Fonction permettant de clicker sur les charts
+//Pour les charts des Tournages avec les mois
 function ClickMois(e){
 	if (document.title=="Carte"){
 		
@@ -265,14 +263,14 @@ function ClickMois(e){
 	document.getElementById('formLoaderFilter__date_fin').value=fin;
 	document.getElementById('sub').click();
 	if (id!="chartTemp"){
-			$("#close").click();
+		$("#close").click();
 	}
 	else{
-			$("#closeTemp").click();
-		
+		$("#closeTemp").click();
 	}
 }
 }		
+//Pour les charts des Tournages avec les arrondissements
 function ClickArrdt(e){
 	if (document.title=="Carte"){
 	var id = e.chart._containerId;
@@ -290,80 +288,67 @@ function ClickArrdt(e){
 	}
 }
 }		
+//Pour les charts des Tournages avec les organismes
 function clickOrga(e){
 	if (document.title=="Carte"){
-	var id = e.chart._containerId;
-	if (id!="chartTemp"){
-		document.getElementById('formLoaderFilter').reset();
-	}
-	document.getElementById('formLoaderFilter__organisme_demandeur').value=e.dataPoint.label;
-	document.getElementById('sub').click();
-	if (id!="chartTemp"){
-				$("#close").click();
+		var id = e.chart._containerId;
+		if (id!="chartTemp"){
+			document.getElementById('formLoaderFilter').reset();
+		}
+		document.getElementById('formLoaderFilter__organisme_demandeur').value=e.dataPoint.label;
+		document.getElementById('sub').click();
+		if (id!="chartTemp"){
+			$("#close").click();
 		}
 		else{
-				$("#closeTemp").click();
-			
+			$("#closeTemp").click();
 		}
+	}
 }
-}
-	
+//Pour les charts des Tournages avec les productions	
 function clickProd(e){
 	if (document.title=="Carte"){
-	
-	var id = e.chart._containerId;
-	// console.log(e);
-	if (id!="chartTemp"){
-		document.getElementById('formLoaderFilter').reset();
-	}
-	document.getElementById('formLoaderFilter__titre').value=e.dataPoint.label;
-	document.getElementById('sub').click();
-	if (id!="chartTemp"){
-				$("#close").click();
+		var id = e.chart._containerId;
+		if (id!="chartTemp"){
+			document.getElementById('formLoaderFilter').reset();
+		}
+		document.getElementById('formLoaderFilter__titre').value=e.dataPoint.label;
+		document.getElementById('sub').click();
+		if (id!="chartTemp"){
+			$("#close").click();
 		}
 		else{
-				$("#closeTemp").click();
-			
+			$("#closeTemp").click();
 		}
-}
+	}
 }
 
+//Pour les charts des Tournages avec les réalisateurs
 function ClickReal(e){
 	if (document.title=="Carte"){
-	var id = e.chart._containerId;
-	if (id!="chartTemp"){
-		document.getElementById('formLoaderFilter').reset();
-	}
-	document.getElementById('formLoaderFilter__realisateur').value=e.dataPoint.label;
-	document.getElementById('sub').click();
-	if (id!="chartTemp"){
-				$("#close").click();
+		var id = e.chart._containerId;
+		if (id!="chartTemp"){
+			document.getElementById('formLoaderFilter').reset();
+		}
+		document.getElementById('formLoaderFilter__realisateur').value=e.dataPoint.label;
+		document.getElementById('sub').click();
+		if (id!="chartTemp"){
+			$("#close").click();
 		}
 		else{
-				$("#closeTemp").click();
-			
+			$("#closeTemp").click();
 		}
-}
+	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Partie correspondant au chart de la durée des tournages
-var DureeTournage = new CanvasJS.Chart("TournageDuree", {
-	width:868.01,
-	height: 500,
-	animationEnabled: true, 
-	zoomEnabled: true,
-	title:{
-		text: "Durée des tournages par nombre de jours"
-	},
-	axisY: {
-		title: "Nombre de tournage",
-		valueFormatString: "#",
-	},
-	axisX: {
+var DureeTournage = new CanvasJS.Chart("TournageDuree", ChartOptions);
+DureeTournage.options.title={text: "Durée des tournages par nombre de jours"};
+DureeTournage.options.axisX={
 		title : "Nombre de Jours",
 		valueFormatString: "#",
-	},
-	data: [{
+	};
+DureeTournage.options.data=[{
 		click:ClickDuree,
 		type: "column",
 		color: "rgba(54,158,173,.7)",
@@ -371,14 +356,10 @@ var DureeTournage = new CanvasJS.Chart("TournageDuree", {
 		xValueFormatString: "# jour(s)",
 		yValueFormatString: "# tournages",
 		dataPoints: dataDureeTournage
-	}]
-});
+	}];
 
-var dataDuree2=[];	
-var dataDuree2Temp = [];
-
+//Click pour la charts durée
 function ClickDuree(e){
-	
 	if (document.title=="Carte"){
 		var id = e.chart._containerId;
 		if (id!="chartTemp"){
@@ -387,21 +368,16 @@ function ClickDuree(e){
 		else{
 			var tab = dataDuree2Temp;
 		}
-		
-		//console.log(e);
 		var response=[];
 		$.getJSON('http://localhost:444/dureepartournage2',DataDureeTournage2);
 		response = (tab[e.dataPoint.x]);
-		// console.log("res",response);
-		// console.log(response);
 		document.getElementById('formLoaderFilter').reset();
 		loadPoint(response);
 		var tempo=[];;
-		console.log(response);
 		if (id!="chartTemp"){
 			for(var i=0;i<response.length;i++){
 				tempo.push(response[i].properties);
-		}
+			}
 			var temp={data:tempo};
 		}
 		else{
@@ -409,14 +385,15 @@ function ClickDuree(e){
 		}
 		loadTemp(temp);
 		if (id!="chartTemp"){
-				$("#close").click();
+			$("#close").click();
 		}
 		else{
-				$("#closeTemp").click();
-			
+			$("#closeTemp").click();	
 		}
 	}
 }
+
+//Fonction appelant le serveur pour récupérer les données sur les durée par tournage
 function DataDureeTournage(data) {
 	var temp = (Object.getOwnPropertyNames(data.result))
 	for (var i = 0; i < temp.length; i++) {
@@ -437,11 +414,12 @@ function DataDureeTournage(data) {
 	}
 $.getJSON('http://localhost:444/dureepartournage',DataDureeTournage);
 
+//Fonction récupérant tous les tournages de chaque nombre de jours de tournage (afin de les afficher)
 function DataDureeTournage2(data) {
 	var temp = (Object.getOwnPropertyNames(data.listTournage));
 	for(var i = 0; i< data.listTournage.length;i++){
 		dataDuree2.push(data.listTournage[i]);;
-	}
+		}
 	}
 	$.getJSON('http://localhost:444/dureepartournage2',DataDureeTournage2);
 
@@ -449,7 +427,7 @@ function DataDureeTournage2(data) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
 //Récupération des données pour la chart Tournage par organisme
 function DataTournageOrga(data) {
-var result = Object.keys(data.result).map(function(key) { 
+	var result = Object.keys(data.result).map(function(key) { 
 					return [data.result[key],(key)]; });
 	var tabTemp = result.sort(compareNombres);
 	
@@ -462,6 +440,7 @@ var result = Object.keys(data.result).map(function(key) {
 }
 $.getJSON('http://localhost:444/tournagesparorga',DataTournageOrga);
 
+//Récupération des données pour la chart Tournage par réalisateur
 function DataTournageReal(data) {
 		var result = Object.keys(data.result).map(function(key) { 
 							return [data.result[key],(key)]; });
@@ -476,8 +455,7 @@ function DataTournageReal(data) {
 			}
 $.getJSON('http://localhost:444/tournagesparreal',DataTournageReal);
 
-//Nombre de tournages par arrondissement
-
+//Récupération des données pour la chart Tournage par arrondissement
 function DataTournageArdt(data) {
 	var result = Object.keys(data.result).map(function(key) { 
 					return [data.result[key],(key)]; });
@@ -518,8 +496,7 @@ $.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 	}
 			}
 			$.getJSON('http://localhost:444/tournagesparprod',DataTournageProd);
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
+		
 //Récupération des données pour la chart Tournage par Type
 		function DataTypeTournage2(data) {
 				var temp = (Object.getOwnPropertyNames(data.result));
@@ -531,105 +508,101 @@ $.getJSON('http://localhost:444/tournagesparmois',DataTournageMois);
 					}
 				}
 		$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage2);
-		
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
 //Chart correspondant au drilldown avec lequel il y a les réalisateur, le mois, les organisme et arrondissement.
-	var PieChoix = {
-		"MultiData": [{
-			click: ChangementCharts,
-			cursor: "pointer",
-			explodeOnClick: false,
-			innerRadius: "75%",
-			legendMarkerType: "square",
-			name: "Nombre de Tournage par Type",
-			radius: "100%",
-			showInLegend: true,
-			startAngle: 90,
-			type: "doughnut",
-			dataPoints: [{ y: 20.00, name : "Arrondissement" },
-						{y: 20.00, name : "Organisme"},
-						{y: 20.00, name : "Production"},
-						{y: 20.00, name : "Réalisateur"},
-						{y: 20.00, name : "Mois"}]
-		}],
-		"Réalisateur": [{
-			click:ClickReal,
-			type: "column",
-			color: "rgba(54,158,173,.7)",
-			name: "Réalisateur",
-			markerSize: 5,
-			xValueFormatString: "YYYY",
-			yValueFormatString: "# tournages",
-			dataPoints: dataTournageReal
-		}],
-		"Organisme": [{
-			click:clickOrga,
-			type: "column",
-			color: "rgba(54,158,173,.7)",
-			markerSize: 5,
-			xValueFormatString: "YYYY",
-			yValueFormatString: "# tournages",
-			dataPoints: dataTournageOrga
-		}],
-		"Production": [{
-			click : clickProd,
-			type: "column",
-			color: "rgba(54,158,173,.7)",
-			markerSize: 5,
-			xValueFormatString: "YYYY",
-			yValueFormatString: "# tournages",
-			dataPoints: dataTournageProd
-		}],
-		"Mois": [{
-			click:ClickMois,
-			color: "#546BC1",
-			name: "",
-			type: "column",
-			xValueFormatString: "#",
-			yValueFormatString: "# tournages",
-			dataPoints: dataTournageMois
-		}],
-		"Arrondissement":[{
-			click: ClickArrdt,
-			type: "bar",
-			name: "Arrondissement",
-			axisYType: "secondary",
-			color: "#014D65",
-			xValueFormatString: "YYYY",
-			yValueFormatString: "# tournages",
-			dataPoints: dataTournageArdt
-	}]};
+var PieChoix = {
+	"MultiData": [{
+		click: ChangementCharts,
+		cursor: "pointer",
+		explodeOnClick: false,
+		innerRadius: "75%",
+		legendMarkerType: "square",
+		name: "Nombre de Tournage par Type",
+		radius: "100%",
+		showInLegend: true,
+		startAngle: 90,
+		type: "doughnut",
+		dataPoints: [{ y: 20.00, name : "Arrondissement" },
+					{y: 20.00, name : "Organisme"},
+					{y: 20.00, name : "Production"},
+					{y: 20.00, name : "Réalisateur"},
+					{y: 20.00, name : "Mois"}]
+	}],
+	"Réalisateur": [{
+		click:ClickReal,
+		type: "column",
+		color: "rgba(54,158,173,.7)",
+		name: "Réalisateur",
+		markerSize: 5,
+		xValueFormatString: "YYYY",
+		yValueFormatString: "# tournages",
+		dataPoints: dataTournageReal
+	}],
+	"Organisme": [{
+		click:clickOrga,
+		type: "column",
+		color: "rgba(54,158,173,.7)",
+		markerSize: 5,
+		xValueFormatString: "YYYY",
+		yValueFormatString: "# tournages",
+		dataPoints: dataTournageOrga
+	}],
+	"Production": [{
+		click : clickProd,
+		type: "column",
+		color: "rgba(54,158,173,.7)",
+		markerSize: 5,
+		xValueFormatString: "YYYY",
+		yValueFormatString: "# tournages",
+		dataPoints: dataTournageProd
+	}],
+	"Mois": [{
+		click:ClickMois,
+		color: "#546BC1",
+		name: "",
+		type: "column",
+		xValueFormatString: "#",
+		yValueFormatString: "# tournages",
+		dataPoints: dataTournageMois
+	}],
+	"Arrondissement":[{
+		click: ClickArrdt,
+		type: "bar",
+		name: "Arrondissement",
+		axisYType: "secondary",
+		color: "#014D65",
+		xValueFormatString: "YYYY",
+		yValueFormatString: "# tournages",
+		dataPoints: dataTournageArdt
+}]};
 
-	
-	
+//Options de la chart de départ dans le type de charts drilldown
 var TypeTournageOptions = {
-		width:868.01,
-		height:500,
-		animationEnabled: true,
-		theme: "light2",
-		title: {
-			text: "Nombre de tournage par type"
-		},
-		
-		subtitles: [{
-			text: "Veuillez sélectionner un attribut",
-			backgroundColor: "#2eacd1",
-			fontSize: 16,
-			fontColor: "white",
-			padding: 5
-		}],
-		legend: {
-			fontFamily: "calibri",
-			fontSize: 14,
-			cursor:"pointer",
-			itemclick : toggleDataSeries
-		},
-		data: []
-	};
+	width:868.01,
+	height:500,
+	animationEnabled: true,
+	theme: "light2",
+	title: {
+		text: "Nombre de tournage par type"
+	},
+	subtitles: [{
+		text: "Veuillez sélectionner un attribut",
+		backgroundColor: "#2eacd1",
+		fontSize: 16,
+		fontColor: "white",
+		padding: 5
+	}],
+	legend: {
+		fontFamily: "calibri",
+		fontSize: 14,
+		cursor:"pointer",
+		itemclick : toggleDataSeries
+	},
+	data: []
+};
 
+//Options de la seconde charts permettant d'afficher ce qu'on veut suite au clic
 var secondChartsOptions = {
 		width:868.01,
 		height:500,
@@ -656,17 +629,17 @@ var chart = new CanvasJS.Chart("chartContainer", TypeTournageOptions);
 chart.options.data = PieChoix["MultiData"];
 chart.render();
 
+//Fonction permettant de changer de charts suite au clic
 function ChangementCharts(e) {
-	// console.log(e);
 	var id = e.chart._containerId;		
 	chart2 = new CanvasJS.Chart(id, secondChartsOptions);
 	chart2.options.data = PieChoix[e.dataPoint.name];
-	//console.log(e.name);
 	chart2.options.title = { text: "Nombre de tournage par " + e.dataPoint.name }
 	$("#backButton").toggleClass("invisible");
 	chart2.render();
 }
 
+//Bouton permettant de revenir à la première charts
 $("#backButton").click(function() {
 	$(this).toggleClass("invisible");
 	chart = new CanvasJS.Chart("chartContainer", TypeTournageOptions);
@@ -676,7 +649,6 @@ $("#backButton").click(function() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 //Partie correspondant au chart des Arrondissements par type PARTIE REUSSI ET FONCTIONNEL
-	
 var OptionArdtParType = {
 	width:868.01,
 	height: 500,
@@ -728,63 +700,59 @@ ArdtParType.options.data=[{
 
 var ArdtParType2 = new CanvasJS.Chart("chartTemp", OptionArdtParType);
 
-
+//Fonction permettant de cliquer sur la chart et d'afficher les valeurs
 function ClickArdt(e){
-		var id = e.chart._containerId;
-		if (id!="chartTemp"){
-				document.getElementById('formLoaderFilter').reset();
-		}
-		document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataSeries.name;
-		document.getElementById('formLoaderFilter__ardt').value=e.dataPoint.label;
-		document.getElementById('sub').click();
-		if (id!="chartTemp"){
-				$("#close").click();
-		}
-		else{
-				$("#closeTemp").click();
-			
-		}
+	var id = e.chart._containerId;
+	if (id!="chartTemp"){
+		document.getElementById('formLoaderFilter').reset();
 	}
+	document.getElementById('formLoaderFilter__type_de_tournage').value=e.dataSeries.name;
+	document.getElementById('formLoaderFilter__ardt').value=e.dataPoint.label;
+	document.getElementById('sub').click();
+	if (id!="chartTemp"){
+		$("#close").click();
+	}
+	else{
+		$("#closeTemp").click();
+	}
+}
 
+//Fonction permettant de récupérer les données du nombre de tournages par arrondissement par type
 function DataTypeParArdt(data){
-		var temp = (Object.getOwnPropertyNames(data.result));
-		var temp2 = (Object.getOwnPropertyNames(data.result[temp[0]]))
-		for (var i = 0 ; i<temp.length;i++){
-			for (j=0;j<temp2.length;j++){
-				dataA[j].push({
-					y:data.result[temp[i]][temp2[j]],
-					label: temp[i]
-					 });
-			 }
-			                       
+	var temp = (Object.getOwnPropertyNames(data.result));
+	var temp2 = (Object.getOwnPropertyNames(data.result[temp[0]]))
+	for (var i = 0 ; i<temp.length;i++){
+		for (j=0;j<temp2.length;j++){
+			dataA[j].push({
+				y:data.result[temp[i]][temp2[j]],
+				label: temp[i]
+				 });
 		 }
-		
-		//console.log(dataA);
-		ArdtParType.render();
-		}
-	
-	$.getJSON('http://localhost:444/tournagespararrdtpartype', DataTypeParArdt)	
+	 }
+	ArdtParType.render();
+}
+$.getJSON('http://localhost:444/tournagespararrdtpartype', DataTypeParArdt)	
 
-
+//Fonction permettant d'enlever un type de tournage au clic
 function toggleDataSeries(e) {
-		if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-			e.dataSeries.visible = false;
-		}
-		else {
-			e.dataSeries.visible = true;
-		}
-		// console.log(e);
-		var nom = (e.chart.options.name);
-		if (nom=="ArdtParType"){
-			ArdtParType.render();
-		}
-		else if (nom == "ArdtParType2"){
-			ArdtParType2.render();
-		}
-		else if (nom=="TournageParMois"){
-			TournageParMois.render();
-		}
+	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;
 	}
+	else {
+		e.dataSeries.visible = true;
+	}
+	// console.log(e);
+	var nom = (e.chart.options.name);
+	if (nom=="ArdtParType"){
+		ArdtParType.render();
+	}
+	else if (nom == "ArdtParType2"){
+		ArdtParType2.render();
+	}
+	else if (nom=="TournageParMois"){
+		TournageParMois.render();
+	}
+}
 //////////////////////////////////////////////////////////////////////////:
 
 function loadTemp(response){
@@ -806,591 +774,569 @@ function loadTemp(response){
 		var clickProdTemp=clickProd;
 		var ClickMoisTemp=ClickMois;
 	}
-	// console.log(response);
 	$("#statstemp_li").removeClass("disabled");
 	mapMarkersTemp = response.data;
-						// <!-- console.log("succes", response.data); -->
-						$("#NombreTournageTemp").text(response.data.length.toString());
+	$("#NombreTournageTemp").text(response.data.length.toString());
 
-						// calcul et update du nombre de realisateurs présent a l'écran
-						var s = new Set();
-						for (var i = 0; i < response.data.length; i++) {
-							// console.log(response.data)
-							s.add(response.data[i].realisateur);
-						}
-						// console.log({ nb: s.size, info: Array.from(s) });
-						$("#NombreRealTemp").text(s.size.toString());
+	// calcul et update du nombre de realisateurs présent a l'écran
+	var s = new Set();
+	for (var i = 0; i < response.data.length; i++) {
+		s.add(response.data[i].realisateur);
+	}
+	$("#NombreRealTemp").text(s.size.toString());
 
-						// calcul et update du nombre d'ogr demandeur présent a l'écran
-						var s = new Set();
-						for (var i = 0; i < response.data.length; i++) {
-							s.add(response.data[i].organisme_demandeur);
-						}
-						// console.log({ nb: s.size, info: Array.from(s) });
-						$("#NombreOrgTemp").text(s.size.toString());
+	// calcul et update du nombre d'ogr demandeur présent a l'écran
+	var s = new Set();
+	for (var i = 0; i < response.data.length; i++) {
+		s.add(response.data[i].organisme_demandeur);
+	}
+	$("#NombreOrgTemp").text(s.size.toString());
 
-						// calcul et update du nombre de films présent a l'écran
-						var s = new Set();
-						for (var i = 0; i < response.data.length; i++) {
-							s.add(response.data[i].titre);
-						}
-						// console.log({ nb: s.size, info: Array.from(s) });
-						$("#NombreFilmTemp").text(s.size.toString());
+	// calcul et update du nombre de films présent a l'écran
+	var s = new Set();
+	for (var i = 0; i < response.data.length; i++) {
+		s.add(response.data[i].titre);
+	}
+	$("#NombreFilmTemp").text(s.size.toString());
 
-						$("#multiTemp").on("click", function () {
-							//Bug à résoudre (les données se multiplie au clic. Les tableaux ne se rafraichissent pas.)
-							var real = {};
-							var orga = {};
-							var mois = {};
-							var ardt = {};
-							var prod = {};
-							var dataTempArdt=[];
-							var dataTempMois=[];
-							var dataTempOrga=[];
-							var dataTempProd=[];
-							var dataTempReal=[];
-							
-							var moisS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
-
-							for (var i = 0; i < 12; i++) {
-								mois[i] = 0;
-							}
-							// <!-- console.log(response.data); -->
-							for (var i = 0; i < response.data.length; i++) {
-								var mois_debut = response.data[i].date_debut.split("-")[1];
-								var mois_fin = response.data[i].date_fin.split("-")[1];
-								if (typeof date_debut != undefined && typeof date_fin != undefined) {
-									mois_debut = parseInt(mois_debut);
-									mois_fin = parseInt(mois_fin);
-									// console.log(mois_fin, mois_debut, mois_fin - mois_debut);
-									if (mois_fin - mois_debut == 0) {
-										mois[mois_debut - 1] += 1;
-									} else {
-										for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-											mois[j - 1] += 1;
-										}
-									}
-								}
-								if (typeof real[response.data[i].realisateur] == 'undefined') {
-									real[response.data[i].realisateur] = 1;
-								} 
-								else{
-									real[response.data[i].realisateur] += 1;
-
-								}
-								if (typeof prod[response.data[i].titre] == 'undefined') {
-									prod[response.data[i].titre] = 1;
-								}
-								else{
-									prod[response.data[i].titre] += 1;								
-								}
-								if (typeof orga[response.data[i].organisme_demandeur] == 'undefined') {
-									orga[response.data[i].organisme_demandeur] = 1;
-								} 
-								else{
-									orga[response.data[i].organisme_demandeur] += 1;
-								}
-								if (typeof ardt[response.data[i].ardt] == 'undefined') {
-									ardt[response.data[i].ardt] = 1;
-								} 
-								else {
-									ardt[response.data[i].ardt] += 1;
-
-								}
-							}
-							
-							var data = { real: real, ardt: ardt, mois : mois, prod: prod, orga: orga };
-					
-							var resultReal = Object.keys(data.real).map(function(key) { 
-								return [data.real[key],(key)]; });
-							var tabReal = resultReal.sort(compareNombres); 
-							
-							var resultArdt = Object.keys(data.ardt).map(function(key) { 
-								return [data.ardt[key],(key)]; });
-							var tabArdt = resultArdt.sort(compareNombres);
-							
-							var resultMois = Object.keys(data.mois).map(function(key) { 
-								return [(key),data.mois[key]]; });
-							var tabMois = resultMois.sort(compareNombres);
-							
-							// console.log(tabMois);
-							
-							var resultProd = Object.keys(data.prod).map(function(key) { 
-								return [data.prod[key],(key)]; });
-							var tabProd = resultProd.sort(compareNombres);
-							
-							var resultOrga = Object.keys(data.orga).map(function(key) { 
-								return [data.orga[key],(key)]; });
-							var tabOrg = resultOrga.sort(compareNombres);
-							
-							for (var i = 0; i < tabReal.length; i++) {
-								dataTempReal.push({
-									y : tabReal[i][0],
-									label : tabReal[i][1]
-								});
-							}
-							
-							for (var i = 0; i < tabOrg.length; i++) {
-								dataTempOrga.push({
-									y : tabOrg[i][0],
-									label : tabOrg[i][1]
-								});
-							}
-							
-							for (var i = 0; i < tabArdt.length; i++) {
-								dataTempArdt.push({
-									y : tabArdt[i][0],
-									label : tabArdt[i][1]
-								});
-							}
-							
-
-							for (var i = 0; i < tabMois.length; i++) {
-								dataTempMois.push({
-									y : tabMois[i][1],
-									label : moisS[parseInt(tabMois[i][0])]
-								});
-							}
-							
-							for (var i = 0; i < tabProd.length; i++) {
-								dataTempProd.push({
-									y : tabProd[i][0],
-									label : tabProd[i][1]
-								});
-							}
-								
-								var PieChoixTemp={
-										"MultiData": [{
-											click: ChangementCharts2,
-											cursor: "pointer",
-											explodeOnClick: false,
-											innerRadius: "75%",
-											legendMarkerType: "square",
-											name: "Nombre de Tournage par Type",
-											radius: "100%",
-											showInLegend: true,
-											startAngle: 90,
-											type: "doughnut",
-											dataPoints: [{ y: 20.00, name : "Arrondissement" },
-														{y: 20.00, name : "Organisme"},
-														{y: 20.00, name : "Production"},
-														{y: 20.00, name : "Réalisateur"},
-														{y: 20.00, name : "Mois"}]
-										}],
-										"RéalisateurTemp": [{
-											click:clickRealTemp,
-											type: "column",
-											color: "rgba(54,158,173,.7)",
-											name: "Réalisateur",
-											markerSize: 5,
-											xValueFormatString: "YYYY",
-											yValueFormatString: "# tournages",
-											dataPoints: dataTempReal
-										}],
-										"OrganismeTemp": [{
-											click:clickOrgaTemp,
-											type: "column",
-											color: "rgba(54,158,173,.7)",
-											markerSize: 5,
-											xValueFormatString: "YYYY",
-											yValueFormatString: "# tournages",
-											dataPoints: dataTempOrga
-										}],
-										"ProductionTemp": [{
-											click : clickProdTemp,
-											type: "column",
-											color: "rgba(54,158,173,.7)",
-											markerSize: 5,
-											xValueFormatString: "YYYY",
-											yValueFormatString: "# tournages",
-											dataPoints: dataTempProd
-										}],
-										"MoisTemp": [{
-											click:ClickMoisTemp,
-											color: "#546BC1",
-											name: "",
-											type: "column",
-											dataPoints: dataTempMois
-										}],
-										"ArrondissementTemp":[{
-											click: ClickArrdtTemp,
-											type: "bar",
-											name: "Arrondissement",
-											axisYType: "secondary",
-											color: "#014D65",
-											dataPoints: dataTempArdt
-										}]
-								
-								};
-							
-							var chart = new CanvasJS.Chart("chartTemp", TypeTournageOptions);
-							chart.options.data = PieChoixTemp["MultiData"];
-							chart.render();
-							
-							function ChangementCharts2(e) {
-								// console.log(e);
-								var id = e.chart._containerId;
-								chart2 = new CanvasJS.Chart(id, secondChartsOptions);
-								chart2.options.data = PieChoixTemp[e.dataPoint.name+"Temp"];
-								//console.log(e.name);
-								chart2.options.title = { text: "Nombre de tournage par "+ e.dataPoint.name }
-								$("#backButton2").toggleClass("invisible");
-								chart2.render();
-								
-							}
-								$("#backButton2").click(function() {
-									$(this).toggleClass("invisible");
-									chart = new CanvasJS.Chart("chartTemp", TypeTournageOptions);
-									chart.options.data = PieChoixTemp["MultiData"];
-									chart.render();
-								});
-
-						});
-						
-						$("#moisTemp").on("click",function(){
-						
-							var longm = {};
-							var telef = {};
-							var serie = {};
-							
-							var dataLongm=[];
-							var dataTelef = [];
-							var dataSerie = [];
-							var dataT= [dataLongm,dataTelef,dataSerie];
-							// fill m
-							for (var i = 0; i < 12; i++) {
-								longm[i] = telef[i] = serie[i]  = 0;
-							}
-							for (var i = 0; i < response.data.length; i++) {
-								// console.log(parseInt(m[docs[i].properties.date_debut].split("-")[1]));
-								var type = response.data[i].type_de_tournage;
-								var mois_debut = response.data[i].date_debut.split("-")[1];
-								var mois_fin = response.data[i].date_fin.split("-")[1];
-								if (typeof date_debut != undefined && typeof date_fin != undefined && typeof type != undefined) {
-									mois_debut = parseInt(mois_debut);
-									mois_fin = parseInt(mois_fin);
-									// console.log(mois_fin, mois_debut, mois_fin - mois_debut);
-									if (type == "LONG METRAGE") {
-										if (mois_fin - mois_debut == 0) {
-											longm[mois_debut - 1] += 1;
-										} else {
-											for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-												longm[j - 1] += 1;
-											}
-										}
-									}
-									else if (type == "SERIE TELEVISEE") {
-										if (mois_fin - mois_debut == 0) {
-											serie[mois_debut - 1] += 1;
-										} else {
-											for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-												serie[j - 1] += 1;
-											}
-										}
-									}
-									else if (type == "TELEFILM") {
-										if (mois_fin - mois_debut == 0) {
-											telef[mois_debut - 1] += 1;
-										} else {
-											for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
-												telef[j - 1] += 1;
-											}
-										}
-									}
-								}
-							}
-							
-							var data = {resultlongm: longm, resulttelef: telef, resultserie: serie};
-							var temp = (Object.getOwnPropertyNames(data));
-							for (var i=0;i<temp.length;i++){
-								var result = temp[i];
-								var temp2 = (Object.getOwnPropertyNames(data[result]));
-								for (j=0;j<temp2.length;j++){
-									dataT[i].push({
-										y:data[result][temp2[j]],
-										label: mois[j]
-										});
-								}
-													   
-								}
-								
-							var TournageParMois2 = new CanvasJS.Chart("chartTemp", ChartOptions);
-							TournageParMois2.options.title={text:"Nombre de Tournage par mois"};
-							TournageParMois2.options.name="TournageParMois2";
-							TournageParMois2.options.legend = {
-											cursor:"pointer",
-											itemclick : toggleDataSeries2
-										};
-							TournageParMois2.options.data=[{
-									click: ClickMoisTemp, 
-									type: "stackedColumn",
-									showInLegend: true,
-									color: "green",
-									name: "LONG METRAGE",
-									dataPoints: dataLongm
-									},
-									{        
-										click: ClickMoisTemp,
-										type: "stackedColumn",
-										showInLegend: true,
-										name: "TELEFILM",
-										color: "red",
-										dataPoints: dataTelef
-									},
-									{        
-										click: ClickMoisTemp,
-										type: "stackedColumn",
-										showInLegend: true,
-										name: "SERIE TELEVISEE",
-										color: "blue",
-										dataPoints: dataSerie
-									}];
-							TournageParMois2.render();
-							function toggleDataSeries2(e) {
-								if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-									e.dataSeries.visible = false;
-								}
-								else {
-									e.dataSeries.visible = true;
-								}
-								TournageParMois2.render();
-							}
-						});
-						
-						$("#typeTemp").on("click", function () {
-							var dataTemp = [];
-							var m = {};
-
-							for (var i = 0; i < response.data.length; i++) {
-								if (typeof m[response.data[i].type_de_tournage] == 'undefined') {
-									m[response.data[i].type_de_tournage] = 1;
-								} else {
-									m[response.data[i].type_de_tournage] += 1;
-								}
-							}
-							var data = { result: m, taille: Object.keys(m).length };
-
-							var temp = (Object.getOwnPropertyNames(data.result))
-							for (var i = 0; i < data.taille; i++) {
-								dataTemp.push({
-									y: (data.result[temp[i]] / response.data.length) * 100,
-									label: temp[i],
-									color : color[temp[i]]
-								});
-							}
-
-							var TournageTypeTemp = new CanvasJS.Chart("chartTemp", ChartPieOptions);
-							TournageTypeTemp.options.title={text:"Type de tournage"};
-							TournageTypeTemp.options.data= [{
-									click : ClickTypeTemp,
-									type: "pie",
-									startAngle: 240,
-									yValueFormatString: "##0.00\"%\"",
-									indexLabel: "{label} {y}",
-									dataPoints: dataTemp
-								}];
-							
-							TournageTypeTemp.render();
-						});
-						
-						$("#ardtTemp").on("click", function() {
-						// console.log("YAYAYAYAkY",response.data);
-						var dataArdtTelefTemp=[];
-						var dataArdtSerieTemp=[];
-						var dataArdtLongMTemp=[];
-						var dataATemp= [dataArdtTelefTemp,dataArdtSerieTemp,dataArdtLongMTemp];
-						m = {};
-						for (var i = 0; i < response.data.length; i++) {
-							var type = response.data[i].type_de_tournage;
-							var ardt = response.data[i].ardt;
-							if (typeof m[ardt] == 'undefined' && type != "" && ardt != "" ) {
-								m[ardt]={"TELEFILM":0,"SERIE TELEVISEE":0,"LONG METRAGE":0};
-								m[ardt][type]= 1;
-							}
-							else if (type != "" && ardt != ""){
-								m[ardt][type]= m[ardt][type]+1;
-							} 
-						}
-				 
-						var data = {result : m };
-						
-						var ArdtParType2 = new CanvasJS.Chart("chartTemp", OptionArdtParType);
-						ArdtParType2.options.name="ArdtParType2";
-						ArdtParType2.options.legend = {
-											cursor:"pointer",
-											itemclick : toggleDataSeries2
-										};
-						ArdtParType2.options.data=[{
-							click:ClickArdtTemp,
-							type: "bar",
-							showInLegend: true,
-							name: "LONG METRAGE",
-							color: "green",
-							dataPoints: dataArdtLongMTemp
-						},
-						{
-							click:ClickArdtTemp,
-							type: "bar",
-							showInLegend: true,
-							name: "TELEFILM",
-							color: "red",
-							dataPoints: dataArdtTelefTemp
-						},
-						{
-							click:ClickArdtTemp,
-							type: "bar",
-							showInLegend: true,
-							name: "SERIE TELEVISEE",
-							color: "blue",
-							dataPoints: dataArdtSerieTemp
-						}];
-						
-						
-						var temp = (Object.getOwnPropertyNames(data.result));
-						// console.log("temp1",temp);
-						//var temp2 = (Object.getOwnPropertyNames(data.result["75001"]))
-						//console.log(temp2);
-						for (var i = 0 ; i<temp.length;i++){
-							var result2 = temp[i];
-							var temp2 = (Object.getOwnPropertyNames(data.result[result2]));
-							// console.log("temp2",temp2);
-							for (j=0;j<temp2.length;j++){
-								dataATemp[j].push({
-									y:data.result[temp[i]][temp2[j]],
-									label: temp[i]
-									 });
-							 }
-						 }
-						
-						// console.log(dataATemp);
-						ArdtParType2.render();
-						function toggleDataSeries2(e) {
-							if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-								e.dataSeries.visible = false;
-							}
-							else {
-								e.dataSeries.visible = true;
-							}
-							ArdtParType2.render();
-						}
-						});
-						
-						$("#duréeTemp").on("click", function () {
-							var dataTemp = [];
-							
-							var m = {};
-							var j1 = [];
-							var j2 = [];
-							var j3 = [];
-							var j4 = [];
-							var j5 = [];
-							var j6 = [];
-							
-							var t = [j1,j2,j3,j4,j5,j6];
-							// console.log("XEXEXEXEXE", response);
-							for (var i = 0; i < response.data.length; i++) {
-								// <!-- console.log(response.data[i]); -->
-								var debut = response.data[i].date_debut;
-								var fin = response.data[i].date_fin;
-								if (typeof date_debut != undefined && typeof date_fin != undefined && typeof response.data[i].xy != undefined) {
-									                           // Initialisation du retour
-									var day = NumberDay(debut,fin);
-
-									// console.log(diff.day);
-									if (isNaN(day) == false) {
-										// console.log(day);
-										if (isNaN(m[day])) {
-											m[day] = 1;
-										}
-										else {
-											m[day] = m[day] + 1;
-										}
-									}
-									if (day>=6){
-										i_day = 5
-									}
-									else{
-										i_day=day-1
-									}
-									var tab = t[i_day];
-									if (isNaN(day) == false) {
-										tab.push(response.data[i]);
-									}
-								}
-							}
-							l = {}
-							for (const key in m) {
-								// <!-- console.log(key); -->
-								if (key > 6) {
-									l[6] = l[6] + m[key]
-								}
-								else {
-									l[key] = m[key]
-								}
-							}
-							// <!-- console.log(l); -->
-							// <!-- console.log(Object.keys(l).length); -->
-							var data = { result: l, taille: Object.keys(l).length };
-
-							var temp = (Object.getOwnPropertyNames(data.result))
-							for (var i = 0; i < data.taille; i++) {
-								if (temp[i] == 6) {
-									dataTemp.push({
-										y: data.result[temp[i]],
-										label: temp[i] + "+"
-									});
-								}
-								else {
-									dataTemp.push({
-										y: data.result[temp[i]],
-										label: temp[i]
-									});
-								}
-							}
-							// console.log("ttttt",t);
-							for(var i = 0; i< 6;i++){
-								dataDuree2Temp.push(t[i]);;
-							}
-						
-							var TournageDureeTemp = new CanvasJS.Chart("chartTemp", ChartOptions);
-							TournageDureeTemp.options.title= { text:"Tournage par durée"};
-							TournageDureeTemp.options.data = [{
-											// click:ClickDuree, 
-											type: "column",
-											color: "rgba(54,158,173,.7)",
-											markerSize: 5,
-											yValueFormatString: "# tournages",
-											dataPoints: dataTemp
-										}];
-							
-							
-							
-							TournageDureeTemp.render();
-						});
-
+	$("#multiTemp").on("click", function () {
+		var real = {};
+		var orga = {};
+		var mois = {};
+		var ardt = {};
+		var prod = {};
+		var dataTempArdt=[];
+		var dataTempMois=[];
+		var dataTempOrga=[];
+		var dataTempProd=[];
+		var dataTempReal=[];
+		
+		var moisS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
+		
+		for (var i = 0; i < 12; i++) {
+			mois[i] = 0;
+		}
+		
+		//On récupère les données et pour chaque type de charts, on remplit un objet.
+		for (var i = 0; i < response.data.length; i++) {
+			var mois_debut = response.data[i].date_debut.split("-")[1];
+			var mois_fin = response.data[i].date_fin.split("-")[1];
+			if (typeof date_debut != undefined && typeof date_fin != undefined) {
+				mois_debut = parseInt(mois_debut);
+				mois_fin = parseInt(mois_fin);
+				if (mois_fin - mois_debut == 0) {
+					mois[mois_debut - 1] += 1;
+				} else {
+					for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+						mois[j - 1] += 1;
 					}
-
-
-$("#formLoaderFilter").on("submit", function (evt) {
-				
-				evt.preventDefault();
-				loadMap();
-				var reponse = $(this).serialize();
-				var l_rep = reponse.split("&");
-				toSend = {}
-				for (var i = 0; i < l_rep.length; i++) {
-					var temp = l_rep[i].split("=");
-					toSend[temp[0]] = temp[1];
 				}
-				$.ajax({
-					type: "POST",
-					url: 'http://localhost:444/filterform',
-					data: { data: toSend },
-					success: function (response) {
-						loadTemp(response)	
-			
 			}
+			if (typeof real[response.data[i].realisateur] == 'undefined') {
+				real[response.data[i].realisateur] = 1;
+			} 
+			else{
+				real[response.data[i].realisateur] += 1;
+			}
+			if (typeof prod[response.data[i].titre] == 'undefined') {
+				prod[response.data[i].titre] = 1;
+			}
+			else{
+				prod[response.data[i].titre] += 1;								
+			}
+			if (typeof orga[response.data[i].organisme_demandeur] == 'undefined') {
+				orga[response.data[i].organisme_demandeur] = 1;
+			} 
+			else{
+				orga[response.data[i].organisme_demandeur] += 1;
+			}
+			if (typeof ardt[response.data[i].ardt] == 'undefined') {
+				ardt[response.data[i].ardt] = 1;
+			} 
+			else {
+				ardt[response.data[i].ardt] += 1;
+			}
+		}
+		
+		//La liste de chaque données de chaque charts temporaire.
+		var data = { real: real, ardt: ardt, mois : mois, prod: prod, orga: orga };
+
+		//On charge un tableau par type
+		var resultReal = Object.keys(data.real).map(function(key) { 
+			return [data.real[key],(key)]; });
+		var tabReal = resultReal.sort(compareNombres); 
+		
+		var resultArdt = Object.keys(data.ardt).map(function(key) { 
+			return [data.ardt[key],(key)]; });
+		var tabArdt = resultArdt.sort(compareNombres);
+		
+		var resultMois = Object.keys(data.mois).map(function(key) { 
+			return [(key),data.mois[key]]; });
+		var tabMois = resultMois.sort(compareNombres);
+		
+		var resultProd = Object.keys(data.prod).map(function(key) { 
+			return [data.prod[key],(key)]; });
+		var tabProd = resultProd.sort(compareNombres);
+		
+		var resultOrga = Object.keys(data.orga).map(function(key) { 
+			return [data.orga[key],(key)]; });
+		var tabOrg = resultOrga.sort(compareNombres);
+		
+		//Et on le remplit de façon à qu'il puisse être disponible pour les charts
+		for (var i = 0; i < tabReal.length; i++) {
+			dataTempReal.push({
+				y : tabReal[i][0],
+				label : tabReal[i][1]
+			});
+		}
+		
+		for (var i = 0; i < tabOrg.length; i++) {
+			dataTempOrga.push({
+				y : tabOrg[i][0],
+				label : tabOrg[i][1]
+			});
+		}
+		
+		for (var i = 0; i < tabArdt.length; i++) {
+			dataTempArdt.push({
+				y : tabArdt[i][0],
+				label : tabArdt[i][1]
+			});
+		}
+
+		for (var i = 0; i < tabMois.length; i++) {
+			dataTempMois.push({
+				y : tabMois[i][1],
+				label : moisS[parseInt(tabMois[i][0])]
+			});
+		}
+		
+		for (var i = 0; i < tabProd.length; i++) {
+			dataTempProd.push({
+				y : tabProd[i][0],
+				label : tabProd[i][1]
+			});
+		}
+		
+		//Données de la première charts
+		var PieChoixTemp={
+			"MultiData": [{
+				click: ChangementCharts2,
+				cursor: "pointer",
+				explodeOnClick: false,
+				innerRadius: "75%",
+				legendMarkerType: "square",
+				name: "Nombre de Tournage par Type",
+				radius: "100%",
+				showInLegend: true,
+				startAngle: 90,
+				type: "doughnut",
+				dataPoints: [{ y: 20.00, name : "Arrondissement" },
+							{y: 20.00, name : "Organisme"},
+							{y: 20.00, name : "Production"},
+							{y: 20.00, name : "Réalisateur"},
+							{y: 20.00, name : "Mois"}]
+			}],
+			"RéalisateurTemp": [{
+				click:clickRealTemp,
+				type: "column",
+				color: "rgba(54,158,173,.7)",
+				name: "Réalisateur",
+				markerSize: 5,
+				xValueFormatString: "YYYY",
+				yValueFormatString: "# tournages",
+				dataPoints: dataTempReal
+			}],
+			"OrganismeTemp": [{
+				click:clickOrgaTemp,
+				type: "column",
+				color: "rgba(54,158,173,.7)",
+				markerSize: 5,
+				xValueFormatString: "YYYY",
+				yValueFormatString: "# tournages",
+				dataPoints: dataTempOrga
+			}],
+			"ProductionTemp": [{
+				click : clickProdTemp,
+				type: "column",
+				color: "rgba(54,158,173,.7)",
+				markerSize: 5,
+				xValueFormatString: "YYYY",
+				yValueFormatString: "# tournages",
+				dataPoints: dataTempProd
+			}],
+			"MoisTemp": [{
+				click:ClickMoisTemp,
+				color: "#546BC1",
+				name: "",
+				type: "column",
+				dataPoints: dataTempMois
+			}],
+			"ArrondissementTemp":[{
+				click: ClickArrdtTemp,
+				type: "bar",
+				name: "Arrondissement",
+				axisYType: "secondary",
+				color: "#014D65",
+				dataPoints: dataTempArdt
+			}]
+		
+		};
+								
+		var chart = new CanvasJS.Chart("chartTemp", TypeTournageOptions);
+		chart.options.data = PieChoixTemp["MultiData"];
+		chart.render();
+		
+		//fonction permettant de changer de charts
+		function ChangementCharts2(e) {
+			var id = e.chart._containerId;
+			chart2 = new CanvasJS.Chart(id, secondChartsOptions);
+			chart2.options.data = PieChoixTemp[e.dataPoint.name+"Temp"];
+			chart2.options.title = { text: "Nombre de tournage par "+ e.dataPoint.name }
+			$("#backButton2").toggleClass("invisible");
+			chart2.render();
+		}
+		
+		$("#backButton2").click(function() {
+			$(this).toggleClass("invisible");
+			chart = new CanvasJS.Chart("chartTemp", TypeTournageOptions);
+			chart.options.data = PieChoixTemp["MultiData"];
+			chart.render();
+		});
+
+	});
+						
+	$("#moisTemp").on("click",function(){
+		var longm = {};
+		var telef = {};
+		var serie = {};
+		var dataLongm=[];
+		var dataTelef = [];
+		var dataSerie = [];
+		var dataT= [dataLongm,dataTelef,dataSerie];
+		
+		for (var i = 0; i < 12; i++) {
+			longm[i] = telef[i] = serie[i]  = 0;
+		}
+		
+		//On charge les données correspondant pour chaque mois
+		for (var i = 0; i < response.data.length; i++) {
+			var type = response.data[i].type_de_tournage;
+			var mois_debut = response.data[i].date_debut.split("-")[1];
+			var mois_fin = response.data[i].date_fin.split("-")[1];
+			if (typeof date_debut != undefined && typeof date_fin != undefined && typeof type != undefined) {
+				mois_debut = parseInt(mois_debut);
+				mois_fin = parseInt(mois_fin);
+				if (type == "LONG METRAGE") {
+					if (mois_fin - mois_debut == 0) {
+						longm[mois_debut - 1] += 1;
+					} else {
+						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+							longm[j - 1] += 1;
+						}
+					}
+				}
+				else if (type == "SERIE TELEVISEE") {
+					if (mois_fin - mois_debut == 0) {
+						serie[mois_debut - 1] += 1;
+					} else {
+						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+							serie[j - 1] += 1;
+						}
+					}
+				}
+				else if (type == "TELEFILM") {
+					if (mois_fin - mois_debut == 0) {
+						telef[mois_debut - 1] += 1;
+					} else {
+						for (var j = mois_debut; j < mois_fin - mois_debut; j++) {
+							telef[j - 1] += 1;
+						}
+					}
+				}
+			}
+		}
+		//La liste de chaque type avec le nombre de tournage par mois					
+		var data = {resultlongm: longm, resulttelef: telef, resultserie: serie};
+		//On les charge pour les mettre dans une charts
+		var temp = (Object.getOwnPropertyNames(data));
+		for (var i=0;i<temp.length;i++){
+			var result = temp[i];
+			var temp2 = (Object.getOwnPropertyNames(data[result]));
+			for (j=0;j<temp2.length;j++){
+				dataT[i].push({
+					y:data[result][temp2[j]],
+					label: mois[j]
+					});
+			}						   
+		}
+			
+		var TournageParMois2 = new CanvasJS.Chart("chartTemp", ChartOptions);
+		TournageParMois2.options.title={text:"Nombre de Tournage par mois"};
+		TournageParMois2.options.name="TournageParMois2";
+		TournageParMois2.options.legend = {
+			cursor:"pointer",
+			itemclick : toggleDataSeries2
+		};
+		TournageParMois2.options.data=[{
+			click: ClickMoisTemp, 
+			type: "stackedColumn",
+			showInLegend: true,
+			color: "green",
+			name: "LONG METRAGE",
+			dataPoints: dataLongm
+			},
+			{        
+				click: ClickMoisTemp,
+				type: "stackedColumn",
+				showInLegend: true,
+				name: "TELEFILM",
+				color: "red",
+				dataPoints: dataTelef
+			},
+			{        
+				click: ClickMoisTemp,
+				type: "stackedColumn",
+				showInLegend: true,
+				name: "SERIE TELEVISEE",
+				color: "blue",
+				dataPoints: dataSerie
+			}];
+		TournageParMois2.render();
+		
+		//Fonction permettant d'enlever le type que l'on souhaite ou de le remettre.
+		function toggleDataSeries2(e) {
+			if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+				e.dataSeries.visible = false;
+			}
+			else {
+				e.dataSeries.visible = true;
+			}
+			TournageParMois2.render();
+		}
+	});
+						
+	$("#typeTemp").on("click", function () {
+		var dataTemp = [];
+		var m = {};
+		//On charge les données pour chaque type de tounage
+		for (var i = 0; i < response.data.length; i++) {
+			if (typeof m[response.data[i].type_de_tournage] == 'undefined') {
+				m[response.data[i].type_de_tournage] = 1;
+			} else {
+				m[response.data[i].type_de_tournage] += 1;
+			}
+		}
+		
+		//Les données ayant le nombre de pourcentages de tournages par type
+		var data = { result: m, taille: Object.keys(m).length };
+		
+		//On charge les données pour la charts
+		var temp = (Object.getOwnPropertyNames(data.result))
+		for (var i = 0; i < data.taille; i++) {
+			dataTemp.push({
+				y: (data.result[temp[i]] / response.data.length) * 100,
+				label: temp[i],
+				color : color[temp[i]]
+			});
+		}
+
+		var TournageTypeTemp = new CanvasJS.Chart("chartTemp", ChartPieOptions);
+		TournageTypeTemp.options.title={text:"Type de tournage"};
+		TournageTypeTemp.options.data= [{
+				click : ClickTypeTemp,
+				type: "pie",
+				startAngle: 240,
+				yValueFormatString: "##0.00\"%\"",
+				indexLabel: "{label} {y}",
+				dataPoints: dataTemp
+			}];
+		
+		TournageTypeTemp.render();
+	});
+	
+	$("#ardtTemp").on("click", function() {
+	var dataArdtTelefTemp=[];
+	var dataArdtSerieTemp=[];
+	var dataArdtLongMTemp=[];
+	var dataATemp= [dataArdtTelefTemp,dataArdtSerieTemp,dataArdtLongMTemp];
+	m = {};
+	//Chargement des données
+	for (var i = 0; i < response.data.length; i++) {
+		var type = response.data[i].type_de_tournage;
+		var ardt = response.data[i].ardt;
+		if (typeof m[ardt] == 'undefined' && type != "" && ardt != "" ) {
+			m[ardt]={"TELEFILM":0,"SERIE TELEVISEE":0,"LONG METRAGE":0};
+			m[ardt][type]= 1;
+		}
+		else if (type != "" && ardt != ""){
+			m[ardt][type]= m[ardt][type]+1;
+		} 
+	}
+
+	var data = {result : m };
+	
+	var ArdtParType2 = new CanvasJS.Chart("chartTemp", OptionArdtParType);
+	ArdtParType2.options.name="ArdtParType2";
+	ArdtParType2.options.legend = {
+						cursor:"pointer",
+						itemclick : toggleDataSeries2
+					};
+	ArdtParType2.options.data=[{
+		click:ClickArdtTemp,
+		type: "bar",
+		showInLegend: true,
+		name: "LONG METRAGE",
+		color: "green",
+		dataPoints: dataArdtLongMTemp
+	},
+	{
+		click:ClickArdtTemp,
+		type: "bar",
+		showInLegend: true,
+		name: "TELEFILM",
+		color: "red",
+		dataPoints: dataArdtTelefTemp
+	},
+	{
+		click:ClickArdtTemp,
+		type: "bar",
+		showInLegend: true,
+		name: "SERIE TELEVISEE",
+		color: "blue",
+		dataPoints: dataArdtSerieTemp
+	}];
+	
+	//Préparation des données pour la charts
+	var temp = (Object.getOwnPropertyNames(data.result));
+	for (var i = 0 ; i<temp.length;i++){
+		var result2 = temp[i];
+		var temp2 = (Object.getOwnPropertyNames(data.result[result2]));
+		for (j=0;j<temp2.length;j++){
+			dataATemp[j].push({
+				y:data.result[temp[i]][temp2[j]],
+				label: temp[i]
+				 });
+		 }
+	 }
+	
+	ArdtParType2.render();
+	
+	//Fonction permettant d'enlever le type que l'on souhaite ou de le remettre.
+	function toggleDataSeries2(e) {
+		if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+			e.dataSeries.visible = false;
+		}
+		else {
+			e.dataSeries.visible = true;
+		}
+		ArdtParType2.render();
+	}
+	});
+						
+	$("#duréeTemp").on("click", function () {
+		var dataTemp = [];
+		var m = {};
+		var j1 = [];
+		var j2 = [];
+		var j3 = [];
+		var j4 = [];
+		var j5 = [];
+		var j6 = [];
+		var t = [j1,j2,j3,j4,j5,j6];
+		//Chargement des données pour les tournages par durée
+		for (var i = 0; i < response.data.length; i++) {
+			var debut = response.data[i].date_debut;
+			var fin = response.data[i].date_fin;
+			if (typeof date_debut != undefined && typeof date_fin != undefined && typeof response.data[i].xy != undefined) {
+				var day = NumberDay(debut,fin);
+				if (isNaN(day) == false) {
+					if (isNaN(m[day])) {
+						m[day] = 1;
+					}
+					else {
+						m[day] = m[day] + 1;
+					}
+				}
+				if (day>=6){
+					i_day = 5
+				}
+				else{
+					i_day=day-1
+				}
+				var tab = t[i_day];
+				if (isNaN(day) == false) {
+					tab.push(response.data[i]);
+				}
+			}
+		}
+		l = {}
+		for (const key in m) {
+			if (key > 6) {
+				l[6] = l[6] + m[key]
+			}
+			else {
+				l[key] = m[key]
+			}
+		}
+		var data = { result: l, taille: Object.keys(l).length };
+		//Préparation pour la charts
+		var temp = (Object.getOwnPropertyNames(data.result))
+		for (var i = 0; i < data.taille; i++) {
+			if (temp[i] == 6) {
+				dataTemp.push({
+					y: data.result[temp[i]],
+					label: temp[i] + "+"
 				});
+			}
+			else {
+				dataTemp.push({
+					y: data.result[temp[i]],
+					label: temp[i]
+				});
+			}
+		}
+		for(var i = 0; i< 6;i++){
+			dataDuree2Temp.push(t[i]);;
+		}
+	
+		var TournageDureeTemp = new CanvasJS.Chart("chartTemp", ChartOptions);
+		TournageDureeTemp.options.title= { text:"Tournage par durée"};
+		TournageDureeTemp.options.data = [{
+						// click:ClickDuree, 
+						type: "column",
+						color: "rgba(54,158,173,.7)",
+						markerSize: 5,
+						yValueFormatString: "# tournages",
+						dataPoints: dataTemp
+					}];
+		
+		
+		
+		TournageDureeTemp.render();
+	});
+
+}
+
+//Fonction qui a l'envoi du formulaire génère des charts temporaire.
+$("#formLoaderFilter").on("submit", function (evt) {				
+	evt.preventDefault();
+	loadMap();
+	var reponse = $(this).serialize();
+	var l_rep = reponse.split("&");
+	toSend = {}
+	for (var i = 0; i < l_rep.length; i++) {
+		var temp = l_rep[i].split("=");
+		toSend[temp[0]] = temp[1];
+	}
+	$.ajax({
+		type: "POST",
+		url: 'http://localhost:444/filterform',
+		data: { data: toSend },
+		success: function (response) {
+			loadTemp(response);
+		}
+	});
 });
 
 }
