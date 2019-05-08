@@ -152,6 +152,7 @@ var ChartPieOptions = {
 			}];
 		
 		function ClickType(e){
+			// console.log(e);
 			if (document.title=="Carte"){
 			var id = e.chart._containerId;
 			if (id!="chartTemp"){
@@ -177,7 +178,6 @@ var ChartPieOptions = {
 						color: color[temp[i]]
 					});
 				}
-				console.log("VEFRR",dataTypeTournage);
 				TypeTournage.render();	
 			}
 		$.getJSON('http://localhost:444/tournagespartype',DataTypeTournage);
@@ -242,6 +242,7 @@ var ChartPieOptions = {
 //Fonction permettant de clicker sur les charts
 function ClickMois(e){
 	if (document.title=="Carte"){
+		
 	var mois = e.dataPoint.x + 1;
 	var maxDay= new Date(2016,mois,0).getDate();
 	if (mois<10){
@@ -311,7 +312,7 @@ function clickProd(e){
 	if (document.title=="Carte"){
 	
 	var id = e.chart._containerId;
-	console.log(e);
+	// console.log(e);
 	if (id!="chartTemp"){
 		document.getElementById('formLoaderFilter').reset();
 	}
@@ -377,14 +378,43 @@ var dataDuree2=[];
 var dataDuree2Temp = [];
 
 function ClickDuree(e){
+	
 	if (document.title=="Carte"){
 		var id = e.chart._containerId;
+		if (id!="chartTemp"){
+			var tab = dataDuree2;
+		}
+		else{
+			var tab = dataDuree2Temp;
+		}
+		
 		//console.log(e);
 		var response=[];
-		response = (dataDuree2[e.dataPoint.x]);
-		
+		$.getJSON('http://localhost:444/dureepartournage2',DataDureeTournage2);
+		response = (tab[e.dataPoint.x]);
+		// console.log("res",response);
 		// console.log(response);
+		document.getElementById('formLoaderFilter').reset();
 		loadPoint(response);
+		var tempo=[];;
+		console.log(response);
+		if (id!="chartTemp"){
+			for(var i=0;i<response.length;i++){
+				tempo.push(response[i].properties);
+		}
+			var temp={data:tempo};
+		}
+		else{
+			var temp={data:response};
+		}
+		loadTemp(temp);
+		if (id!="chartTemp"){
+				$("#close").click();
+		}
+		else{
+				$("#closeTemp").click();
+			
+		}
 	}
 }
 function DataDureeTournage(data) {
@@ -627,7 +657,7 @@ chart.options.data = PieChoix["MultiData"];
 chart.render();
 
 function ChangementCharts(e) {
-	console.log(e);
+	// console.log(e);
 	var id = e.chart._containerId;		
 	chart2 = new CanvasJS.Chart(id, secondChartsOptions);
 	chart2.options.data = PieChoix[e.dataPoint.name];
@@ -743,7 +773,7 @@ function toggleDataSeries(e) {
 		else {
 			e.dataSeries.visible = true;
 		}
-		console.log(e);
+		// console.log(e);
 		var nom = (e.chart.options.name);
 		if (nom=="ArdtParType"){
 			ArdtParType.render();
@@ -757,23 +787,28 @@ function toggleDataSeries(e) {
 	}
 //////////////////////////////////////////////////////////////////////////:
 
-$("#formLoaderFilter").on("submit", function (evt) {
-				$("#statstemp_li").removeClass("disabled");
-				evt.preventDefault();
-				loadMap();
-				var reponse = $(this).serialize();
-				var l_rep = reponse.split("&");
-				toSend = {}
-				for (var i = 0; i < l_rep.length; i++) {
-					var temp = l_rep[i].split("=");
-					toSend[temp[0]] = temp[1];
-				}
-				$.ajax({
-					type: "POST",
-					url: 'http://localhost:444/filterform',
-					data: { data: toSend },
-					success: function (response) {
-						mapMarkersTemp = response.data;
+function loadTemp(response){
+	if (typeof response.status=="undefined"){
+		var ClickMoisTemp=null;
+		var clickRealTemp = null;
+		var clickOrgaTemp=null;
+		var clickProdTemp=null;
+		var ClickArrdtTemp=null;
+		var ClickTypeTemp=null;
+		var ClickArdtTemp=null;
+	}
+	else{
+		var ClickArdtTemp=ClickArdt;
+		var ClickTypeTemp =ClickType;
+		var ClickArrdtTemp=ClickArrdt;
+		var clickRealTemp=ClickReal;
+		var clickOrgaTemp=clickOrga;
+		var clickProdTemp=clickProd;
+		var ClickMoisTemp=ClickMois;
+	}
+	// console.log(response);
+	$("#statstemp_li").removeClass("disabled");
+	mapMarkersTemp = response.data;
 						// <!-- console.log("succes", response.data); -->
 						$("#NombreTournageTemp").text(response.data.length.toString());
 
@@ -820,7 +855,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							for (var i = 0; i < 12; i++) {
 								mois[i] = 0;
 							}
-							<!-- console.log(response.data); -->
+							// <!-- console.log(response.data); -->
 							for (var i = 0; i < response.data.length; i++) {
 								var mois_debut = response.data[i].date_debut.split("-")[1];
 								var mois_fin = response.data[i].date_fin.split("-")[1];
@@ -943,7 +978,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 														{y: 20.00, name : "Mois"}]
 										}],
 										"RéalisateurTemp": [{
-											click:ClickReal,
+											click:clickRealTemp,
 											type: "column",
 											color: "rgba(54,158,173,.7)",
 											name: "Réalisateur",
@@ -953,7 +988,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 											dataPoints: dataTempReal
 										}],
 										"OrganismeTemp": [{
-											click:clickOrga,
+											click:clickOrgaTemp,
 											type: "column",
 											color: "rgba(54,158,173,.7)",
 											markerSize: 5,
@@ -962,7 +997,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 											dataPoints: dataTempOrga
 										}],
 										"ProductionTemp": [{
-											click : clickProd,
+											click : clickProdTemp,
 											type: "column",
 											color: "rgba(54,158,173,.7)",
 											markerSize: 5,
@@ -971,14 +1006,14 @@ $("#formLoaderFilter").on("submit", function (evt) {
 											dataPoints: dataTempProd
 										}],
 										"MoisTemp": [{
-											click:ClickMois,
+											click:ClickMoisTemp,
 											color: "#546BC1",
 											name: "",
 											type: "column",
 											dataPoints: dataTempMois
 										}],
 										"ArrondissementTemp":[{
-											click: ClickArrdt,
+											click: ClickArrdtTemp,
 											type: "bar",
 											name: "Arrondissement",
 											axisYType: "secondary",
@@ -993,7 +1028,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							chart.render();
 							
 							function ChangementCharts2(e) {
-								console.log(e);
+								// console.log(e);
 								var id = e.chart._containerId;
 								chart2 = new CanvasJS.Chart(id, secondChartsOptions);
 								chart2.options.data = PieChoixTemp[e.dataPoint.name+"Temp"];
@@ -1087,7 +1122,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 											itemclick : toggleDataSeries2
 										};
 							TournageParMois2.options.data=[{
-									click: ClickMois, 
+									click: ClickMoisTemp, 
 									type: "stackedColumn",
 									showInLegend: true,
 									color: "green",
@@ -1095,7 +1130,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 									dataPoints: dataLongm
 									},
 									{        
-										click: ClickMois,
+										click: ClickMoisTemp,
 										type: "stackedColumn",
 										showInLegend: true,
 										name: "TELEFILM",
@@ -1103,7 +1138,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 										dataPoints: dataTelef
 									},
 									{        
-										click: ClickMois,
+										click: ClickMoisTemp,
 										type: "stackedColumn",
 										showInLegend: true,
 										name: "SERIE TELEVISEE",
@@ -1147,7 +1182,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							var TournageTypeTemp = new CanvasJS.Chart("chartTemp", ChartPieOptions);
 							TournageTypeTemp.options.title={text:"Type de tournage"};
 							TournageTypeTemp.options.data= [{
-									click : ClickType,
+									click : ClickTypeTemp,
 									type: "pie",
 									startAngle: 240,
 									yValueFormatString: "##0.00\"%\"",
@@ -1159,7 +1194,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 						});
 						
 						$("#ardtTemp").on("click", function() {
-						console.log("YAYAYAYAY",response.data);
+						// console.log("YAYAYAYAkY",response.data);
 						var dataArdtTelefTemp=[];
 						var dataArdtSerieTemp=[];
 						var dataArdtLongMTemp=[];
@@ -1186,7 +1221,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 											itemclick : toggleDataSeries2
 										};
 						ArdtParType2.options.data=[{
-							click:ClickArdt,
+							click:ClickArdtTemp,
 							type: "bar",
 							showInLegend: true,
 							name: "LONG METRAGE",
@@ -1194,7 +1229,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							dataPoints: dataArdtLongMTemp
 						},
 						{
-							click:ClickArdt,
+							click:ClickArdtTemp,
 							type: "bar",
 							showInLegend: true,
 							name: "TELEFILM",
@@ -1202,7 +1237,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							dataPoints: dataArdtTelefTemp
 						},
 						{
-							click:ClickArdt,
+							click:ClickArdtTemp,
 							type: "bar",
 							showInLegend: true,
 							name: "SERIE TELEVISEE",
@@ -1227,7 +1262,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							 }
 						 }
 						
-						console.log(dataATemp);
+						// console.log(dataATemp);
 						ArdtParType2.render();
 						function toggleDataSeries2(e) {
 							if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
@@ -1252,7 +1287,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 							var j6 = [];
 							
 							var t = [j1,j2,j3,j4,j5,j6];
-							
+							// console.log("XEXEXEXEXE", response);
 							for (var i = 0; i < response.data.length; i++) {
 								// <!-- console.log(response.data[i]); -->
 								var debut = response.data[i].date_debut;
@@ -1312,7 +1347,7 @@ $("#formLoaderFilter").on("submit", function (evt) {
 									});
 								}
 							}
-							console.log("ttttt",t);
+							// console.log("ttttt",t);
 							for(var i = 0; i< 6;i++){
 								dataDuree2Temp.push(t[i]);;
 							}
@@ -1334,8 +1369,29 @@ $("#formLoaderFilter").on("submit", function (evt) {
 						});
 
 					}
-				});
-			});	
 
+
+$("#formLoaderFilter").on("submit", function (evt) {
+				
+				evt.preventDefault();
+				loadMap();
+				var reponse = $(this).serialize();
+				var l_rep = reponse.split("&");
+				toSend = {}
+				for (var i = 0; i < l_rep.length; i++) {
+					var temp = l_rep[i].split("=");
+					toSend[temp[0]] = temp[1];
+				}
+				$.ajax({
+					type: "POST",
+					url: 'http://localhost:444/filterform',
+					data: { data: toSend },
+					success: function (response) {
+						loadTemp(response)	
 			
 			}
+				});
+});
+
+}
+
