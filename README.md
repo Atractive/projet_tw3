@@ -1,12 +1,16 @@
 # projet_tw3
 
-Node JS
+## Node JS
 
-Installations préliminaires
+### Installations préliminaires
+'''
 npm install express
 npm install nedb
 npm install leaflet.markercluster
+'''
 
-Lancement
+### Lancement
+'''
 node app
 http://localhost:444/home_page/
+'''
